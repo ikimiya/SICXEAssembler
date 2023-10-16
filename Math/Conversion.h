@@ -22,6 +22,10 @@ class Conversion
 
     int hexToBinary(std::string hex);
 
+    int stringToInt(std::string string);
+
+    std::string intToString(int number);
+
 
 
 

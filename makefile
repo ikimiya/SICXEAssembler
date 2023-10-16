@@ -1,5 +1,5 @@
-assembler: main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o
-	g++ main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o -o assembler
+assembler: main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/FileReader.o
+	g++ main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/FileReader.o -o assembler
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -12,6 +12,13 @@ Symtable.o: src/cpp/Symtable.cpp src/h/Symtable.h
 
 Conversion.o: Math/Conversion.cpp Math/Conversion.h
 	g++ -c Math/Conversion.cpp
+
+FileReader.o: src/cpp/FileReader.cpp src/header/FileReader.h
+	g++ -c src/cpp/FileReader.cpp
+
+Pass1.o: src/cpp/Pass1.cpp src/header/Pass1.h
+	g++ -c src/cpp/Pass1.cpp
+
 clean:
 	rm -f *.o
 	rm -f Math/*.o

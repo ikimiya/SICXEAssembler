@@ -26,6 +26,8 @@ class Optable
         int getFormat(std::string Mnemonic);
         std::string getOpcode(std::string Mnemonic);
 
+        bool checkOpExist(std::string Mnemonic);
+
         void debug();
 
 

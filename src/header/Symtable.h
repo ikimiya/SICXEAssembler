@@ -23,7 +23,6 @@ class Symtable
 
         void insertTable(std::string Label, int address);    
 
-
         // finds address
         int getAddress(std::string Label);
 

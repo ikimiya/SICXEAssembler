@@ -15,13 +15,28 @@ class FileReader
 
         ~FileReader();
 
-        void readFile();
+        // reads file
+        void readFile(std::string fileName);
 
-        void writeFile();
+        // write File
+        void writeFile(std::string fileName);
 
-        void setFileName(const char* fileName);
+        void writeToFile(std::string word);
 
-        const char* fileName;
+        void writeToFile(std::string word, std::string word2, std::string word3);
+
+        void writeToFile(std::string word, std::string word2, std::string word3, std::string word4);
+
+        void newLine();
+
+        void closeReadFile();
+
+        void closeWriteFile();
+
+
+        std::ifstream myFile;
+
+        std::ofstream outFile;
 
 };
 

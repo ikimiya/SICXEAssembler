@@ -49,4 +49,17 @@ int Conversion::hexToBinary(std::string hex)
 
 }
 
+int Conversion::stringToInt(std::string word)
+{
+    int value = std::stoi(word);
+    return value;
+}
+
+std::string Conversion::intToString(int number)
+{
+    std::string strNum = std::to_string(number);
+
+    return strNum;
+}
+
 

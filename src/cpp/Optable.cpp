@@ -12,8 +12,6 @@ Optable::~Optable()
 {
 
 
-
-
 }
 
 void Optable::createTable()
@@ -92,6 +90,23 @@ int Optable::getFormat(std::string Mnemonic)
 std::string Optable::getOpcode(std::string Mnemonic)
 {
     return OPTABLE[Mnemonic].second;;
+}
+
+bool Optable::checkOpExist(std::string Mnemonic)
+{
+    bool exist = false; 
+    
+    if(OPTABLE.find(Mnemonic) == OPTABLE.end())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+
+    return false;
+
 }
 
 // debug the code
