@@ -1,5 +1,5 @@
-assembler: main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/FileReader.o
-	g++ main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/FileReader.o -o assembler
+assembler: main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/Pass2.o src/cpp/FileReader.o src/cpp/GenerateOp.o
+	g++ main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/Pass2.o src/cpp/FileReader.o src/cpp/GenerateOp.o -o assembler
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -18,6 +18,11 @@ FileReader.o: src/cpp/FileReader.cpp src/header/FileReader.h
 
 Pass1.o: src/cpp/Pass1.cpp src/header/Pass1.h
 	g++ -c src/cpp/Pass1.cpp
+Pass2.o: src/cpp/Pass2.cpp src/header/Pass2.header
+	g++ -c src/cpp/Pass2.cpp
+
+GenerateOp.o: src/cpp/GenerateOp.cpp src/header/GenerateOp.cpp
+	g++ -c src/cpp/GenerateOp.cpp
 
 clean:
 	rm -f *.o

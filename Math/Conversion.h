@@ -27,6 +27,16 @@ class Conversion
     std::string intToString(int number);
 
 
+    std::string binaryToHexByte(int number);
+
+    std::string decimalToHexFour(int number);
+
+    std::string decimalToHexTwo(int number);
+
+
+
+
+
 
 
 };

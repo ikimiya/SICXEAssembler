@@ -1,7 +1,7 @@
-// __Pass1.h__
+// __Pass2.h__
 
-#ifndef __PASS1_H__
-#define __PASS1_H_
+#ifndef __PASS2_H__
+#define __PASS2_H_
 
 #include <iostream>
 #include <string>
@@ -13,20 +13,29 @@
 #include "../../Math/Conversion.h"
 #include "../header/Optable.h"
 
-class Pass1
+class Pass2
 {   
     
     public:
         
-        Pass1();
-        ~Pass1();
+        Pass2();
+        ~Pass2();
 
         void setFileName(std::string fileName);
 
-        void beginPass1();
+        void beginPass2();
 
         void readNextInput();
-        Optable getOptable();
+
+        void setOptable(Optable op);
+        void setSymtable(Symtable sym);
+
+        void writeHeader();
+
+        Optable getOptable(Optable op);
+        Symtable getSymtable(Symtable sym);
+
+        void getPassData(int starting, int loc, int pLength);
 
         void debug();
 
@@ -44,16 +53,15 @@ class Pass1
 
         std::string fileName;
 
-        std::stringstream ss;
         std::string currentLine; 
-        std::string Label, OpCode, Operand, Comment;
+        std::string Address, Label, OpCode, Operand;
+        std::stringstream ss;
         
         int startAdd;
         int LocCtr;
         int programLength;
 
-
-
+        int symbolAddress;
 
 };
 

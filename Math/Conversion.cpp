@@ -3,7 +3,8 @@
 
 #include "Conversion.h"
 
-
+#include <iomanip>
+#include <bitset>
 
 
 Conversion::Conversion()
@@ -60,6 +61,42 @@ std::string Conversion::intToString(int number)
     std::string strNum = std::to_string(number);
 
     return strNum;
+}
+
+std::string Conversion::binaryToHexByte(int number)
+{
+    //std::string hex = binaryToHex(number);
+    std::stringstream ss;
+
+    ss << std::setfill('0') << std::setw(4) << std::hex << number;
+   
+    return ss.str();
+}
+
+std::string Conversion::decimalToHexFour(int number)
+{
+
+    long long unsigned int n = number;
+
+    std::stringstream ss;
+
+    // 0101 0100
+
+    ss << std::bitset<4>{n};
+    
+    return ss.str();
+}
+
+
+std::string Conversion::decimalToHexTwo(int number)
+{
+
+    long long unsigned int n = number;
+
+    std::stringstream ss;
+    ss << std::bitset<4>{n};
+
+    return ss.str().erase(2);
 }
 
 

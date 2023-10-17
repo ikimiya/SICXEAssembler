@@ -31,6 +31,12 @@ void FileReader::writeFile(std::string fileName)
 }
 
 
+
+void FileReader::writeToFileNoTab(std::string value)
+{
+    outFile << value;
+}
+
 void FileReader::writeToFile(std::string value)
 {
     outFile << value << "\t";

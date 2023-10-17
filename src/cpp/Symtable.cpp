@@ -49,8 +49,10 @@ void Symtable::debug()
 
     for(auto it = SYMTABLE.begin(); it != SYMTABLE.end(); it++)
     {
-        std::cout << "IT: " << it->first << it->second << std::endl;
+        std::cout << "IT: " << it->first << ", "<< it->second << std::endl;
 
     }
+
+    std::cout <<  "test" << SYMTABLE.begin()->second << std::endl;
 
 }

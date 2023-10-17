@@ -76,6 +76,8 @@ int main()
 
     */
 
+    Conversion c;
+
 
     std::ifstream myFile;
     std::string currentLine;
@@ -85,13 +87,28 @@ int main()
 
     Pass1 p1;
 
-    p1.setFileName("functions");
+    p1.setFileName("basic");
     p1.beginPass1();
+    p1.symTable.debug();
+
+
 
     std::string firstFile = "Immediate/";
     std::string endFile = ".txt";
     std::string fName = "basicTest";
     std::stringstream sss;
+
+    std::cout << c.binaryToHexByte(0) << std::endl;
+
+    std::cout << "STL: " << c.decimalToHexFour(5);
+
+    std::cout << c.decimalToHexTwo(4) << std::endl;
+
+
+    //bool n,i,x,b,p,e = true;
+
+
+    //std::cout << "N: " << e << std::endl;
 
 /*
     sss << firstFile << fName << endFile;

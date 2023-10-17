@@ -104,6 +104,9 @@
     "typeinfo": "cpp",
     "cstdarg": "cpp",
     "fstream": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "bitset": "cpp",
+    "ctime": "cpp",
+    "iomanip": "cpp"
   }
 }
