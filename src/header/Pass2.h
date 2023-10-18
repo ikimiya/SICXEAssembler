@@ -45,6 +45,8 @@ class Pass2
         std::vector<std::string> OperandList;
         std::vector<std::string> CommentList;
 
+       
+
         Symtable symTable;
         Optable OPTABLE;
 

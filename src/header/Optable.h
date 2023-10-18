@@ -28,6 +28,8 @@ class Optable
 
         bool checkOpExist(std::string Mnemonic);
 
+        std::string checkSpecial(std::string Mnemonic);
+
         void debug();
 
 

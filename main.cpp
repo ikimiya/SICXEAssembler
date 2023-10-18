@@ -87,9 +87,9 @@ int main()
 
     Pass1 p1;
 
-    p1.setFileName("basic");
+    p1.setFileName("functions");
     p1.beginPass1();
-    p1.symTable.debug();
+    //p1.symTable.debug();
 
 
 
@@ -103,6 +103,46 @@ int main()
     std::cout << "STL: " << c.decimalToHexFour(5);
 
     std::cout << c.decimalToHexTwo(4) << std::endl;
+
+
+    
+    std::string parse = "=X'EOF'";
+    
+
+    std::stringstream parser;
+    std::istringstream parsing(parse);
+    std::string temp;
+
+    std::string emoji;
+
+    std::string type;;
+
+    while(std::getline(parsing, temp, '\'')) {
+        if(temp != "C" || temp != "X" || temp != "=X")
+        {
+            emoji = temp;
+        }
+         if(temp != "C" || temp != "X" || temp != "=X")
+         {
+            std::cout << temp << ", " << std::endl;
+            type = temp;
+        }
+
+
+    }
+
+
+    //std::cout << "type [" << type << ("]EmoJI: ")  << emoji.size() << std::endl;
+
+    
+    std::cout << "htob: " << c.hexToBinary("FF") << std::endl;
+
+    int amount = c.hexToBinary("05");
+
+
+    int t1 = 256-241;
+
+    std::cout << "result: " << (amount% 256) / 256 + 1 << std::endl;
 
 
     //bool n,i,x,b,p,e = true;

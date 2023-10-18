@@ -72,6 +72,7 @@ void Pass2::beginPass2()
                                 //std::cout << "inserted in " ;
                                 symbolAddress = 0;
                                 std::cout << "Set Error Flag Undefined Symbol" << std::endl;
+                                
                             }
 
                     }// end if symbol

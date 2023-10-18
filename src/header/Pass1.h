@@ -35,6 +35,14 @@ class Pass1
         std::vector<std::string> OpCodeList;
         std::vector<std::string> OperandList;
         std::vector<std::string> CommentList;
+        
+        std::vector<bool> errorFlag;
+        std::vector<bool> symbolFlag;
+
+        bool errorF;
+        bool symbolF;
+
+        
 
         Symtable symTable;
         Optable OPTABLE;

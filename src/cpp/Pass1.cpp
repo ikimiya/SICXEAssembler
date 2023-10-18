@@ -25,6 +25,10 @@ void Pass1::beginPass1()
     // LOCCTR, Label, Opcode, Operand || ignore comment line
     fReader.writeFile("Immediate/" + fileName + "testIMT.txt");
 
+    errorF = false;
+    symbolF = false;
+
+
     if (fReader.myFile.is_open()) {
         //while (std::getline(fReader.myFile,currentLine)) {  
 
@@ -52,13 +56,15 @@ void Pass1::beginPass1()
                 std::cout << "beginning line: ";
                 std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
 
+
+
                 fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+                fReader.writeToFile(converter.intToString(errorF));
+                fReader.writeToFile(converter.intToString(symbolF));
                 fReader.newLine();
 
                 // read next line 
                 //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
-
-
 /*
                 std::getline(fReader.myFile,currentLine);
                 ss.clear();
@@ -82,11 +88,19 @@ void Pass1::beginPass1()
 
             while(OpCode != "END")
                 {
-                    std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
+                    //std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
 
 
-                    fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-                    fReader.newLine();
+                    if(Label[0] == '.')
+                    {
+
+                    }else{
+                        fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+
+                    }
+
+                    
+                    //fReader.newLine();
                     //std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
 
                     // if not comment line
@@ -97,7 +111,10 @@ void Pass1::beginPass1()
                         {
                             if(symTable.checkTableExist(Label))
                             {
-                                //std::cout << "testing: Duplicated Symbol Found" << std::endl;
+                                std::cout << "testing: Duplicated Symbol Found";
+                                std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+                                symbolF = true;
+
                             }else
                             {   
                                 //std::cout << "inserted in " ;
@@ -109,10 +126,27 @@ void Pass1::beginPass1()
 
                         //Search OPTAB for code
 
+                        //temp 
+                        std::string eCode = OpCode;
+                        eCode.erase(0,1);
+
                         if(OPTABLE.checkOpExist(OpCode))
                         {
                             //std::cout << "OpCODE: " << OpCode << std::endl;
-                            LocCtr += 3;
+
+                            int format = OPTABLE.getFormat(OpCode);
+                            if(format == 3)
+                            {
+                                LocCtr += 3;
+                            }
+                            else if (format = 2)
+                            {
+                                LocCtr += 2;
+                            }else if (format = 1){
+
+                                LocCtr += 1;
+                            }
+
                         }
                         else if(OpCode == "WORD")
                         {
@@ -132,13 +166,61 @@ void Pass1::beginPass1()
                         }
                         else if (OpCode == "BYTE")
                         {
+                            std::istringstream iss(Operand);
+                            std::string temp;
+                            std::string result;
+
+                            std::string type;
+
+                            while(std::getline(iss,temp,'\''))
+                            {
+                                if(temp != "C" || temp != "X" || temp != "=X")
+                                {
+                                    result = temp;
+                                }
+                                if(temp == "C" || temp == "X" || temp == "=X")
+                                {
+                                    type = temp;
+                                }
+                            }
+
+                            //std::cout << "HERE TYEP: " << type << std::endl;
+                            //std::cout << "HERE result: " << result << std::endl;
+                            //std::cout << "result rseult: " << (256/converter.hexToBinary(result)) << std::endl;
+
+                            if(type == "C")
+                            {
+                                std::cout << "true c" << std::endl;
+                                LocCtr += result.size();
+                            }
+                            else if (type == "X")
+                            {
+                                LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
+
+                            }
+                            else if (type == "=X")
+                            {
+                                LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
+
+                            }
+
+
                             // find length of constant in byte
                             // add length to locctr
 
+                        }else if (OPTABLE.checkOpExist(eCode))
+                        {
+                            std::cout << OpCode << std::endl;
+
+                            if(OpCode[0] == '+'){
+
+                                LocCtr += 4; 
+                            }
                         }
                         else
                         {
-                            std::cout << "Error Flag invalid Operation Code" << std::endl;
+                            std::cout << "Error Flag invalid Operation Code";
+                            errorF = true;
                             std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
                         }   // end check optab for opcode
 
@@ -151,6 +233,7 @@ void Pass1::beginPass1()
 
                     if(Label[0] == '.')
                     {
+                        std::cout  << ". ): [Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
                         readNextInput();
                     }else
                     {
@@ -159,6 +242,11 @@ void Pass1::beginPass1()
                         
                         //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
 
+                        errorFlag.push_back(errorF);
+                        symbolFlag.push_back(symbolF);
+                        fReader.writeToFile(converter.intToString(errorF));
+                        fReader.writeToFile(converter.intToString(symbolF));
+                        fReader.newLine();
 
                         readNextInput();
 
@@ -174,7 +262,12 @@ void Pass1::beginPass1()
             //std::cout << "Testing Input Place Here2!" << std::endl;
 
             // write last line to intermediate file
+            errorFlag.push_back(errorF);
+            symbolFlag.push_back(symbolF);
             fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+            fReader.writeToFile(converter.intToString(errorF));
+            fReader.writeToFile(converter.intToString(symbolF));
+
             fReader.newLine();
             
             programLength = LocCtr - startAdd;
@@ -198,6 +291,10 @@ void Pass1::readNextInput()
     std::getline(ss, OpCode, '\t');
     std::getline(ss, Operand, '\t');
     std::getline(ss, Comment, '\t');
+
+    errorF = false;
+    symbolF = false;
+
 }
 
 
