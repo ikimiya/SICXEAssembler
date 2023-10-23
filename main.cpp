@@ -89,7 +89,7 @@ int main()
 
     p1.setFileName("functions");
     p1.beginPass1();
-    //p1.symTable.debug();
+    p1.symTable.debug();
 
 
 
@@ -134,15 +134,98 @@ int main()
 
     //std::cout << "type [" << type << ("]EmoJI: ")  << emoji.size() << std::endl;
 
+
+
+    std::cout << "testing for op counter__ " << std::endl; 
+
+    // get format/code
+
+    std::string opcode = "0C";
+
+    // check format 
+
+    // get printable
+    std::string opcode6 = c.decimalToHexTwo(opcode);
+    std::cout << "hex2 : " << opcode6 << std::endl;
+
+    // set bits
+    std::string n,i,x,b,p,e;
+
+    n = "1";
+    i = "1";
+    x = "0";
+    b = "0";
+    p = "1";
+    e = "0";
+
+    // check for pc/b
+
+    // pc is next instruction
+    std::string pc = "26";
+    std::string length = "33";
+    int disp = c.hexToBinary(length) - c.hexToBinary(pc);
+
+
+    // displacement 
+    //std::string opcode6 = c.binaryToHex(disp);
+    //std::cout << "opcode6 == " << opcode6 << std::endl;
+
+    std::string displacement = c.displacement(disp);
+    std::cout << "final disp " << displacement << std::endl;
+
+    std::cout << "hex4 : " << c.decimalToHexFour(opcode)<< std::endl;
+
+    std::stringstream operand1;
+
+    operand1 << opcode6 << n << i << x << b << p << e << displacement;
+
+    std::string fresult = operand1.str();
+    
+    std::cout << "RESUTL : " << fresult << std::endl;
+
+    
+    std::cout << "OPCODE: " << c.opcodeHex(fresult) << std::endl;
+
+
+
+    
+
+    
+
+
+    //std::cout << c.decimalToHexFour) << std::endl;
+
+
+
+
+
+
+    /*
     
     std::cout << "htob: " << c.hexToBinary("FF") << std::endl;
 
-    int amount = c.hexToBinary("05");
+    int amount = c.hexToBinary("105");
+
+    std::string tester = "F1";
+
+    int hexInt = std::strtol(tester.c_str(), nullptr, 16);
+
+    std::cout << "hexInt:" << hexInt << std::endl;
+
+    std::cout << "AMOUNT : " << amount << std::endl;
+
+    int counter = (tester.length() + 1)/2;
+
+    std::cout << "COUTNER LOGIC: " << counter << std::endl;
+
 
 
     int t1 = 256-241;
 
     std::cout << "result: " << (amount% 256) / 256 + 1 << std::endl;
+
+
+    */
 
 
     //bool n,i,x,b,p,e = true;

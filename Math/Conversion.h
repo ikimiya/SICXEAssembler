@@ -29,9 +29,21 @@ class Conversion
 
     std::string binaryToHexByte(int number);
 
-    std::string decimalToHexFour(int number);
+    
+    std::string opcodeHex(std::string number);
 
+
+    // format 4 opcode 8 
+    std::string decimalToHexFour(int number);
+    std::string decimalToHexFour(std::string number);
+
+    // format 3 opcode 6
     std::string decimalToHexTwo(int number);
+    std::string decimalToHexTwo(std::string number);
+
+
+    std::string displacement(int number);
+
 
 
 

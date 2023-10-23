@@ -73,6 +73,25 @@ std::string Conversion::binaryToHexByte(int number)
     return ss.str();
 }
 
+std::string Conversion::opcodeHex(std::string number)
+{
+    //std::string hex = binaryToHex(number);
+    std::stringstream ss;
+
+    // result to upper case
+    ss << std::uppercase;
+    
+    // loop 0-4 each time to read each 4 bits
+    for (int i = 0; i < number.length(); i += 4) {
+        
+        // split 4 strings 
+        std::string hex = number.substr(i, 4);
+        int decimalValue = std::bitset<4>(hex).to_ulong();
+        ss << std::hex << decimalValue; 
+    }
+    return ss.str();
+}
+
 std::string Conversion::decimalToHexFour(int number)
 {
 
@@ -99,4 +118,48 @@ std::string Conversion::decimalToHexTwo(int number)
     return ss.str().erase(2);
 }
 
+std::string Conversion::decimalToHexFour(std::string number)
+{
 
+    long long unsigned int n = hexToBinary(number);
+
+    std::stringstream ss;
+    ss << std::setw(8) << std::setfill('0') << std::bitset<8>{n};
+    return ss.str();
+}
+
+
+std::string Conversion::decimalToHexTwo(std::string number)
+{
+
+    long long unsigned int n = hexToBinary(number);
+    std::stringstream ss;
+
+
+    ss << std::setw(8) << std::setfill('0') << std::bitset<8>{n};
+
+    std::string save = ss.str();
+    save.erase(save.size() -2);
+
+    //std::cout << "number: " << ss.str() << std::endl;
+    //std::cout << "save: " << save << std::endl;
+
+    return ss.str().erase(ss.str().size() - 2);
+}
+
+
+// get binary number and convert to hex
+std::string Conversion::displacement(int number)
+{
+
+    long long unsigned int n = (number);
+
+    std::stringstream ss;
+    ss << std::setw(12) << std::setfill('0') << std::bitset<12>{n};
+
+
+    //std::cout << "number: " << ss.str() << std::endl;
+    //std::cout << "save: " << save << std::endl;
+
+    return ss.str();
+}

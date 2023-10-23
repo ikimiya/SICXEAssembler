@@ -172,6 +172,8 @@ void Pass1::beginPass1()
 
                             std::string type;
 
+                            int byte;
+
                             while(std::getline(iss,temp,'\''))
                             {
                                 if(temp != "C" || temp != "X" || temp != "=X")
@@ -188,19 +190,25 @@ void Pass1::beginPass1()
                             //std::cout << "HERE result: " << result << std::endl;
                             //std::cout << "result rseult: " << (256/converter.hexToBinary(result)) << std::endl;
 
+                            // convert result to hex, then calculate byte
+                            std::strtol(result.c_str(),nullptr,16);
+                            byte = (result.length() +1)/2;
+
+                            std::cout << "BYTE: " << byte << std::endl;
                             if(type == "C")
                             {
-                                std::cout << "true c" << std::endl;
                                 LocCtr += result.size();
                             }
                             else if (type == "X")
                             {
-                                LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
+                                //LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
+                                LocCtr += byte;
 
                             }
                             else if (type == "=X")
                             {
-                                LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
+                                //LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
+                                LocCtr += byte;
 
                             }
 
