@@ -9,6 +9,7 @@
 #include "src/header/Symtable.h"
 #include "math/conversion.h"
 #include "src/header/Pass1.h"
+#include "src/header/Pass2.h"
 #include "src/header/FileReader.h"
 
 #include <vector>
@@ -25,6 +26,23 @@ void createOPTABLE()
 
 int main()
 {
+
+
+
+
+    std::vector<int> location;
+
+    location.push_back(1);
+    location.push_back(21);
+    location.push_back(31);
+    location.push_back(41);
+    location.push_back(51);
+    location.push_back(61);
+
+    std::cout << location[1] << std::endl;
+
+
+
 
     std::string test = "Test";
     Optable op;
@@ -92,6 +110,14 @@ int main()
     p1.symTable.debug();
 
 
+    Pass2 p2;
+
+    p2.setFileName("functions");
+    p2.setOptable(p1.OPTABLE);
+    p2.setSymtable(p2.symTable);
+    //p2.beginPass2();
+
+
 
     std::string firstFile = "Immediate/";
     std::string endFile = ".txt";
@@ -105,10 +131,9 @@ int main()
     std::cout << c.decimalToHexTwo(4) << std::endl;
 
 
-    
+    /*
     std::string parse = "=X'EOF'";
     
-
     std::stringstream parser;
     std::istringstream parsing(parse);
     std::string temp;
@@ -127,9 +152,10 @@ int main()
             std::cout << temp << ", " << std::endl;
             type = temp;
         }
-
-
     }
+    */
+
+
 
 
     //std::cout << "type [" << type << ("]EmoJI: ")  << emoji.size() << std::endl;
@@ -148,6 +174,8 @@ int main()
     std::string opcode6 = c.decimalToHexTwo(opcode);
     std::cout << "hex2 : " << opcode6 << std::endl;
 
+
+/*
     // set bits
     std::string n,i,x,b,p,e;
 
@@ -164,7 +192,6 @@ int main()
     std::string pc = "26";
     std::string length = "33";
     int disp = c.hexToBinary(length) - c.hexToBinary(pc);
-
 
     // displacement 
     //std::string opcode6 = c.binaryToHex(disp);
@@ -183,22 +210,182 @@ int main()
     
     std::cout << "RESUTL : " << fresult << std::endl;
 
-    
     std::cout << "OPCODE: " << c.opcodeHex(fresult) << std::endl;
 
 
+*/
 
-    
 
-    
+    // test format 2 
+    // Clear X 
+
+    // B4  +  A + B
+
+    std::string lda = "+lda";
+
+
+    std::stringstream ppp;
+    std::istringstream testing123(lda);
+    std::string temp1;
+
+    std::string extended;
+    std::string indirection;
+
+    bool keepGoing = true;
+
+    int ij = 0;
+    bool n,i,x,b,p,e;    
+
+    std::string OpCode = "RSUB";
+
+
+
+    std::string OpCodeT = "4C";
+    std::string Operand = "";
+
+    // 4062
+    int pcAddr = c.hexToBinary("4076"); 
+    // 4036
+    int lenAddr = c.hexToBinary("0000");
+
+
+    int format = 3;
+
+    std::cout << OpCode.size() << std::endl;
+
+
+    if(format == 3)
+    {
+        n = 1, i = 1;
+    } 
+
+    // check OpCode
+    while(keepGoing)
+    {
+        // extended
+        if(OpCode.at(ij) == '+')
+        {
+            e = 1;
+        }
+
+        ij++;
+        if(ij >= OpCode.size())
+        {
+            keepGoing = false;      
+        }
+    }
+
+    if(Operand == "")
+    {
+        x = 0;
+        b = 0;
+        p = 0;
+        e = 0;
+    }
+    else
+    {
+        keepGoing = true;
+        ij = 0;
+        while(keepGoing)
+        {
+            // immediate
+            if(Operand.at(ij) == '#')
+            {
+                i = 1; n = 0;
+            }
+            // addressing
+            if(Operand.at(ij) == '@')
+            {
+                i = 0; n = 1;
+            }
+
+            if(Operand.at(ij) == ',')
+            {
+                x = 1;
+                keepGoing = false;
+            }
+
+            ij++;
+            if(ij >= Operand.size())
+            {
+                keepGoing = false;
+                std::cout << "i2 : " << ij << std::endl;            
+            }
+        }
+    }
+
+
+    // check pc 
+    if(Operand != "")
+    {
+        b = 0; p = 1;
+
+    }
+    else
+    {
+
+    }
+
+
+    //int disp = c.hexToBinary(lenAddr) - c.hexToBinary(pcAddr); 
+
+    //std::cout << "testing: " << c.binaryToHex(lenAddr) << std::endl;
+
+
+    //std::cout << "testing123: " << c.binaryToHex(pcAddr) << std::endl;
+
+
+    std::stringstream operand1;
+
+
+    //int displacement = c.displacement(c.calculateDisplacement(step12));
+
+
+    // displacement = Address of target - pc/b
+    //int disp = lenAddr - pcAddr;
+    int disp = 0;
+
+
+    std::string displacement = c.displacement(disp);
+    //std::cout << "disp: " << disp << std::endl;
+
+    std::string opcode61 = c.decimalToHexTwo(OpCodeT);        
+    operand1 << opcode61 << n << i << x << b << p << e << displacement;  
+
+
+
+    //std::cout << "obama: " <<  c.opcodeHex(operand1.str())<< std::endl;
+
+
+    int step12 = lenAddr - pcAddr;
+
+
+    // 4062
+    //int pcAddr = 16482; 
+    // 4036
+    //int lenAddr = 16438;
+
+    std::string pc = c.intToString(pcAddr);
+    std::string length = c.intToString(lenAddr);
+
+
+
+    //std::cout << "test: " << c.binaryToHex(disp) << std::endl;
+
+    //std::cout << "test1: " << c.displacement(disp) << std::endl;
+
+
+    //std::cout << "hex to binary: " <<c.hexToBinary(pcAddr)  << std::endl;
+
+
+    //std::cout << "DISP: " << disp << std::endl;  
+
+
+    std::cout << "NIXBPE" << std::endl;
+    std::cout << n << i << x << b << p << e << std::endl;
 
 
     //std::cout << c.decimalToHexFour) << std::endl;
-
-
-
-
-
 
     /*
     

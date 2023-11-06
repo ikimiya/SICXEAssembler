@@ -16,12 +16,14 @@ Pass2::~Pass2()
 void Pass2::setFileName(std::string fileName_)
 {
     fileName = fileName_;
-    fReader.readFile("Immediate/" + fileName + ".testIMT.txt");
+    fReader.readFile("Immediate/" + fileName + "testIMT.txt");
 
 }
 
 void Pass2::beginPass2()
 {
+
+    std::cout << "begin pass2 :" << std::endl;
 
     fReader.writeFile("Result/" + fileName + "result.txt");
 
@@ -36,9 +38,14 @@ void Pass2::beginPass2()
         std::getline(ss, OpCode, '\t');
         std::getline(ss, Operand, '\t');
 
+
+        std::cout << "Address:" << std::endl;
+
         if(OpCode == "START")
         {
             // write something
+            fReader.writeToFile(converter.decimalToHexFour(Address));
+            fReader.newLine();
 
             // read next input line
             readNextInput();
@@ -47,6 +54,7 @@ void Pass2::beginPass2()
 
 
         // write header
+        writeHeader();
         // initalize text record
 
 

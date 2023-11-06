@@ -56,8 +56,6 @@ void Pass1::beginPass1()
                 std::cout << "beginning line: ";
                 std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
 
-
-
                 fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
                 fReader.writeToFile(converter.intToString(errorF));
                 fReader.writeToFile(converter.intToString(symbolF));
@@ -88,16 +86,12 @@ void Pass1::beginPass1()
 
             while(OpCode != "END")
                 {
-                    //std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
+
+                    std::cout << "other end: ";
+                    std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
 
 
-                    if(Label[0] == '.')
-                    {
 
-                    }else{
-                        fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-
-                    }
 
                     
                     //fReader.newLine();
@@ -111,8 +105,8 @@ void Pass1::beginPass1()
                         {
                             if(symTable.checkTableExist(Label))
                             {
-                                std::cout << "testing: Duplicated Symbol Found";
-                                std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+                                //std::cout << "testing: Duplicated Symbol Found";
+                                //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
                                 symbolF = true;
 
                             }else
@@ -194,7 +188,7 @@ void Pass1::beginPass1()
                             std::strtol(result.c_str(),nullptr,16);
                             byte = (result.length() +1)/2;
 
-                            std::cout << "BYTE: " << byte << std::endl;
+                            //std::cout << "BYTE: " << byte << std::endl;
                             if(type == "C")
                             {
                                 LocCtr += result.size();
@@ -218,7 +212,7 @@ void Pass1::beginPass1()
 
                         }else if (OPTABLE.checkOpExist(eCode))
                         {
-                            std::cout << OpCode << std::endl;
+                            //std::cout << OpCode << std::endl;
 
                             if(OpCode[0] == '+'){
 
@@ -227,41 +221,43 @@ void Pass1::beginPass1()
                         }
                         else
                         {
-                            std::cout << "Error Flag invalid Operation Code";
+                            //std::cout << "Error Flag invalid Operation Code";
                             errorF = true;
-                            std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+                            //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
                         }   // end check optab for opcode
+
+
+                        errorFlag.push_back(errorF);
+                        symbolFlag.push_back(symbolF);
+                        fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+                        fReader.writeToFile(converter.intToString(errorF));
+                        fReader.writeToFile(converter.intToString(symbolF));
+                        fReader.newLine();
+                        readNextInput();
+
 
                     }
                     else
                     {
                         // if there is a comment 
                         //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+                        readNextInput();
+
                     } // end if not comment
+
+
 
                     if(Label[0] == '.')
                     {
-                        std::cout  << ". ): [Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
-                        readNextInput();
+                        //std::cout  << ". ): [Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
+
                     }else
                     {
                         //std::cout << "wrote Line: " << std::endl;
                         //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
-                        
-                        //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
 
-                        errorFlag.push_back(errorF);
-                        symbolFlag.push_back(symbolF);
-                        fReader.writeToFile(converter.intToString(errorF));
-                        fReader.writeToFile(converter.intToString(symbolF));
-                        fReader.newLine();
-
-                        readNextInput();
-
-        
                     }
                     // write to line intermediate
-
                     // read next input line 
 
 

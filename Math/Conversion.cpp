@@ -163,3 +163,31 @@ std::string Conversion::displacement(int number)
 
     return ss.str();
 }
+
+
+std::string Conversion::calculateDisplacement(int binary)
+{
+    // assume number is already address - pc 
+
+
+    std::stringstream ss;
+
+    // result to upper case
+    ss << std::uppercase << std::hex << binary;
+
+    std::string hexString = ss.str();
+
+    if (hexString.length() >= 3) {
+        std::string hexReduced = hexString.substr(hexString.length() - 3);
+        return hexReduced;
+    } else {
+    
+        return hexString;
+    }
+    
+
+
+
+    return "0";
+
+}

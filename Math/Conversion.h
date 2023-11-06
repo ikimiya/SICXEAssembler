@@ -41,8 +41,10 @@ class Conversion
     std::string decimalToHexTwo(int number);
     std::string decimalToHexTwo(std::string number);
 
-
+    // convert displacement bits to opcode
     std::string displacement(int number);
+
+    std::string calculateDisplacement(int binary);
 
 
 

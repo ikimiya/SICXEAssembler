@@ -23,10 +23,16 @@ class GenerateOp
         void createObjectCode();
 
         void checkFormat();
-        
+
+        void setValues(std::string address, std::string label, std::string opCode, std::string Operand);
 
 
+        bool checkPC();
 
+        bool checkBase();
+
+
+        void checkBits();
 
 
 
@@ -36,6 +42,14 @@ class GenerateOp
 
 
         bool n,i,x,b,p,e;
+
+        std::string Address;
+        std::string Label;
+        std::string OpCode;
+        std::string Operand;
+
+        bool extended;
+
 
 
 
