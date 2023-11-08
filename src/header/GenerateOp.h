@@ -24,7 +24,7 @@ class GenerateOp
 
         void checkFormat();
 
-        void setValues(std::string address, std::string label, std::string opCode, std::string Operand);
+        void setValues(std::string address, std::string baseAddress, std::string label, std::string opCode, std::string Operand);
 
 
         bool checkPC();
@@ -33,6 +33,9 @@ class GenerateOp
 
 
         void checkBits();
+
+
+        void debug();
 
 
 
@@ -44,6 +47,9 @@ class GenerateOp
         bool n,i,x,b,p,e;
 
         std::string Address;
+
+        std::string baseAddress;
+
         std::string Label;
         std::string OpCode;
         std::string Operand;

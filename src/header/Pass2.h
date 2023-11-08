@@ -12,6 +12,7 @@
 #include "../header/FileReader.h"
 #include "../../Math/Conversion.h"
 #include "../header/Optable.h"
+#include "../header/GenerateOp.h"
 
 class Pass2
 {   
@@ -52,6 +53,8 @@ class Pass2
 
         FileReader fReader;
         Conversion converter;
+        GenerateOp genOp;
+    
 
         std::string fileName;
 

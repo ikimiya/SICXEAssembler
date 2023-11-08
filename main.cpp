@@ -115,7 +115,8 @@ int main()
     p2.setFileName("functions");
     p2.setOptable(p1.OPTABLE);
     p2.setSymtable(p2.symTable);
-    //p2.beginPass2();
+    p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
+    p2.beginPass2();
 
 
 

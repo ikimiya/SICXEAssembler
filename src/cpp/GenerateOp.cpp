@@ -29,6 +29,8 @@ void GenerateOp::checkFormat()
     bool keepGoing = true;
     int index = 0;
 
+    //  Opcode check [0]
+    //  Operand check ,
 
     if(format == 3)
     {
@@ -113,7 +115,15 @@ void GenerateOp::checkFormat()
         // opcode  = B400 
         // if r2 is empty 0000 -> 0
 
-    }else if (format = 3)
+
+        // OpCode + R1 + R2
+
+        // check r1, r2
+
+
+
+    }
+    else if (format = 3)
     {
         if(n == 0 && i == 0)
         {
@@ -122,15 +132,6 @@ void GenerateOp::checkFormat()
         
         // if + = extended 
         // check if extended = true
-        
-        // 
-
-
-
-
-
-
-
 
     }
 
@@ -163,9 +164,10 @@ void GenerateOp::createObjectCode()
 
 }
 
-void GenerateOp::setValues(std::string address_, std::string label_, std::string opcode_, std::string operand_)
+void GenerateOp::setValues(std::string address_, std::string bAddress_,std::string label_, std::string opcode_, std::string operand_)
 {
     Address = address_;
+    baseAddress = bAddress_;
     Label = label_;
     OpCode = opcode_;
     Operand = operand_;
@@ -190,4 +192,15 @@ bool GenerateOp::checkPC()
 {
 
     return false;
+}
+
+void GenerateOp::debug()
+{
+
+    std::cout << "PCAddress: " << Address << " BaseAddress: " <<
+    baseAddress << "Label: " << Label << " Opcode: " << OpCode
+    << " Operand: " << Operand << std::endl;   
+
+
+
 }

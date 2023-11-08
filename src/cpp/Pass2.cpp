@@ -22,6 +22,20 @@ void Pass2::setFileName(std::string fileName_)
 
 void Pass2::beginPass2()
 {
+    std::string baseAddress = "0";
+
+    symTable.debug();
+
+
+    if(symTable.checkTableExist("BASE"))
+    {
+        std::cout << "ExistOP " << std::endl;
+        baseAddress = symTable.getAddress("BASE");
+    } else
+    {
+        std::cout << "NotExist " << std::endl;
+        
+    }
 
     std::cout << "begin pass2 :" << std::endl;
 
@@ -60,14 +74,16 @@ void Pass2::beginPass2()
 
         while(OpCode != "END")
         {
-
             // if it is not comment line 
             if(Label[0] != '.')
             {
                 // search table for op code
                 if(OPTABLE.checkOpExist(OpCode))
                 {
-                    
+
+                    std::string sendOpcode = OPTABLE.getOpcode(OpCode);
+                    int format = OPTABLE.getFormat(OpCode);
+
                     if(Label != "")
                         {
                             if(symTable.checkTableExist(Operand))
@@ -79,8 +95,7 @@ void Pass2::beginPass2()
                             {   
                                 //std::cout << "inserted in " ;
                                 symbolAddress = 0;
-                                std::cout << "Set Error Flag Undefined Symbol" << std::endl;
-                                
+                                std::cout << "Set Error Flag Undefined Symbol" << std::endl;         
                             }
 
                     }// end if symbol
@@ -94,7 +109,6 @@ void Pass2::beginPass2()
 
                 }
 
-
                 /*
                 // check code counter
                 if object code is >= 10 * 3, 
@@ -102,19 +116,29 @@ void Pass2::beginPass2()
                 else
                 add object cord to text record
 
-
                 */
-               
+                //std::cout << "error " << std::endl;
+                //std::string baseAddress = converter.intToString(symTable.getAddress("BASE"));
+                
+
+                genOp.setValues(Address, baseAddress, Label, OpCode, Operand);
+
+                //genOp.debug();
+
+                //std::cout << "erro    r " << std::endl;
 
             } // end if not comment
 
 
             /*
                 Write listening line 
-                
-            
             */
            readNextInput();
+
+
+
+
+
 
         }   // end while nmot end 
 

@@ -105,6 +105,7 @@ void Pass1::beginPass1()
                         {
                             if(symTable.checkTableExist(Label))
                             {
+                                std::cout << LocCtr << ": " << Label << std::endl;
                                 //std::cout << "testing: Duplicated Symbol Found";
                                 //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
                                 symbolF = true;
@@ -221,7 +222,17 @@ void Pass1::beginPass1()
                         }
                         else
                         {
+                            
                             //std::cout << "Error Flag invalid Operation Code";
+
+                            if(OpCode == "BASE")
+                            {
+
+                                std::cout << " I SHOULD INSERT  " << std::endl;
+                                symTable.insertTable(OpCode,LocCtr);
+
+
+                            }
                             errorF = true;
                             //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
                         }   // end check optab for opcode
