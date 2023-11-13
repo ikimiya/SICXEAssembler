@@ -92,24 +92,10 @@ std::string Conversion::opcodeHex(std::string number)
     return ss.str();
 }
 
-std::string Conversion::decimalToHexFour(int number)
-{
-
-    long long unsigned int n = number;
-
-    std::stringstream ss;
-
-    // 0101 0100
-
-    ss << std::bitset<4>{n};
-    
-    return ss.str();
-}
-
 
 std::string Conversion::decimalToHexTwo(int number)
 {
-
+    // 0101 01 
     long long unsigned int n = number;
 
     std::stringstream ss;
@@ -127,6 +113,20 @@ std::string Conversion::decimalToHexFour(std::string number)
     ss << std::setw(8) << std::setfill('0') << std::bitset<8>{n};
     return ss.str();
 }
+
+
+std::string Conversion::decimalToHexFour(int number)
+{
+    // 0101 0100
+
+    long long unsigned int n = number;
+    std::stringstream ss;
+
+    ss << std::bitset<4>{n};
+
+    return ss.str();
+}
+
 
 
 std::string Conversion::decimalToHexTwo(std::string number)
@@ -157,9 +157,17 @@ std::string Conversion::displacement(int number)
     std::stringstream ss;
     ss << std::setw(12) << std::setfill('0') << std::bitset<12>{n};
 
+    return ss.str();
+}
 
-    //std::cout << "number: " << ss.str() << std::endl;
-    //std::cout << "save: " << save << std::endl;
+// get binary extended
+std::string Conversion::displacementExtend(int number)
+{
+
+    long long unsigned int n = (number);
+
+    std::stringstream ss;
+    ss << std::setw(20) << std::setfill('0') << std::bitset<20>{n};
 
     return ss.str();
 }
@@ -184,9 +192,6 @@ std::string Conversion::calculateDisplacement(int binary)
     
         return hexString;
     }
-    
-
-
 
     return "0";
 

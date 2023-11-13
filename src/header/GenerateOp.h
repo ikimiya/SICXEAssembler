@@ -8,7 +8,8 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-
+#include "../header/OpcodeStruct.h"
+#include "../../Math/Conversion.h"
 
 class GenerateOp
 {
@@ -18,18 +19,21 @@ class GenerateOp
         ~GenerateOp();
 
 
+
+
+
         void setObject(int format, std::string oCode);
 
         void createObjectCode();
 
         void checkFormat();
 
-        void setValues(std::string address, std::string baseAddress, std::string label, std::string opCode, std::string Operand);
 
+        void setValues(OpcodeStruct opStruct);
 
-        bool checkPC();
+        bool checkPC(int value);
 
-        bool checkBase();
+        bool checkBase(int value);
 
 
         void checkBits();
@@ -37,27 +41,33 @@ class GenerateOp
 
         void debug();
 
+        OpcodeStruct opStruct;
 
-
-        int format; 
         std::string objectCode;
         std::stringstream ss;
 
 
         bool n,i,x,b,p,e;
 
+        std::string disp;
+
         std::string Address;
 
-        std::string baseAddress;
 
+        // use for transition
+        int pcAddr;
+        int baseAddr;
+        int symAddr;
         std::string Label;
-        std::string OpCode;
-        std::string Operand;
+        std::string mnemonic;
+        std::string operand;
+        std::string opCode;
+        int format;
 
         bool extended;
 
 
-
+        Conversion converter;
 
         /*
         PC = Next

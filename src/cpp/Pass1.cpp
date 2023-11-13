@@ -87,8 +87,8 @@ void Pass1::beginPass1()
             while(OpCode != "END")
                 {
 
-                    std::cout << "other end: ";
-                    std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
+                    //std::cout << "other end: ";
+                    //std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
 
 
 

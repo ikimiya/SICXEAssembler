@@ -44,6 +44,8 @@ class Conversion
     // convert displacement bits to opcode
     std::string displacement(int number);
 
+    std::string displacementExtend(int number);
+
     std::string calculateDisplacement(int binary);
 
 

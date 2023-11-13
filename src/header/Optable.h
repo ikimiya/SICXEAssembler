@@ -11,7 +11,6 @@
 class Optable
 {
 
-
     private: 
 
 

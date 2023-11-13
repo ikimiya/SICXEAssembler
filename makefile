@@ -5,7 +5,7 @@ main.o: main.cpp
 	g++ -c main.cpp
 
 Optable.o: src/cpp/Optable.cpp src/h/Optable.h
-	g++ -c src/cpp/Optable.cpp
+	g++ -c src/cpp/Optable.cpp 
 
 Symtable.o: src/cpp/Symtable.cpp src/h/Symtable.h
 	g++ -c src/cpp/Symtable.cpp
@@ -17,9 +17,9 @@ FileReader.o: src/cpp/FileReader.cpp src/header/FileReader.h
 	g++ -c src/cpp/FileReader.cpp
 
 Pass1.o: src/cpp/Pass1.cpp src/header/Pass1.h
-	g++ -c src/cpp/Pass1.cpp
+	g++ -c src/cpp/Pass1.cpp 
 Pass2.o: src/cpp/Pass2.cpp src/header/Pass2.header
-	g++ -c src/cpp/Pass2.cpp
+	g++ -c src/cpp/Pass2.cpp 
 
 GenerateOp.o: src/cpp/GenerateOp.cpp src/header/GenerateOp.cpp
 	g++ -c src/cpp/GenerateOp.cpp

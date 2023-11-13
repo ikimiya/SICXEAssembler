@@ -22,15 +22,18 @@ void Pass2::setFileName(std::string fileName_)
 
 void Pass2::beginPass2()
 {
-    std::string baseAddress = "0";
+    int baseAddress = -1;
 
-    symTable.debug();
+    //symTable.debug();
 
+    std::string sendOpcode;
+    int format;
 
     if(symTable.checkTableExist("BASE"))
     {
         std::cout << "ExistOP " << std::endl;
         baseAddress = symTable.getAddress("BASE");
+
     } else
     {
         std::cout << "NotExist " << std::endl;
@@ -78,29 +81,39 @@ void Pass2::beginPass2()
             if(Label[0] != '.')
             {
                 // search table for op code
+                // also check without special + 
+
                 if(OPTABLE.checkOpExist(OpCode))
                 {
 
-                    std::string sendOpcode = OPTABLE.getOpcode(OpCode);
-                    int format = OPTABLE.getFormat(OpCode);
+                    sendOpcode = OPTABLE.getOpcode(OpCode);
+                    format = OPTABLE.getFormat(OpCode);
 
-                    if(Label != "")
+                    //std::cout << "FORMAT: " << format << std::endl;
+
+                    if(Operand != "")
                         {
+                            // need to check fo @ # etc.
                             if(symTable.checkTableExist(Operand))
                             {
                                 //std::cout << "testing: Duplicated Symbol Found" << std::endl;
-                                symbolAddress = symTable.getAddress(Operand);
+                                symbolAddress = converter.intToString(symTable.getAddress(Operand));
+
 
                             }else
                             {   
                                 //std::cout << "inserted in " ;
-                                symbolAddress = 0;
-                                std::cout << "Set Error Flag Undefined Symbol" << std::endl;         
+                                symbolAddress = "0";
+                                //std::cout << "Set Error Flag Undefined Symbol" << std::endl;         
                             }
 
-                    }// end if symbol
+                    }else
+                    {
 
-                    symbolAddress = 0;
+                    }
+                    
+                    
+                    // end if symbol
                     // calculate Object code
                     
                 }else if (OpCode == "BYTE" || OpCode == "WORD")
@@ -119,9 +132,43 @@ void Pass2::beginPass2()
                 */
                 //std::cout << "error " << std::endl;
                 //std::string baseAddress = converter.intToString(symTable.getAddress("BASE"));
+
+                //std::cout << "Operand: " << Operand << " SYMBOL: " <<  symbolAddress << std::endl;
+                
+                opStruct.baseAddr = converter.intToString(baseAddress);
+                opStruct.pcAddr = Address;
+                opStruct.label = Label;
+                opStruct.mnemonic = OpCode;
+                opStruct.operand = Operand;
+                opStruct.opCode = sendOpcode;
+                opStruct.format = format;
+                opStruct.symAddr = symbolAddress;
+
+                //std::cout << "CHECKBASE: " << opStruct.baseAddr << std::endl;
                 
 
-                genOp.setValues(Address, baseAddress, Label, OpCode, Operand);
+                //std::cout << opStruct.format << ": This Format" << std::endl;
+
+                genOp.setValues(opStruct);
+                genOp.checkFormat();
+                genOp.createObjectCode();
+                genOp.debug();
+                genOp.checkBits();
+
+
+
+        
+
+
+
+                //std::cout << "PCAddress: " << Address << " BaseAddress: " << baseAddress << " Label: " << Label << " OpCode: " << OpCode << " Operand: " << Operand;
+                //std::cout << "Format: " << format << " OPCODE: " << sendOpcode << std::endl;
+
+                
+
+                //genOp.setValues(Address, Address, Label, OpCode, Operand);
+
+
 
                 //genOp.debug();
 

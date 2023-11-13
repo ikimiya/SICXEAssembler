@@ -21,20 +21,10 @@ void Symtable::insertTable(std::string label, int value)
 // Check Map duplicates
 bool Symtable::checkTableExist(std::string label)
 {
+    auto it = SYMTABLE.find(label);
 
-    // Map does not allow duplicates
-    bool exist = false;
-
-    if(SYMTABLE.find(label) == SYMTABLE.end())
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-
-    return false;
+    // Check if the key exists
+    return it != SYMTABLE.end();
 }
 
 

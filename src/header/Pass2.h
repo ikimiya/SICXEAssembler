@@ -13,6 +13,7 @@
 #include "../../Math/Conversion.h"
 #include "../header/Optable.h"
 #include "../header/GenerateOp.h"
+#include "../header/OpcodeStruct.h"
 
 class Pass2
 {   
@@ -40,6 +41,7 @@ class Pass2
 
         void debug();
 
+
         std::vector<std::string> indexList;
         std::vector<std::string> LabelList;
         std::vector<std::string> OpCodeList;
@@ -66,7 +68,10 @@ class Pass2
         int LocCtr;
         int programLength;
 
-        int symbolAddress;
+        std::string symbolAddress;
+
+
+        OpcodeStruct opStruct;
 
 };
 

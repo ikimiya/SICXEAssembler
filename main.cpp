@@ -7,10 +7,11 @@
 #include <fstream>
 
 #include "src/header/Symtable.h"
-#include "math/conversion.h"
+
 #include "src/header/Pass1.h"
 #include "src/header/Pass2.h"
 #include "src/header/FileReader.h"
+#include "src/header/GenerateOp.h"
 
 #include <vector>
 
@@ -114,9 +115,12 @@ int main()
 
     p2.setFileName("functions");
     p2.setOptable(p1.OPTABLE);
-    p2.setSymtable(p2.symTable);
+    p2.setSymtable(p1.symTable);
     p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
     p2.beginPass2();
+
+
+    std::cout << "CHECKBASEEXIST: " << p2.symTable.checkTableExist("BASE") << std::endl;
 
 
 
@@ -237,17 +241,17 @@ int main()
     int ij = 0;
     bool n,i,x,b,p,e;    
 
-    std::string OpCode = "RSUB";
+    std::string OpCode = "ADD";
 
 
 
-    std::string OpCodeT = "4C";
-    std::string Operand = "";
+    std::string OpCodeT = "48";
+    std::string Operand = "Table,X";
 
-    // 4062
-    int pcAddr = c.hexToBinary("4076"); 
-    // 4036
-    int lenAddr = c.hexToBinary("0000");
+    // using hex to int 
+    // then calculate displacement
+    int pcAddr = c.hexToBinary("000C"); 
+    int lenAddr = c.hexToBinary("001B");
 
 
     int format = 3;
@@ -328,13 +332,8 @@ int main()
     }
 
 
-    //int disp = c.hexToBinary(lenAddr) - c.hexToBinary(pcAddr); 
-
-    //std::cout << "testing: " << c.binaryToHex(lenAddr) << std::endl;
-
-
-    //std::cout << "testing123: " << c.binaryToHex(pcAddr) << std::endl;
-
+    // self check extend immediate 
+    // b = 0; p = 0;
 
     std::stringstream operand1;
 
@@ -343,19 +342,55 @@ int main()
 
 
     // displacement = Address of target - pc/b
-    //int disp = lenAddr - pcAddr;
-    int disp = 0;
+    // using Hex input string to int 
+    int disp = lenAddr - pcAddr;
+    
+    // immediate extend
+    std::string disp2 = c.displacementExtend(lenAddr);
+    std::string displacement;
+    //int disp = 0;
 
 
-    std::string displacement = c.displacement(disp);
-    //std::cout << "disp: " << disp << std::endl;
 
+
+    GenerateOp genOp;
+
+    int tester123 = -2048;
+
+    //std::cout << "CHECK DISPLACEMENT: " << genOp.checkPC(tester123) << std::endl;
+
+    if(e)
+    {
+        displacement = c.displacementExtend(disp);
+    }else
+    {
+        displacement = c.displacement(disp);
+        std::cout << "TEST" << std::endl;
+    }
+
+  
+    std::cout << "displacement: " << displacement << std::endl;
+
+
+    // convert Opcode into either 0000 00 or 0000 0000 depending 
     std::string opcode61 = c.decimalToHexTwo(OpCodeT);        
+    // create the bits into stringstream
     operand1 << opcode61 << n << i << x << b << p << e << displacement;  
+    
+    // use opcode hex to convert into hex if not immediate
+    std::string firstHalf = c.opcodeHex(operand1.str());
+
+    // if immedidate etc
+
+    std::cout << "Firsthalf : " << firstHalf << std::endl;
 
 
+    std::cout << "Second Half: " << disp2 << std::endl;
 
-    //std::cout << "obama: " <<  c.opcodeHex(operand1.str())<< std::endl;
+
+    std::cout << "OperandString: " << operand1.str() << std::endl;
+
+    std::cout << "obama: " <<  c.opcodeHex(operand1.str())<< std::endl;
 
 
     int step12 = lenAddr - pcAddr;
@@ -421,102 +456,6 @@ int main()
 
     //std::cout << "N: " << e << std::endl;
 
-/*
-    sss << firstFile << fName << endFile;
-
-    std::cout << sss.str() << std::endl;
-    
-    
-    fr.writeFile(sss.str());
-
-
-    fr.writeToFile("Test1");
-    fr.writeToFile("Test2");
-    fr.writeToFile("Test3");
-    fr.writeToFile("Test4");
-    fr.newLine();
-    fr.writeToFile("Test1","test2","test3");
-    fr.newLine();
-    fr.writeToFile("Test1","test2","test3");
-
-    fr.writeToFile("Test1");
-
-    
-    fr.closeWriteFile();
-
-    */
-
-    /*
-    std::ofstream outFile;
-
-    outFile.open(sss.str());
-
-    outFile << "test1\ttest2\ttest3\ttest4\n";
-    outFile << "test1\t" << "test2\t" << "test3\t" << "test4\n";
-    outFile << "test1\t" << "test2\t" << "test3\t" << "test4\n";
-    outFile << "test1\t" << "test2\t" << "test3\t" << "test4\n";
-
-    outFile.close();
-
-   
-    myFile.open(sss.str());
-
-    if(myFile.fail())
-    {
- 		std::cout << "Error opening the file : "  << std::endl;
-		exit(1);
-    }
-
-    */
-
-   /*
-
-    std::string r;
-
-    myFile.open("Input/basicStart.txt");
-
-    int lineIndex = 0;
-    if (myFile.is_open()) {
-        while (std::getline(myFile,currentLine)) {  
-            std::getline(myFile,currentLine);
-            // use ss to get the current line
-            std::stringstream ss;
-            ss << currentLine;
-
-            std::string Symbol, OpCode, Operand, Comment;
-            // get Symbol, OpCode, Operand split by tab
-            std::getline(ss, Symbol, '\t');
-            std::getline(ss, OpCode, '\t');
-            std::getline(ss, Operand, '\t');
-
-
-            //hex std::setfill('0') << std::setw(4)
-            // ignore comment 
-            std::getline(ss, Comment, '\t');
-
-            //index.push_back(lineIndex);
-
-            // ignore comment line 
-            if(Symbol[0] == '.')
-            {
-                std::cout << "testing: " << Symbol << std::endl;
-
-            }else
-            {
-                SymbolList.push_back(Symbol);
-                OpCodeList.push_back(OpCode);
-                OperandList.push_back(Operand);
-            }
-            
-
-            //Comm.push_back(lineIndex);
-            std::cout << lineIndex <<"): T1: [" << Symbol << "] T2: [" << OpCode << "] T3: [" << Operand << "] T4: [" << Comment << "]" <<std::endl;
-            lineIndex++;
-        }
-    }
-    myFile.close();
-
-    */
 
    /*
     std::cout << "testing values: " << OpCodeList[4] << std::endl;
