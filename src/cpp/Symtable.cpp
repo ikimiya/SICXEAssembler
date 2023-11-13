@@ -5,7 +5,18 @@
 
 Symtable::Symtable()
 {
+    SYMTABLE.insert (std::pair<std::string, int>("A",0));
+    SYMTABLE.insert (std::pair<std::string, int>("X",1));
+    SYMTABLE.insert (std::pair<std::string, int>("L",2));
+    SYMTABLE.insert (std::pair<std::string, int>("PC",8));
+    SYMTABLE.insert (std::pair<std::string, int>("SW",9));
+    SYMTABLE.insert (std::pair<std::string, int>("B",3));
+    SYMTABLE.insert (std::pair<std::string, int>("S",4));
+    SYMTABLE.insert (std::pair<std::string, int>("T",5));
+    SYMTABLE.insert (std::pair<std::string, int>("F",6));
 
+
+    
 }
 
 Symtable::~Symtable()

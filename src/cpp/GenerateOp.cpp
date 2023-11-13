@@ -32,6 +32,7 @@ void GenerateOp::checkFormat()
 
     int pcDisp = 0;
     int baseDisp = 0;
+    disp = "";
 
 
     //  Opcode check [0]
@@ -65,10 +66,12 @@ void GenerateOp::checkFormat()
 
     if(operand == "")
     {
+        //std::cout << "NAKED: " << std::endl;
         x = 0;
         b = 0;
         p = 0;
         e = 0;
+        
     }
     else
     {
@@ -105,6 +108,7 @@ void GenerateOp::checkFormat()
     if(operand != "")
     {
         b = 0; p = 1;
+        
     }
     else
     {
@@ -119,7 +123,7 @@ void GenerateOp::checkFormat()
 
 
     }
-    else if (format = 2)
+    else if (format == 2)
     {
 
         // check Clear r1,r2
@@ -136,30 +140,56 @@ void GenerateOp::checkFormat()
         //std::cout << "AM HERE" << std::endl;
 
 
-
     }
-    else if (format = 3)
+    else if (format == 3)
     {
+
         if(n == 0 && i == 0)
         {
-            n = 1; i = 1;
+            n = 1; 
+            i = 1;
         }
-
 
         pcDisp = symAddr - pcAddr;
         baseDisp = symAddr - baseAddr;
 
-        if(checkPC(pcDisp))
+
+
+        if(e == 1)
         {
-            p = 1; b = 0;
 
 
-            if(e)
+           // std::cout <<"TEST: ";
+            
+
+            p = 0; b = 0;
+            disp = converter.displacementExtend(symAddr);
+
+            //std::cout <<"TEST: " << disp;
+
+            
+
+        }
+
+        else if(checkPC(pcDisp))
+        {
+           
+
+
+            if(e == 1)
             {
+
+                //std::cout <<"TEST1: ";
+
+                p = 0; b = 0;
                 disp = converter.displacementExtend(pcDisp);
+            } else if (i == 1)
+            {
+                p = 0; b = 0;
             }
             else
             {
+                p = 1; b = 0;
                 disp = converter.displacement(pcDisp);
             }
 
@@ -180,20 +210,18 @@ void GenerateOp::checkFormat()
                 disp = converter.displacement(pcDisp);
             }
 
-        }else
+        }
+        else
         {
-
-            std::cout << "Failure, PC: " << pcDisp << " baseDisp: " << baseDisp << std::endl;
-            objectCode = "NULL";
-
+            //std::cout << "Failure, PC: " << pcDisp << " baseDisp: " << baseDisp << std::endl;
+            //objectCode = "NULL";
         }
         
-
-        
-        // if + = extended 
-        // check if extended = true
-
     }
+
+
+    //std::cout << " ANOTEHRCHECLK: " << disp;
+
 
 
     // check bits
@@ -219,22 +247,43 @@ void GenerateOp::checkFormat()
 void GenerateOp::createObjectCode()
 {
     // need to check format before doing decimal two/four
-    std::string tempCode = converter.decimalToHexTwo(opCode);
+    std::string tempCode;
+    std::stringstream operandCode;
 
-    ss.str("");
-    ss.clear();
 
-    ss << tempCode << n << i << x << b << p << e << disp;
+    if(e)
+    {
+    //std::cout << "Testing: " << disp << " E:" << e << std::endl;
+        //std::string tempCode = converter.decimalToHexTwo(opCode);
+    }
+    else
+    {
+
+    }
+    
+    tempCode = converter.decimalToHexTwo(opCode);
+
+
+    operandCode << tempCode << n << i << x << b << p << e << disp;
+
+    //std::cout << "WORD: " << operandCode.str() << std::end;
+
+    //std::cout << "OperandString: " << operandCode.str() << ": ";
+
+    //std::cout << "SYMBOL: "  << symAddr << " disp: " << disp << std::endl;
+    //<< " result: " << operandCode.str() << std::endl;
 
 
     // converts 0001 0011 0000 into 130 form
-    objectCode = converter.opcodeHex(ss.str());    
-    
+    std::string code = converter.opcodeHex(operandCode.str());
+    //std::cout << operand;
+    //std::cout << " tempcdoe : " << tempCode 
+    //<< " Operandcode: " << operandCode.str() << std::endl;
 
-    if(mnemonic == "BASE")
-    {
-        objectCode = "";
-    }
+
+    objectCode = converter.opcodeHex(operandCode.str());    
+    
+    //std::cout << "Object Code: " << code << std::endl;
 
   
 

@@ -120,7 +120,7 @@ int main()
     p2.beginPass2();
 
 
-    std::cout << "CHECKBASEEXIST: " << p2.symTable.checkTableExist("BASE") << std::endl;
+    //std::cout << "CHECKBASEEXIST: " << p2.symTable.checkTableExist("BASE") << std::endl;
 
 
 

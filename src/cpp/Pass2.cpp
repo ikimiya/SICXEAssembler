@@ -83,6 +83,8 @@ void Pass2::beginPass2()
                 // search table for op code
                 // also check without special + 
 
+                std::string eCode = OpCode;
+                eCode.erase(0,1);
                 if(OPTABLE.checkOpExist(OpCode))
                 {
 
@@ -111,7 +113,39 @@ void Pass2::beginPass2()
                     {
 
                     }
+
+
+                }
+                else if (OPTABLE.checkOpExist(eCode))
+                {
                     
+
+                    sendOpcode = OPTABLE.getOpcode(eCode);
+                    format = OPTABLE.getFormat(eCode);
+
+                    //std::cout << "FORMAT: " << format << std::endl;
+
+                    if(Operand != "")
+                        {
+                            // need to check fo @ # etc.
+                            if(symTable.checkTableExist(Operand))
+                            {
+                                //std::cout << "testing: Duplicated Symbol Found" << std::endl;
+                                symbolAddress = converter.intToString(symTable.getAddress(Operand));
+
+
+                            }else
+                            {   
+                                //std::cout << "inserted in " ;
+                                symbolAddress = "0";
+                                //std::cout << "Set Error Flag Undefined Symbol" << std::endl;         
+                            }
+
+                    }else
+                    {
+
+                    }
+
                     
                     // end if symbol
                     // calculate Object code
@@ -147,13 +181,20 @@ void Pass2::beginPass2()
                 //std::cout << "CHECKBASE: " << opStruct.baseAddr << std::endl;
                 
 
-                //std::cout << opStruct.format << ": This Format" << std::endl;
 
-                genOp.setValues(opStruct);
-                genOp.checkFormat();
-                genOp.createObjectCode();
-                genOp.debug();
-                genOp.checkBits();
+                //std::cout <<"TEST: " <<opStruct.label << std::endl;
+
+                //if(opStruct.operand == "WRREC")
+                //{
+
+                    genOp.setValues(opStruct);
+                    genOp.checkFormat();
+                    genOp.createObjectCode();
+                    genOp.debug();
+                    genOp.checkBits();
+                //}
+
+
 
 
 
