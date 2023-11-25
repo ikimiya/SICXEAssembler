@@ -15,6 +15,14 @@ struct OpcodeStruct
     std::string operand;
     std::string opCode; 
     int format;
+
+    // if opcode does not exist skip generate
+    bool skip = false;
+    bool indirect = false;
+    bool immediate = false;
+
+    std::string byte;
+
 };
 
 

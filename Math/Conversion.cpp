@@ -37,7 +37,7 @@ void Conversion::convertBinToHex(int binary)
 
 std::string Conversion::binaryToHex(int binary)
 {
-    auto res = (std::stringstream{} << std::hex << binary).str();
+    auto res = (std::stringstream{} << std::hex << std::uppercase << binary).str();
 
     return res;
 }
@@ -106,7 +106,7 @@ std::string Conversion::decimalToHexTwo(int number)
 
 std::string Conversion::decimalToHexFour(std::string number)
 {
-
+    // 0101 0100
     long long unsigned int n = hexToBinary(number);
 
     std::stringstream ss;
@@ -134,7 +134,6 @@ std::string Conversion::decimalToHexTwo(std::string number)
 
     long long unsigned int n = hexToBinary(number);
     std::stringstream ss;
-
 
     ss << std::setw(8) << std::setfill('0') << std::bitset<8>{n};
 
@@ -194,5 +193,42 @@ std::string Conversion::calculateDisplacement(int binary)
     }
 
     return "0";
+
+}
+
+std::string Conversion::byteCalc(std::string input)
+{
+    std::stringstream ss;
+    std::string temp = input;
+    std::string byte; 
+
+
+    ss.clear();
+    ss.str("");
+
+    for(int i = 0; i < input.size(); i++)
+    {
+        byte = this->binaryToHex(temp[i]);
+        ss << byte;
+
+    }
+
+    return ss.str();
+}
+
+std::string Conversion::fillHex(std::string input)
+{
+
+    long long unsigned int n = hexToBinary(input);     
+
+    std::stringstream ss;
+    std::string temp = input;
+
+    ss.clear();
+    ss.str("");
+
+    ss << std::setw(4) << std::setfill('0') << std::left << input;
+
+    return ss.str();
 
 }

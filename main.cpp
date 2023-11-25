@@ -136,6 +136,21 @@ int main()
     std::cout << c.decimalToHexTwo(4) << std::endl;
 
 
+    std::string god = "EOF";
+
+    char input = 'E';
+
+    std::cout << "INPUT: " << input << std::endl;
+    
+    std::string godTest = c.binaryToHex(input);
+
+    std::cout << "EOF:" << god << std::endl;
+    std::cout << "EOFTEST:" << godTest << std::endl;
+    std::cout << "FINALTEST:" << c.byteCalc(god) << std::endl;
+
+
+
+
     /*
     std::string parse = "=X'EOF'";
     

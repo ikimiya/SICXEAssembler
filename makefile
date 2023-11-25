@@ -21,7 +21,7 @@ Pass1.o: src/cpp/Pass1.cpp src/header/Pass1.h
 Pass2.o: src/cpp/Pass2.cpp src/header/Pass2.header
 	g++ -c src/cpp/Pass2.cpp 
 
-GenerateOp.o: src/cpp/GenerateOp.cpp src/header/GenerateOp.cpp
+GenerateOp.o: src/cpp/GenerateOp.cpp src/header/GenerateOp.cpp 
 	g++ -c src/cpp/GenerateOp.cpp
 
 clean:

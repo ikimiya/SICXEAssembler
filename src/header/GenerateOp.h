@@ -9,6 +9,9 @@
 #include <string>
 #include <sstream>
 #include "../header/OpcodeStruct.h"
+#include "../header/Symtable.h"
+
+
 #include "../../Math/Conversion.h"
 
 class GenerateOp
@@ -17,10 +20,6 @@ class GenerateOp
         GenerateOp();
 
         ~GenerateOp();
-
-
-
-
 
         void setObject(int format, std::string oCode);
 
@@ -38,8 +37,12 @@ class GenerateOp
 
         void checkBits();
 
-
         void debug();
+
+
+        void setSymtable(Symtable sym);
+
+        Symtable symTable;
 
         OpcodeStruct opStruct;
 
@@ -62,10 +65,9 @@ class GenerateOp
         std::string mnemonic;
         std::string operand;
         std::string opCode;
+        std::string resultByte;
         int format;
-
-        bool extended;
-
+        bool skip;
 
         Conversion converter;
 

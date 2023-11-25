@@ -24,266 +24,334 @@ void GenerateOp::setObject(int format_, std::string oCode)
 
 void GenerateOp::checkFormat()
 {
-    n = 0; i = 0; x = 0; b = 0; p = 0; e = 0;
-
-
-    bool keepGoing = true;
-    int index = 0;
-
-    int pcDisp = 0;
-    int baseDisp = 0;
-    disp = "";
-
-
-    //  Opcode check [0]
-    //  Operand check ,
-
-    if(format == 3)
+    if(skip)
     {
-        n = 1, i = 1;
-    } 
-
-
-    if(mnemonic == "")
-    {
-        keepGoing == false;
     }
-
-    // Check Opcode
-    while(keepGoing)
+    else if (mnemonic == "BYTE" || mnemonic == "WORD")
     {
-        // extended
-        if(mnemonic.at(index) == '+')
+
+    }
+    else{
+        n = 0; i = 0; x = 0; b = 0; p = 0; e = 0;
+
+        bool keepGoing = true;
+        int index = 0;
+
+        int pcDisp = 0;
+        int baseDisp = 0;
+        disp = "";
+
+        bool immediate = false;
+        bool extended = false;
+        bool indirect = false; 
+
+
+        //  Opcode check [0]
+        //  Operand check ,
+        if(format == 3)
         {
-            e = 1;
-        }
-        index++;
-        if(index >= mnemonic.size())
-        {
-            keepGoing = false;      
-        }
-    }
+            n = 1, i = 1;
+        } 
 
-    if(operand == "")
-    {
-        //std::cout << "NAKED: " << std::endl;
-        x = 0;
-        b = 0;
-        p = 0;
-        e = 0;
-        
-    }
-    else
-    {
-        keepGoing = true;
-        index = 0;
+        if(mnemonic == "")
+        {
+            keepGoing == false;
+        }
+
+        // Check Opcode
         while(keepGoing)
         {
-            // immediate
-            if(operand.at(index) == '#')
+            // extended
+            if(mnemonic.at(index) == '+')
             {
-                i = 1; n = 0;
+                e = 1;
+                extended = true;
             }
-            // addressing
-            if(operand.at(index) == '@')
-            {
-                i = 0; n = 1;
-            }
-
-            if(operand.at(index) == ',')
-            {
-                x = 1;
-                keepGoing = false;
-            }
-
             index++;
-            if(index >= operand.size())
+            if(index >= mnemonic.size())
             {
-                keepGoing = false;        
+                keepGoing = false;      
             }
         }
-    }
 
-    // check pc 
-    if(operand != "")
-    {
-        b = 0; p = 1;
-        
-    }
-    else
-    {
-
-    }
-
-
-    if(format == 1)
-    {
-
-
-
-
-    }
-    else if (format == 2)
-    {
-
-        // check Clear r1,r2
-        // clear = B4, a = r1 which a = 0 and if r2 = null/0
-        // opcode  = B400 
-        // if r2 is empty 0000 -> 0
-
-
-        // OpCode + R1 + R2
-
-        // check r1, r2
-
-        //objectCode = "Format2"; 
-        //std::cout << "AM HERE" << std::endl;
-
-
-    }
-    else if (format == 3)
-    {
-
-        if(n == 0 && i == 0)
+        if(operand == "")
         {
-            n = 1; 
-            i = 1;
-        }
-
-        pcDisp = symAddr - pcAddr;
-        baseDisp = symAddr - baseAddr;
-
-
-
-        if(e == 1)
-        {
-
-
-           // std::cout <<"TEST: ";
-            
-
-            p = 0; b = 0;
-            disp = converter.displacementExtend(symAddr);
-
-            //std::cout <<"TEST: " << disp;
+            //std::cout << "NAKED: " << std::endl;
+            x = 0;
+            b = 0;
+            p = 0;
+            e = 0;
+            disp = converter.displacement(0);
 
             
-
-        }
-
-        else if(checkPC(pcDisp))
-        {
-           
-
-
-            if(e == 1)
-            {
-
-                //std::cout <<"TEST1: ";
-
-                p = 0; b = 0;
-                disp = converter.displacementExtend(pcDisp);
-            } else if (i == 1)
-            {
-                p = 0; b = 0;
-            }
-            else
-            {
-                p = 1; b = 0;
-                disp = converter.displacement(pcDisp);
-            }
-
-
-            // any other things
-            // generate object code
-
-        }else if (checkBase(baseDisp))
-        {
-            p = 1; b = 0;
-
-            if(e)
-            {
-                disp = converter.displacementExtend(pcDisp);
-            }
-            else
-            {
-                disp = converter.displacement(pcDisp);
-            }
-
         }
         else
         {
-            //std::cout << "Failure, PC: " << pcDisp << " baseDisp: " << baseDisp << std::endl;
-            //objectCode = "NULL";
+            keepGoing = true;
+            index = 0;
+            while(keepGoing)
+            {
+                // immediate
+                if(operand.at(index) == '#')
+                {
+                    i = 1; n = 0;
+                    immediate = true;
+                }
+                // addressing
+                if(operand.at(index) == '@')
+                {
+                    i = 0; n = 1;
+                    indirect = true;
+                }
+
+                if(operand.at(index) == ',')
+                {
+                    x = 1;
+                    keepGoing = false;
+                }
+                index++;
+                if(index >= operand.size())
+                {
+                    keepGoing = false;        
+                }
+            }
         }
-        
+
+        // check pc 
+        if(operand != "")
+        {
+            b = 0; p = 1; 
+        }
+        else
+        {
+        }
+
+        if(format == 1)
+        {
+
+
+        }
+        else if (format == 2)
+        {
+
+            if(operand.size() > 1)
+            {
+                std::istringstream iss(operand);
+                std::string tempOp;
+                bool keepGoing = true;
+
+                std::string value1 = "";
+                std::string value2 = "";
+                while(std::getline(iss,tempOp,','))
+                {
+                    if(keepGoing)
+                    {
+                        value1 = tempOp;
+                    }else if (!keepGoing)
+                    {
+                        value2 = tempOp;
+                    }
+                    keepGoing = false;
+                }
+                
+                std::stringstream ss;
+                ss.clear();
+                ss.str("");
+
+
+                ss << std::uppercase << opCode;
+
+                if(symTable.checkTableExist(value1))
+                {
+                    int tempValue = symTable.getAddress(value1);
+                    ss << tempValue;
+
+                }
+
+                if(symTable.checkTableExist(value2))
+                {
+                    int tempValue = symTable.getAddress(value2);
+                    ss << tempValue;
+                }
+
+                objectCode = converter.fillHex(ss.str());
+
+            }
+            else
+            {
+                std::istringstream iss(operand);
+                std::string tempOp;
+                bool keepGoing = true;
+                std::string value1 = operand;
+
+                std::stringstream ss;
+
+                ss.clear();
+                ss.str("");
+                ss << std::uppercase << opCode;
+
+                if(symTable.checkTableExist(value1))
+                {
+                    int tempValue = symTable.getAddress(value1);
+                    ss << tempValue;
+
+                }
+
+                objectCode = converter.fillHex(ss.str());
+            }
+        }
+        else if (format == 3)
+        {
+            // calculate Displacement for Base
+            pcDisp = symAddr - pcAddr;
+            baseDisp = symAddr - baseAddr;
+
+            if(n == 0 && i == 0)
+            {
+                n = 1; 
+                i = 1;
+            }
+
+            //std::cout << "SYMBOL " << symAddr << std::endl;
+            if(e == 1 && symAddr != 0)
+            {
+                // std::cout <<"TEST: ";
+                p = 0; b = 0;
+                disp = converter.displacementExtend(symAddr);
+                //std::cout <<"TEST: " << disp;
+            }
+            else if(n == 0 && i == 1 && symAddr == 0 && e != 1)
+            {
+                p = 0; b = 0;
+                std::string temp = operand;
+                temp.erase(0,1);
+                int iAdd = converter.stringToInt(temp);
+
+                disp = converter.displacement(iAdd);
+            }
+            else if(n == 0 && i == 1 && symAddr == 0 && e == 1)
+            {
+                p = 0; b = 0;
+                std::string temp = operand;
+                temp.erase(0,1);
+                int iAdd = converter.stringToInt(temp);
+                disp = converter.displacementExtend(iAdd);  
+            }
+            else if(checkPC(pcDisp))
+            {
+                //std::cout << "Check PC TRUE" << std::endl;
+                if(e == 1)
+                {
+                    p = 0; b = 0;
+                    disp = converter.displacementExtend(pcDisp);
+                } else if (n == 0 && i == 1)
+                {
+                    p = 1; b = 0;
+                    disp = converter.displacement(pcDisp);
+                }
+                else if (n == 1 && i == 0)
+                {
+                    p = 1; b = 0;
+                    disp = converter.displacement(pcDisp);
+                }
+                else
+                {
+                    p = 1; b = 0;
+                    disp = converter.displacement(pcDisp);
+                }
+                // any other things
+                // generate object code
+
+            }else if (checkBase(baseDisp))
+            {
+                //std::cout << "TestBASE" << std::endl;
+
+                p = 0; b = 1;
+
+                if(e)
+                {
+                    disp = converter.displacementExtend(baseDisp);
+                }
+                else
+                {
+                    disp = converter.displacement(baseDisp);
+                }
+
+            }
+            else
+            {
+                //std::cout << "Failure, PC: " << pcDisp << " baseDisp: " << baseDisp << std::endl;
+                //objectCode = "NULL";
+            }
+            
+        }
+
     }
-
-
-    //std::cout << " ANOTEHRCHECLK: " << disp;
-
-
-
-    // check bits
-
-    /*
-    
-
-    @ = n = 1, i = 0
-    # = n = 0, i = 1
-    else n = 1, i = 1
-    if + then e = 1
-    if there is ,X then x = 1
-
-    PC
-    1. Check pc after formula range
-
-    2. check B after formula range    
-    
-    */
 
 }
 
 void GenerateOp::createObjectCode()
 {
     // need to check format before doing decimal two/four
-    std::string tempCode;
-    std::stringstream operandCode;
 
-
-    if(e)
+    if(skip)
     {
-    //std::cout << "Testing: " << disp << " E:" << e << std::endl;
-        //std::string tempCode = converter.decimalToHexTwo(opCode);
+        objectCode = "";
+    }
+    else if (mnemonic == "BYTE" || mnemonic == "WORD")
+    {
+        objectCode = resultByte;
     }
     else
     {
 
+        if(format == 3)
+        {
+            std::string tempCode;
+            std::stringstream operandCode;
+
+            if(e)
+            {
+            //std::cout << "Testing: " << disp << " E:" << e << std::endl;
+                //std::string tempCode = converter.decimalToHexTwo(opCode);
+            }
+            else
+            {
+
+            }
+            
+            tempCode = converter.decimalToHexTwo(opCode);
+
+            operandCode << tempCode << n << i << x << b << p << e << disp;
+
+            //std::cout << "WORD: " << operandCode.str() << std::end;
+
+            //std::cout << "OperandString: " << operandCode.str() << ": ";
+
+            //std::cout << "SYMBOL: "  << symAddr << " disp: " << disp << std::endl;
+            //<< " result: " << operandCode.str() << std::endl;
+
+
+            // converts 0001 0011 0000 into 130 form
+            std::string code = converter.opcodeHex(operandCode.str());
+            //std::cout << operand;
+            //std::cout << " tempcdoe : " << tempCode 
+            //<< " Operandcode: " << operandCode.str() << std::endl;
+
+            
+            objectCode = converter.opcodeHex(operandCode.str());    
+            
+
+            //std::cout << "opreand code:" << operandCode.str() << std::endl;
+            //std::cout << "displace: " << disp << std::endl;
+            //std::cout << "Object Code: " << objectCode << std::endl;
+        }
+
+
+
+
     }
-    
-    tempCode = converter.decimalToHexTwo(opCode);
 
-
-    operandCode << tempCode << n << i << x << b << p << e << disp;
-
-    //std::cout << "WORD: " << operandCode.str() << std::end;
-
-    //std::cout << "OperandString: " << operandCode.str() << ": ";
-
-    //std::cout << "SYMBOL: "  << symAddr << " disp: " << disp << std::endl;
-    //<< " result: " << operandCode.str() << std::endl;
-
-
-    // converts 0001 0011 0000 into 130 form
-    std::string code = converter.opcodeHex(operandCode.str());
-    //std::cout << operand;
-    //std::cout << " tempcdoe : " << tempCode 
-    //<< " Operandcode: " << operandCode.str() << std::endl;
-
-
-    objectCode = converter.opcodeHex(operandCode.str());    
-    
-    //std::cout << "Object Code: " << code << std::endl;
 
   
 
@@ -293,8 +361,11 @@ void GenerateOp::createObjectCode()
 
 void GenerateOp::setValues(OpcodeStruct opStruct)
 {
-    pcAddr = converter.hexToBinary(opStruct.pcAddr);
-    baseAddr = converter.hexToBinary(opStruct.baseAddr);
+    pcAddr = converter.stringToInt(opStruct.pcAddr);
+
+    //std::cout << "PC ADDR: " <<pcAddr << std::endl;
+    //std::cout << "PC ADDR: " <<opStruct.pcAddr << std::endl;
+    baseAddr = converter.stringToInt(opStruct.baseAddr);
 
     // for sym depending on what it is and if symbol exist
     /*
@@ -308,6 +379,8 @@ void GenerateOp::setValues(OpcodeStruct opStruct)
     operand = opStruct.operand;
     opCode = opStruct.opCode; 
     format = opStruct.format;   
+    skip = opStruct.skip;
+    resultByte = opStruct.byte;
 }
 
 
@@ -358,7 +431,12 @@ void GenerateOp::checkBits()
 {
     std::cout << "NIXBPE: " << n << i << x << b << p << e << ", "
     << "Displacement: [" << disp << 
-    "] ObjectCode " << objectCode << std::endl;
+    "] ObjectCode: [" << objectCode << "]" << std::endl;
+}
+
+void GenerateOp::setSymtable(Symtable sym)
+{
+    this->symTable = sym;
 }
 
 

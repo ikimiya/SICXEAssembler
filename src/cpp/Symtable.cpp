@@ -14,9 +14,6 @@ Symtable::Symtable()
     SYMTABLE.insert (std::pair<std::string, int>("S",4));
     SYMTABLE.insert (std::pair<std::string, int>("T",5));
     SYMTABLE.insert (std::pair<std::string, int>("F",6));
-
-
-    
 }
 
 Symtable::~Symtable()
@@ -38,11 +35,14 @@ bool Symtable::checkTableExist(std::string label)
     return it != SYMTABLE.end();
 }
 
-
 int Symtable::getAddress(std::string label)
 {
-    int temp = SYMTABLE.at(label);
-    return temp;
+    auto it = SYMTABLE.find(label);
+    if (it != SYMTABLE.end()) {
+        return it->second; 
+    } else {
+        return -1; 
+    }
 }
 
 void Symtable::debug()

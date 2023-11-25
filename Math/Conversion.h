@@ -32,7 +32,6 @@ class Conversion
     
     std::string opcodeHex(std::string number);
 
-
     // format 4 opcode 8 
     std::string decimalToHexFour(int number);
     std::string decimalToHexFour(std::string number);
@@ -47,6 +46,11 @@ class Conversion
     std::string displacementExtend(int number);
 
     std::string calculateDisplacement(int binary);
+
+    std::string byteCalc(std::string input);
+
+    std::string fillHex(std::string input);
+    
 
 
 
