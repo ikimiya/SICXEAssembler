@@ -12,6 +12,7 @@
 #include "src/header/Pass2.h"
 #include "src/header/FileReader.h"
 #include "src/header/GenerateOp.h"
+#include "src/header/Libtab.h"
 
 #include <vector>
 
@@ -68,6 +69,35 @@ int main()
 
     //std::cout << iTest << " : " << sTest << std::endl;
 
+    struct libValue
+    {
+        std::string operand;
+        std::string length;
+        std::string address;
+    };
+
+    libValue v;
+    v.address = "112312";
+    v.length =  "3";
+    v.operand = "ieorand";
+
+    std::string f = "first";
+
+    Libtab lib;
+
+    lib.literalTable.address = "112312";
+    lib.literalTable.length =  "3";
+    lib.literalTable.operand = "ieorand";
+    
+    lib.insertTable(f,lib.literalTable);
+    lib.insertTable(f,lib.literalTable);
+    lib.insertTable(f,lib.literalTable);
+
+
+    lib.debug();
+
+
+
 
 
     //Symtable sym;
@@ -106,14 +136,14 @@ int main()
 
     Pass1 p1;
 
-    p1.setFileName("functions");
+    p1.setFileName("literals");
     p1.beginPass1();
     p1.symTable.debug();
 
 
     Pass2 p2;
 
-    p2.setFileName("functions");
+    p2.setFileName("literals");
     p2.setOptable(p1.OPTABLE);
     p2.setSymtable(p1.symTable);
     p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
