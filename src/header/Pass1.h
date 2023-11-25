@@ -9,6 +9,7 @@
 #include <sstream>
 
 #include "../header/Symtable.h"
+#include "../header/Libtab.h"
 #include "../header/FileReader.h"
 #include "../../Math/Conversion.h"
 #include "../header/Optable.h"
@@ -42,10 +43,12 @@ class Pass1
         bool errorF;
         bool symbolF;
 
-        
+        std::vector<std::string> literalDupe;
 
         Symtable symTable;
         Optable OPTABLE;
+        Libtab literalTable;
+
 
         FileReader fReader;
         Conversion converter;

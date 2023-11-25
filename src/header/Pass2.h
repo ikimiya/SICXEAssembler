@@ -9,6 +9,8 @@
 #include <sstream>
 
 #include "../header/Symtable.h"
+#include "../header/Libtab.h"
+
 #include "../header/FileReader.h"
 #include "../../Math/Conversion.h"
 #include "../header/Optable.h"
@@ -31,6 +33,7 @@ class Pass2
 
         void setOptable(Optable op);
         void setSymtable(Symtable sym);
+        void setLiteralTab(Libtab lit);
 
         void writeHeader();
 
@@ -56,6 +59,7 @@ class Pass2
         FileReader fReader;
         Conversion converter;
         GenerateOp genOp;
+        Libtab literalTable;
     
 
         std::string fileName;

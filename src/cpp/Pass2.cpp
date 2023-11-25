@@ -25,6 +25,7 @@ void Pass2::beginPass2()
     int baseAddress = -1;
 
     genOp.setSymtable(symTable);
+    //genOp.setLiteral(litTable);
 
     //symTable.debug();
 
@@ -89,9 +90,6 @@ void Pass2::beginPass2()
                 //std::cout << "NotExist " << std::endl;
             }
 
-
-            
-
             // if it is not comment line 
             if(Label[0] != '.')
             {
@@ -132,37 +130,37 @@ void Pass2::beginPass2()
                     }
 
                     if(Operand != "")
+                    {
+                        // need to check fo @ # etc.
+                        if(symTable.checkTableExist(Operand))
                         {
-                            // need to check fo @ # etc.
-                            if(symTable.checkTableExist(Operand))
+                            //std::cout << "testing: Duplicated Symbol Found" << std::endl;
+                            symbolAddress = converter.intToString(symTable.getAddress(Operand));
+                            opStruct.skip = false;
+                        }
+                        else if(symTable.checkTableExist(tempOperand))
+                        {
+                            symbolAddress = converter.intToString(symTable.getAddress(tempOperand));
+                        }
+                        else if(indexMode)
+                        {
+                            //std::cout << "INDEX MODE!!" << std::endl;
+                            //std::cout << "BUFFER:" << value1 << std::endl;
+                            if(symTable.checkTableExist(value1))
                             {
-                                //std::cout << "testing: Duplicated Symbol Found" << std::endl;
-                                symbolAddress = converter.intToString(symTable.getAddress(Operand));
-                                opStruct.skip = false;
-                            }
-                            else if(symTable.checkTableExist(tempOperand))
-                            {
-                                symbolAddress = converter.intToString(symTable.getAddress(tempOperand));
-                            }
-                            else if(indexMode)
-                            {
-                                //std::cout << "INDEX MODE!!" << std::endl;
-                                //std::cout << "BUFFER:" << value1 << std::endl;
-                                if(symTable.checkTableExist(value1))
-                                {
-                                    symbolAddress = converter.intToString(symTable.getAddress(value1));
-                                }
-                                else
-                                {
-                                    symbolAddress = "0";
-                                }
+                                symbolAddress = converter.intToString(symTable.getAddress(value1));
                             }
                             else
-                            {   
-                                //std::cout << "Operand Checking: " << Operand << std::endl;
+                            {
                                 symbolAddress = "0";
-                                //std::cout << "Set Error Flag Undefined Symbol" << std::endl;         
                             }
+                        }
+                        else
+                        {   
+                            //std::cout << "Operand Checking: " << Operand << std::endl;
+                            symbolAddress = "0";
+                            //std::cout << "Set Error Flag Undefined Symbol" << std::endl;         
+                        }
                             
                     }
                     else
@@ -220,7 +218,6 @@ void Pass2::beginPass2()
                         }
                     }
 
-
                     if(type == "C")
                     {
                         //std::cout << "ResultC" << result << std::endl;
@@ -245,6 +242,14 @@ void Pass2::beginPass2()
                     //std::cout << "Does Not Exist: " << OpCode << std::endl;
                     opStruct.skip = true;
                 }
+
+                if (literalTable.checkTableExist(Operand))
+                    {
+                        symbolAddress = literalTable.getAddress(Operand);
+
+                        literalTable.debug();
+
+                    }
 
                 /*
                 // check code counter
@@ -382,4 +387,9 @@ void Pass2::setOptable(Optable op)
 void Pass2::setSymtable(Symtable sym)
 {
     symTable = sym;
+}
+
+void Pass2::setLiteralTab(Libtab lib)
+{
+    literalTable = lib;
 }

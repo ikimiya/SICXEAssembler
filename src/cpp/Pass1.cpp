@@ -2,6 +2,8 @@
 
 #include "../header/Pass1.h"
 
+#include <algorithm>
+
 Pass1::Pass1()
 {
     OPTABLE.createTable();
@@ -19,6 +21,7 @@ void Pass1::setFileName(std::string fileName_)
 
 }
 
+/// @brief 
 void Pass1::beginPass1()
 {
 
@@ -81,22 +84,8 @@ void Pass1::beginPass1()
                 LocCtr = 0;
             }   
 
-                //std::cout << "new Line: " << std::endl;
-                //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
-
             while(OpCode != "END")
                 {
-
-                    //std::cout << "other end: ";
-                    //std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
-
-
-
-
-                    
-                    //fReader.newLine();
-                    //std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
-
                     // if not comment line
                     if(Label[0] != '.')
                     {
@@ -116,19 +105,88 @@ void Pass1::beginPass1()
                                 //std::cout  << "[" << Label << "] [" << LocCtr << "]" << std::endl;
                                 symTable.insertTable(Label,LocCtr);
                             }
-
                         }// end if symbol
 
-                        //Search OPTAB for code
 
+                        if(Operand[0] == '=')
+                        {
+                            literalTable.resetTable();
+                            //std::cout << "LITERAL: " << std::endl;
+
+
+                            std::istringstream iss(Operand);
+                            std::string temp;
+                            std::string result;
+                            std::string type;
+
+                            int byte;
+                            while(std::getline(iss,temp,'\''))
+                            {
+                                if(temp != "=C" || temp != "X" || temp != "=X")
+                                {
+                                    result = temp;
+                                }
+                                if(temp == "=C" || temp == "X" || temp == "=X")
+                                {
+                                    type = temp;
+                                }
+                            }
+                            //std::cout << "TEMP: " << result << std::endl;
+                            //std::cout << "type: " << type << std::endl;
+                            
+                            int length;
+                            std::strtol(result.c_str(),nullptr,16);
+                            byte = (result.length() +1)/2;
+
+                            if(type == "=C")
+                            {
+                                //std::cout << "ResultC" << result << std::endl;
+                                length = result.size();
+                                result = converter.byteCalc(result);
+                            }
+                            else if (type == "X")
+                            {
+                                //std::cout << "ResultX" << result << std::endl;
+                                result = result;
+                                
+                            }
+                            else if (type == "=X")
+                            {
+                                //std::cout << "Result=X" << result << std::endl;
+                                length = byte;
+                                result = result;
+                            }
+
+                            //std::cout << "result: " << result << std::endl;
+                            //std::cout << "byyte: " << byte << std::endl;
+
+                            
+                            if(literalTable.checkTableExist(Operand))
+                            {
+                                // skip it exist already 
+                            }
+                            else
+                            {
+                                std::cout << "NEW INSERT: " << Operand << std::endl;
+                                literalTable.literalTable.length = converter.intToString(length);
+                                literalTable.literalTable.operand = result;
+                                //std::cout << "result: " << length << std::endl;
+                                literalTable.insertTable(Operand,literalTable.literalTable);
+                                std::cout << "Insert End: " << Operand << std::endl;
+
+                            }
+                        }
+
+
+                        //Search OPTAB for code
                         //temp 
                         std::string eCode = OpCode;
                         eCode.erase(0,1);
 
+                        // Check If Optable exist
                         if(OPTABLE.checkOpExist(OpCode))
                         {
                             //std::cout << "OpCODE: " << OpCode << std::endl;
-
                             int format = OPTABLE.getFormat(OpCode);
                             if(format == 3)
                             {
@@ -141,7 +199,6 @@ void Pass1::beginPass1()
 
                                 LocCtr += 1;
                             }
-
                         }
                         else if(OpCode == "WORD")
                         {
@@ -151,7 +208,6 @@ void Pass1::beginPass1()
                         {
                             int temp = converter.stringToInt(Operand);
                             LocCtr += (3*temp);
-                            //std::cout << "Label: " << Label << std::endl;
                         }
                         else if (OpCode == "RESB")
                         {
@@ -180,7 +236,6 @@ void Pass1::beginPass1()
                                     type = temp;
                                 }
                             }
-
                             //std::cout << "HERE TYEP: " << type << std::endl;
                             //std::cout << "HERE result: " << result << std::endl;
                             //std::cout << "result rseult: " << (256/converter.hexToBinary(result)) << std::endl;
@@ -203,10 +258,9 @@ void Pass1::beginPass1()
                             else if (type == "=X")
                             {
                                 //LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
-                                LocCtr += byte;
+                                LocCtr += result.size();
 
                             }
-
 
                             // find length of constant in byte
                             // add length to locctr
@@ -220,6 +274,42 @@ void Pass1::beginPass1()
                                 LocCtr += 4; 
                             }
                         }
+
+                        else if(OpCode == "LTORG")
+                        {
+                            std::cout << "OH MY LORD scan" << std::endl;
+                            literalTable.debug();
+
+                            fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+                            fReader.newLine();
+                            
+                            if(literalTable.libTable.empty())
+                            {
+
+                            }
+                            else
+                            {
+                                for (auto& it : literalTable.libTable) 
+                                {
+                                    std::string literal = it.first;
+                                    std::string operandName = it.second.operand;
+                                    //std::string address = it.second.address;
+                                    std::string bytes = it.second.length;
+                                    it.second.address = converter.intToString(LocCtr);
+                                    
+                                    LocCtr += converter.stringToInt(bytes);
+
+
+                                    fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
+                                    fReader.writeToFile("");
+                                    fReader.writeToFile(operandName);
+
+                                    fReader.newLine();
+                                    literalDupe.push_back(literal);
+                                }
+                            }
+
+                        }
                         else
                         {
                             
@@ -228,7 +318,7 @@ void Pass1::beginPass1()
                             if(OpCode == "BASE")
                             {
 
-                                std::cout << " I SHOULD INSERT  " << std::endl;
+                                //std::cout << " I SHOULD INSERT  " << std::endl;
                                 symTable.insertTable(OpCode,LocCtr);
 
 
@@ -237,15 +327,21 @@ void Pass1::beginPass1()
                             //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
                         }   // end check optab for opcode
 
-
                         errorFlag.push_back(errorF);
                         symbolFlag.push_back(symbolF);
+
+                    if (OpCode == "LTORG")
+                    {
+                        readNextInput();
+                    }else
+                    {
                         fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
                         fReader.writeToFile(converter.intToString(errorF));
                         fReader.writeToFile(converter.intToString(symbolF));
                         fReader.newLine();
                         readNextInput();
-
+                    }
+                    
 
                     }
                     else
@@ -286,6 +382,38 @@ void Pass1::beginPass1()
             fReader.newLine();
             
             programLength = LocCtr - startAdd;
+
+
+
+            // check again 
+
+            for (auto& it : literalTable.libTable) 
+            {
+                std::string literal = it.first;
+                std::string operandName = it.second.operand;
+                std::string address = it.second.address;
+                std::string bytes = it.second.length;
+
+                std::cout << "operand Name: " << operandName << std::endl;
+
+                if (std::find(literalDupe.begin(), literalDupe.end(),literal)!=literalDupe.end())
+                {
+                    
+
+                }
+                else
+                {
+                    it.second.address = converter.intToString(LocCtr);
+
+                    fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
+                    fReader.writeToFile("\t" + operandName);
+                    fReader.newLine();
+                    literalDupe.push_back(literal);
+                }
+            }
+
+
+
 
             std::cout << "Program Length: " << programLength << std::endl;
             fReader.closeReadFile();

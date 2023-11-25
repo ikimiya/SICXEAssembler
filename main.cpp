@@ -88,10 +88,22 @@ int main()
     lib.literalTable.address = "112312";
     lib.literalTable.length =  "3";
     lib.literalTable.operand = "ieorand";
+    lib.insertTable(f,lib.literalTable);
+
+    lib.resetTable();
+    lib.literalTable.address = "4";
+    lib.literalTable.length =  "1";
+    lib.literalTable.operand = "2";
+
     
-    lib.insertTable(f,lib.literalTable);
-    lib.insertTable(f,lib.literalTable);
-    lib.insertTable(f,lib.literalTable);
+    lib.insertTable("mother",lib.literalTable);
+
+    lib.resetTable();
+
+    lib.literalTable.address = "4";
+    lib.literalTable.length =  "1";
+    lib.literalTable.operand = "2";
+    lib.insertTable("mother",lib.literalTable);
 
 
     lib.debug();
@@ -146,6 +158,7 @@ int main()
     p2.setFileName("literals");
     p2.setOptable(p1.OPTABLE);
     p2.setSymtable(p1.symTable);
+    p2.setLiteralTab(p1.literalTable);
     p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
     p2.beginPass2();
 
