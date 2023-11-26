@@ -105,37 +105,8 @@ int main()
     lib.literalTable.operand = "2";
     lib.insertTable("mother",lib.literalTable);
 
+    //lib.debug();
 
-    lib.debug();
-
-
-
-
-
-    //Symtable sym;
-    //sym.insertTable("mom",1);
-    //sym.insertTable("1234",1);
-    //sym.insertTable("MOM",13213);
-    //sym.insertTable("START",0000);
-    //sym.insertTable("BEGIN",13);
-    //sym.insertTable("666",1);
-    //sym.debug();
-    //std::cout << "table exist: " << sym.checkTableExist("BEGIN") << std::endl;
-    //std::cout << "get ADDRESS " << sym.getAddress("BEGIN") << std::endl;
-
-/*
-    Conversion c;
-
-    c.convertBinToHex(44);
-
-    c.convertBinToHex(15);
-    c.convertBinToHex(15);
-    c.convertBinToHex(15);
-
-    std::cout << "BinaryToHexTest: " << c.binaryToHex(15) << std::endl;
-    std::cout << "HextoBinary: " << c.hexToBinary("15") << std::endl;
-
-    */
 
     Conversion c;
 
@@ -148,24 +119,21 @@ int main()
 
     Pass1 p1;
 
-    p1.setFileName("literals");
+    p1.setFileName("prog_blocks");
     p1.beginPass1();
-    p1.symTable.debug();
+    //p1.symTable.debug();
 
 
     Pass2 p2;
 
-    p2.setFileName("literals");
+    p2.setFileName("prog_blocks");
     p2.setOptable(p1.OPTABLE);
     p2.setSymtable(p1.symTable);
     p2.setLiteralTab(p1.literalTable);
+    p2.setBlockTab(p1.blockTABLE);
     p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
     p2.setLocation(p1.currentLoc,p1.pcLoc);
     p2.beginPass2();
-
-
-    //std::cout << "CHECKBASEEXIST: " << p2.symTable.checkTableExist("BASE") << std::endl;
-
 
 
     std::string firstFile = "Immediate/";

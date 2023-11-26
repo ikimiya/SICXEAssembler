@@ -16,6 +16,7 @@
 #include "../header/Optable.h"
 #include "../header/GenerateOp.h"
 #include "../header/OpcodeStruct.h"
+#include "../header/blockTable.h"
 
 class Pass2
 {   
@@ -34,6 +35,7 @@ class Pass2
         void setOptable(Optable op);
         void setSymtable(Symtable sym);
         void setLiteralTab(Libtab lit);
+        void setBlockTab(BlockTable bloc);
 
         void setLocation(std::vector<std::pair<int,int>> curLoc, std::vector<std::pair<int,int>> nextLoc);
 
@@ -57,12 +59,15 @@ class Pass2
         Conversion converter;
         GenerateOp genOp;
         Libtab literalTable;
+        BlockTable blockTABLE;
     
 
         std::string fileName;
 
         std::string currentLine; 
         std::string Address, Label, OpCode, Operand;
+        std::string blockNumber;
+
         std::stringstream ss;
         
         int startAdd;

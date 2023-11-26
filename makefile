@@ -1,5 +1,5 @@
-assembler: main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/Pass2.o src/cpp/FileReader.o src/cpp/GenerateOp.o src/cpp/Libtab.o
-	g++ main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/Pass2.o src/cpp/FileReader.o src/cpp/GenerateOp.o src/cpp/Libtab.o -o assembler
+assembler: main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/Pass2.o src/cpp/FileReader.o src/cpp/GenerateOp.o src/cpp/Libtab.o src/cpp/blockTable.o
+	g++ main.o Math/Conversion.o src/cpp/Optable.o src/cpp/Symtable.o src/cpp/Pass1.o src/cpp/Pass2.o src/cpp/FileReader.o src/cpp/GenerateOp.o src/cpp/Libtab.o src/cpp/blockTable.o -o assembler
 
 main.o: main.cpp
 	g++ -c main.cpp
@@ -27,6 +27,9 @@ GenerateOp.o: src/cpp/GenerateOp.cpp src/header/GenerateOp.h
 
 Libtab.o: src/cpp/Libtab.cpp src/header/Libtab.h
 	g++ -c src/cpp/Libtab.cpp
+blockTable.o: src/cpp/blockTable.cpp src/header/blockTable.h
+	g++ -c src/cpp/blockTable.cpp
+
 clean:
 	rm -f *.o
 	rm -f Math/*.o

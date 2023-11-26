@@ -13,6 +13,7 @@
 #include "../header/FileReader.h"
 #include "../../Math/Conversion.h"
 #include "../header/Optable.h"
+#include "../header/blockTable.h"
 
 class Pass1
 {   
@@ -44,7 +45,11 @@ class Pass1
         std::vector<std::pair<int,int>> currentLoc;
         std::vector<std::pair<int,int>> pcLoc;
         int counter = 0;
-        
+        int blockCounter = 0;
+        int blockCtr = 0;
+        std::string blockName;
+
+
 
         bool errorF;
         bool symbolF;
@@ -54,6 +59,7 @@ class Pass1
         Symtable symTable;
         Optable OPTABLE;
         Libtab literalTable;
+        BlockTable blockTABLE;
 
 
         FileReader fReader;

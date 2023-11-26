@@ -33,7 +33,17 @@ void Pass1::beginPass1()
 
 
     if (fReader.myFile.is_open()) {
+
+
+
         //while (std::getline(fReader.myFile,currentLine)) {  
+
+            // default block
+            blockTABLE.bTable.address = 0;
+            blockTABLE.bTable.length = 0;
+            blockTABLE.bTable.blockNumber = blockCounter;
+            blockName = "DEFAULT";
+            blockTABLE.insertTable(blockName,blockTABLE.bTable);
 
             std::getline(fReader.myFile,currentLine);
             // use ss to get the current line
@@ -56,14 +66,13 @@ void Pass1::beginPass1()
                 //std::cout << "LOC: " << LocCtr << std::endl;
 
 
-
                 // write to Line imemdiate file
                 std::cout << "beginning line: ";
                 std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
 
                 fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-                fReader.writeToFile(converter.intToString(errorF));
-                fReader.writeToFile(converter.intToString(symbolF));
+                //fReader.writeToFile(converter.intToString(errorF));
+                //fReader.writeToFile(converter.intToString(symbolF));
                 fReader.newLine();
 
                 readNextInput();
@@ -80,6 +89,80 @@ void Pass1::beginPass1()
 
             while(OpCode != "END")
                 {
+
+                    if(OpCode == "USE")
+                    {
+                        // if empty it is default block
+
+                        std::cout << "currentBlockName" << blockName << std::endl;
+                        if(Operand == "")
+                        {
+                            //std::cout << "Changing TO DEfault block" << std::endl;
+                            /*
+                            change loc, block name, block number to it
+                            */
+                           
+                            // this sets the last locctr to block name
+                            blockTABLE.setLength(blockName,LocCtr);
+
+                            // load the new blockName
+                            blockName = "DEFAULT";
+                            LocCtr = blockTABLE.getLength(blockName);
+                            currentLine = blockTABLE.getLength(blockName);
+                            blockCounter = blockTABLE.getBlockNumber(blockName);
+                            currentLoc[counter].second = blockTABLE.getLength(blockName);
+                            pcLoc[counter+1].second = blockTABLE.getLength(blockName);
+
+                            //blockTABLE.setLength(blockName,LocCtr);
+
+                        } else if(Operand != "")
+                        {
+                            // Check If there is block exist
+                            if(blockTABLE.checkTableExist(Operand))
+                            {
+                                // if exist change into that table
+                                
+                                // save previous block to length
+                                blockTABLE.setLength(blockName,LocCtr);
+                                
+                                // change to new block name
+                                blockName = Operand;
+                                currentLine = blockTABLE.getLength(blockName);
+                                blockCounter = blockTABLE.getBlockNumber(blockName);
+                                currentLoc[counter].second = blockTABLE.getLength(blockName);
+                                pcLoc[counter+1].second = blockTABLE.getLength(blockName);
+
+                                LocCtr = blockTABLE.getLength(blockName);
+                                //blockTABLE.setLength(blockName,LocCtr);
+                            }
+                            else    // else add new block
+                            {
+                                // New block start at zero
+                                //std::cout << "CHANGING TO BLOCK:" << Operand << std::endl;
+
+                                // save previous blockname
+                                blockTABLE.setLength(blockName,LocCtr);
+
+                                // add new block to blockTable
+                                blockCounter++;
+                                blockName = Operand;
+                                blockTABLE.bTable.address = 0;
+                                blockTABLE.bTable.length = 0;
+                                blockTABLE.bTable.blockNumber = blockCounter;
+
+                                // start at locCtr 0
+                                LocCtr = 0;
+                                currentLoc[counter].second = 0;
+                                pcLoc[counter+1].second = 0;
+                                blockTABLE.insertTable(Operand,blockTABLE.bTable);
+                            }
+                        }
+
+                        //std::cout << "CHANGING TO BLOCK:" << Operand << std::endl;
+                        //blockTABLE.debug();
+
+                    }
+
                     // if not comment line
                     if(Label[0] != '.')
                     {
@@ -295,8 +378,12 @@ void Pass1::beginPass1()
 
 
                                     fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
-                                    fReader.writeToFile("");
-                                    fReader.writeToFile(operandName);
+                                    //fReader.writeToFile("");
+                                    //fReader.writeToFile(operandName);
+                                    fReader.writeToFile("/t");
+
+                                    fReader.writeToFile(converter.intToString(blockCounter));
+
 
                                     fReader.newLine();
                                     literalDupe.push_back(literal);
@@ -426,8 +513,11 @@ void Pass1::beginPass1()
                         else if(OpCode == "EQU")
                         {
                             fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-                            fReader.writeToFile(converter.intToString(errorF));
-                            fReader.writeToFile(converter.intToString(symbolF));
+                            //fReader.writeToFile(converter.intToString(errorF));
+                            //fReader.writeToFile(converter.intToString(symbolF));
+
+                            //fReader.writeToFile("BNUM" + converter.intToString(blockCounter));
+                            
                             fReader.newLine();
                             int temp = counter - 1;
                             LocCtr = pcLoc[temp].second;
@@ -436,8 +526,10 @@ void Pass1::beginPass1()
                         else
                         {
                             fReader.writeToFile(converter.intToString(currentLoc[counter].second),Label,OpCode,Operand);
-                            fReader.writeToFile(converter.intToString(errorF));
-                            fReader.writeToFile(converter.intToString(symbolF));
+                            //fReader.writeToFile(converter.intToString(errorF));
+                            //fReader.writeToFile(converter.intToString(symbolF));
+                            fReader.writeToFile(converter.intToString(blockCounter));
+
                             fReader.newLine();
                             readNextInput();
                         }
@@ -448,17 +540,13 @@ void Pass1::beginPass1()
                     }
                     else
                     {
-                        // if there is a comment 
-                        //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
                         readNextInput();
-
                     } // end if not comment
 
 
 
                     if(Label[0] == '.')
                     {
-                        //std::cout  << ". ): [Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
 
                     }else
                     {
@@ -478,23 +566,51 @@ void Pass1::beginPass1()
             errorFlag.push_back(errorF);
             symbolFlag.push_back(symbolF);
             fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-            fReader.writeToFile(converter.intToString(errorF));
-            fReader.writeToFile(converter.intToString(symbolF));
+            //fReader.writeToFile(converter.intToString(errorF));
+            //fReader.writeToFile(converter.intToString(symbolF));
+            fReader.writeToFile(converter.intToString(blockCounter));
 
             fReader.newLine();
-            
+
+
+            blockTABLE.setLength(blockName,LocCtr);
             programLength = LocCtr - startAdd;
 
-            // check again 
+            // update block table
+            bool first = true;
+            for(auto it = blockTABLE.blockTable.rbegin(); it != blockTABLE.blockTable.rend(); it++)
+            {
+                int length; 
+                int address; 
+                int value;   
+                if(first)
+                {
+                    if(it->first != "DEFAULT")
+                    {
+                        blockTABLE.setAddress(it->first,value);
+                    }
+                    length = it->second.length;
+                    address = it->second.address;
+                    value = length + address;
+                    first = false;
+                }
+                else
+                {
+                    blockTABLE.setAddress(it->first,value);
+                    length = it->second.length;
+                    address = it->second.address;
+                    value = length + address;
+                    first = true;
+                }
+            }
 
+            // check lietral 
             for (auto& it : literalTable.libTable) 
             {
                 std::string literal = it.first;
                 std::string operandName = it.second.operand;
                 std::string address = it.second.address;
                 std::string bytes = it.second.length;
-
-                std::cout << "operand Name: " << operandName << std::endl;
 
                 if (std::find(literalDupe.begin(), literalDupe.end(),literal)!=literalDupe.end())
                 {
@@ -505,14 +621,17 @@ void Pass1::beginPass1()
                     it.second.address = converter.intToString(LocCtr);
 
                     fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
-                    fReader.writeToFile("\t" + operandName);
+                    fReader.writeToFile("\t");
+                    fReader.writeToFile(converter.intToString(blockCounter));
+
                     fReader.newLine();
                     literalDupe.push_back(literal);
                 }
             }
+            //std::cout << "block debug: " << std::endl;
+            //blockTABLE.debug();
 
-
-            debug();
+            //debug();
             std::cout << "Program Length: " << programLength << std::endl;
             fReader.closeReadFile();
             fReader.closeWriteFile();
@@ -547,15 +666,15 @@ void Pass1::debug()
     //    std::cout  << "[" << LabelList.at(i) << "] [" << OpCodeList.at(i) << "] [" << OperandList.at(i) << "] " << std::endl;
     //}
 
-
+    int countLine = 0;
     for (const auto& element : currentLoc) {
-        std::cout << "Element at index " << element.first << ": " << element.second << std::endl;
+        countLine += 5;
+        std::cout << "(" << countLine;
+        std::cout << "). " << element.first << ": " << converter.binaryToHex(element.second) << std::endl;
     }
     for (const auto& element : pcLoc) {
-        std::cout << "Element at index " << element.first << ": " << element.second << std::endl;
+        std::cout << "Element at index " << element.first << ": " << converter.binaryToHex(element.second) << std::endl;
     }
-
-
 
 }
 

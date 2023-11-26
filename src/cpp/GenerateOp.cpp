@@ -239,7 +239,8 @@ void GenerateOp::checkFormat()
             }
             else if(checkPC(pcDisp))
             {
-                //std::cout << "Check PC TRUE" << std::endl;
+                //std::cout << "Check PC TRUE1" << std::endl;
+                //std::cout << "symbol: " << symAddr << " pc: " << pcAddr << std::endl;
                 if(e == 1)
                 {
                     p = 0; b = 0;
@@ -324,27 +325,10 @@ void GenerateOp::createObjectCode()
 
             operandCode << tempCode << n << i << x << b << p << e << disp;
 
-            //std::cout << "WORD: " << operandCode.str() << std::end;
-
-            //std::cout << "OperandString: " << operandCode.str() << ": ";
-
-            //std::cout << "SYMBOL: "  << symAddr << " disp: " << disp << std::endl;
-            //<< " result: " << operandCode.str() << std::endl;
-
-
-            // converts 0001 0011 0000 into 130 form
             std::string code = converter.opcodeHex(operandCode.str());
-            //std::cout << operand;
-            //std::cout << " tempcdoe : " << tempCode 
-            //<< " Operandcode: " << operandCode.str() << std::endl;
-
-            
+          
             objectCode = converter.opcodeHex(operandCode.str());    
             
-
-            //std::cout << "opreand code:" << operandCode.str() << std::endl;
-            //std::cout << "displace: " << disp << std::endl;
-            //std::cout << "Object Code: " << objectCode << std::endl;
         }
 
 

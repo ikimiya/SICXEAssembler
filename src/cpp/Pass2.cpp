@@ -24,6 +24,7 @@ void Pass2::beginPass2()
 {
     int baseAddress = -1;
 
+
     genOp.setSymtable(symTable);
     //genOp.setLiteral(litTable);
 
@@ -40,6 +41,7 @@ void Pass2::beginPass2()
     } else
     {
         std::cout << "NotExist " << std::endl;
+        baseAddress = -1;
         
     }
 
@@ -57,8 +59,7 @@ void Pass2::beginPass2()
         std::getline(ss, Label, '\t');
         std::getline(ss, OpCode, '\t');
         std::getline(ss, Operand, '\t');
-
-
+        std::getline(ss, blockNumber, '\t');
 
         std::cout << "Address:" << std::endl;
 
@@ -84,6 +85,11 @@ void Pass2::beginPass2()
 
         while(OpCode != "END")
         {
+
+            std::cout << "Input: ";
+            debug();
+
+
             if(OpCode == "BASE")
             {
                 baseAddress = symTable.getAddress(Operand);
@@ -249,10 +255,32 @@ void Pass2::beginPass2()
                 if (literalTable.checkTableExist(OpCode))
                 {
                     symbolAddress = literalTable.getAddress(OpCode);
-
                     std::cout << literalTable.getOperand(OpCode) << std::endl;
 
                 }
+
+
+                if(blockNumber == "")
+                {
+                    //std::cout << "THIS IS BLOCK NUMBER: " <<blockNumber << std::endl;
+                }else
+                {
+                    //std::cout << "BlockNumber: " << blockTABLE.getAddressIndex(converter.stringToInt(blockNumber)) << std::endl;
+
+                    
+
+
+
+
+                    if(blockNumber != "0")
+                    {
+                        std::cout << "Block Number:" << blockNumber<< std::endl;
+                        //symbolAddress = converter.intToString(blockTABLE.getAddressIndex(converter.stringToInt(blockNumber)));
+                    }
+                }
+
+                
+    
 
 
                 /*
@@ -267,6 +295,7 @@ void Pass2::beginPass2()
                 //std::string baseAddress = converter.intToString(symTable.getAddress("BASE"));
 
                 //std::cout << "Operand: " << Operand << " SYMBOL: " <<  symbolAddress << std::endl;
+            
                 
                 opStruct.currentAddr = converter.intToString(currentLoc[counter].second);
                 opStruct.baseAddr = converter.intToString(baseAddress);
@@ -360,9 +389,10 @@ void Pass2::readNextInput()
     std::getline(ss, Label, '\t');
     std::getline(ss, OpCode, '\t');
     std::getline(ss, Operand, '\t');
+    std::getline(ss, blockNumber, '\t');
+
 
 }
-
 
 void Pass2::setOptable(Optable op)
 {
@@ -383,4 +413,19 @@ void Pass2::setLocation(std::vector<std::pair<int,int>> curLoc, std::vector<std:
 {
     currentLoc = curLoc;
     pcLoc = nexLoc;
+}
+void Pass2::setBlockTab(BlockTable bloc)
+{
+    blockTABLE = bloc;
+}
+
+void Pass2::debug()
+{
+
+    std::cout 
+    << "Address: [" << Address
+    << "] Label: [" << Label 
+    << "] OpCode: [" << OpCode
+    << "] Operand: [" << Operand
+    << "] blockNumber: [" << Address << "]. " << std::endl;
 }
