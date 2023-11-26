@@ -52,7 +52,18 @@ int Conversion::hexToBinary(std::string hex)
 
 int Conversion::stringToInt(std::string word)
 {
-    int value = std::stoi(word);
+    //std::cout << "ERROR checking: " << word << std::endl;
+    int value;
+    try
+    {
+        value = std::stoi(word);
+
+    }
+    catch(const std::exception& e)
+    {
+        std::cout << "STOI ERROR STRING TO INT: " << e.what() << std::endl;
+    }
+    
     return value;
 }
 

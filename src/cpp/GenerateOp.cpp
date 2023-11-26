@@ -415,9 +415,9 @@ bool GenerateOp::checkPC(int value)
 void GenerateOp::debug()
 {
     //Checking Values
-    std::cout << "PCAddress: [" << pcAddr 
-    << "] BaseAddress: [" << baseAddr 
-    << "] SymbolAddress: [" << symAddr
+    std::cout << "PCAddress: [" << converter.binaryToHex(pcAddr) 
+    << "] BaseAddress: [" << converter.binaryToHex(baseAddr) 
+    << "] SymbolAddress: [" << converter.binaryToHex(symAddr) 
     << "] Label: [" << Label 
     << "] Mneomenic: [" << mnemonic
     << "] Operand: [" << operand 

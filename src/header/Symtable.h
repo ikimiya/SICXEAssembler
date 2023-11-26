@@ -33,6 +33,8 @@ class Symtable
 
         std::map<std::string, int> SYMTABLE;
 
+        void setAddress(std::string label,int address);
+
 };
 
 #endif

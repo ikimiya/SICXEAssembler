@@ -40,6 +40,13 @@ class Pass1
         std::vector<bool> errorFlag;
         std::vector<bool> symbolFlag;
 
+
+        std::vector<int> currentLoc;
+        std::vector<int> pcLoc;
+        int counter = 0;
+
+        
+
         bool errorF;
         bool symbolF;
 

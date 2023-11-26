@@ -27,7 +27,7 @@ void Pass2::beginPass2()
     genOp.setSymtable(symTable);
     //genOp.setLiteral(litTable);
 
-    //symTable.debug();
+    symTable.debug();
 
     std::string sendOpcode;
     int format;
@@ -247,7 +247,7 @@ void Pass2::beginPass2()
                     {
                         symbolAddress = literalTable.getAddress(Operand);
 
-                        literalTable.debug();
+                        //literalTable.debug();
 
                     }
 

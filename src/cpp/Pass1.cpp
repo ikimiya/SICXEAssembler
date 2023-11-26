@@ -167,12 +167,12 @@ void Pass1::beginPass1()
                             }
                             else
                             {
-                                std::cout << "NEW INSERT: " << Operand << std::endl;
+                                //std::cout << "NEW INSERT: " << Operand << std::endl;
                                 literalTable.literalTable.length = converter.intToString(length);
                                 literalTable.literalTable.operand = result;
                                 //std::cout << "result: " << length << std::endl;
                                 literalTable.insertTable(Operand,literalTable.literalTable);
-                                std::cout << "Insert End: " << Operand << std::endl;
+                                //std::cout << "Insert End: " << Operand << std::endl;
 
                             }
                         }
@@ -274,11 +274,9 @@ void Pass1::beginPass1()
                                 LocCtr += 4; 
                             }
                         }
-
                         else if(OpCode == "LTORG")
                         {
-                            std::cout << "OH MY LORD scan" << std::endl;
-                            literalTable.debug();
+                            //literalTable.debug();
 
                             fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
                             fReader.newLine();
@@ -296,7 +294,7 @@ void Pass1::beginPass1()
                                     //std::string address = it.second.address;
                                     std::string bytes = it.second.length;
                                     it.second.address = converter.intToString(LocCtr);
-                                    
+
                                     LocCtr += converter.stringToInt(bytes);
 
 
@@ -309,6 +307,101 @@ void Pass1::beginPass1()
                                 }
                             }
 
+                        }
+                        else if(OpCode == "EQU")
+                        {
+                            if(symTable.checkTableExist(Label))
+                            {
+                                if(Operand == "*")
+                                {
+                                    symTable.setAddress(Label, LocCtr);
+                                }
+                                else
+                                {
+                                
+                                    std::istringstream iss(Operand);
+                                    std::string temp;
+                                    std::string result1;
+                                    std::string result2;
+            
+                                    std::string mathType;
+                                    int byte;
+
+                                    bool keepGoing = true;
+
+                                    //std::cout << "OPERNAD CHECK: " << Operand << std::endl;
+
+                                    for(int i = 0; i < Operand.size(); i++)
+                                    {
+
+                                        if(Operand[i] == '+' || Operand[i] == '-' || Operand[i] == '*' || Operand[i] == '/')
+                                        {
+                                            mathType = Operand[i];
+                                            keepGoing = false;
+                                        }
+                                        else if(keepGoing)
+                                        {
+                                            result1 += Operand[i];
+                                        }
+                                        else
+                                        {
+                                            result2 += Operand[i];
+                                        }
+
+                                        //std::cout << "CURRENT: " << Operand[i] << std::endl;
+
+                                    }
+                                    int first, second, final;
+
+                                    //std::cout << "MATHRESULT: [" << result1 << "][" <<  mathType << "][" << result2 << "]." << std::endl;
+
+                                    if(symTable.checkTableExist(result1))
+                                    {
+                                        
+                                        first = symTable.getAddress(result1);
+                                    }
+                                    else
+                                    {
+                                        
+                                        first = converter.stringToInt(result1);
+                                    }
+
+                                    if(symTable.checkTableExist(result2))
+                                    {
+                                        
+                                        second = symTable.getAddress(result2);
+                                    }
+                                    else
+                                    {
+                                        second = converter.stringToInt(result2);
+                                    }
+
+                                    if(mathType == "-")
+                                    {
+                                        final = first - second;
+                                    } else if (mathType == "+")
+                                    {
+                                        final = first + second;
+                                    }else if (mathType == "/")
+                                    {
+                                        final = first / second;           
+                                    }else if (mathType == "*")
+                                    {
+                                        final = first * second;
+                                    }
+
+                                    std::cout << "FINAL: " << final << std::endl;
+
+                                    symTable.setAddress(Label,final);
+                                    //LocCtr = final;
+
+                                }   // end whilke
+
+                            
+
+                            }
+
+                            //std::cout << "OPERAND: " << Operand << " opcode: " << OpCode << std::endl;
                         }
                         else
                         {
@@ -333,7 +426,8 @@ void Pass1::beginPass1()
                     if (OpCode == "LTORG")
                     {
                         readNextInput();
-                    }else
+                    }
+                    else
                     {
                         fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
                         fReader.writeToFile(converter.intToString(errorF));
@@ -341,8 +435,6 @@ void Pass1::beginPass1()
                         fReader.newLine();
                         readNextInput();
                     }
-                    
-
                     }
                     else
                     {

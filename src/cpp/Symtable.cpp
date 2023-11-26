@@ -45,6 +45,17 @@ int Symtable::getAddress(std::string label)
     }
 }
 
+void Symtable::setAddress(std::string label, int address)
+{
+    auto it = SYMTABLE.find(label);
+    if (it != SYMTABLE.end()) {
+        it->second = address;
+    } else {
+        std::cout << "address not found" << std::endl;
+    } 
+
+}
+
 void Symtable::debug()
 {
 
