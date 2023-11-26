@@ -41,10 +41,9 @@ class Pass1
         std::vector<bool> symbolFlag;
 
 
-        std::vector<int> currentLoc;
-        std::vector<int> pcLoc;
+        std::vector<std::pair<int,int>> currentLoc;
+        std::vector<std::pair<int,int>> pcLoc;
         int counter = 0;
-
         
 
         bool errorF;

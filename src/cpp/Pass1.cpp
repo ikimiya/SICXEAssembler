@@ -55,6 +55,8 @@ void Pass1::beginPass1()
 
                 //std::cout << "LOC: " << LocCtr << std::endl;
 
+
+
                 // write to Line imemdiate file
                 std::cout << "beginning line: ";
                 std::cout  << "[Loc:" << LocCtr << "] [Label:" << Label << "] [OPcode:" << OpCode << "] [Operand:" << Operand << "]" << std::endl;
@@ -64,19 +66,6 @@ void Pass1::beginPass1()
                 fReader.writeToFile(converter.intToString(symbolF));
                 fReader.newLine();
 
-                // read next line 
-                //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
-/*
-                std::getline(fReader.myFile,currentLine);
-                ss.clear();
-                ss.str(std::string());
-                ss << currentLine;
-                std::getline(ss, Label, '\t');
-                std::getline(ss, OpCode, '\t');
-                std::getline(ss, Operand, '\t');
-                std::getline(ss, Comment, '\t');
-
-                */
                 readNextInput();
                 
             }// end if start
@@ -84,14 +73,21 @@ void Pass1::beginPass1()
                 LocCtr = 0;
             }   
 
+
+            currentLoc.push_back({counter,LocCtr});
+            pcLoc.push_back({counter,LocCtr});
+            counter++;
+
             while(OpCode != "END")
                 {
                     // if not comment line
                     if(Label[0] != '.')
                     {
+                        currentLoc.push_back({counter,LocCtr});
                         // if there is symbol in label field
                         if(Label != "")
                         {
+
                             if(symTable.checkTableExist(Label))
                             {
                                 std::cout << LocCtr << ": " << Label << std::endl;
@@ -393,7 +389,7 @@ void Pass1::beginPass1()
                                     std::cout << "FINAL: " << final << std::endl;
 
                                     symTable.setAddress(Label,final);
-                                    //LocCtr = final;
+                                    LocCtr = final;
 
                                 }   // end whilke
 
@@ -423,18 +419,32 @@ void Pass1::beginPass1()
                         errorFlag.push_back(errorF);
                         symbolFlag.push_back(symbolF);
 
-                    if (OpCode == "LTORG")
-                    {
-                        readNextInput();
-                    }
-                    else
-                    {
-                        fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-                        fReader.writeToFile(converter.intToString(errorF));
-                        fReader.writeToFile(converter.intToString(symbolF));
-                        fReader.newLine();
-                        readNextInput();
-                    }
+                        if (OpCode == "LTORG")
+                        {
+                            readNextInput();
+                        }
+                        else if(OpCode == "EQU")
+                        {
+                            fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+                            fReader.writeToFile(converter.intToString(errorF));
+                            fReader.writeToFile(converter.intToString(symbolF));
+                            fReader.newLine();
+                            int temp = counter - 1;
+                            LocCtr = pcLoc[temp].second;
+                            readNextInput();
+                        }
+                        else
+                        {
+                            fReader.writeToFile(converter.intToString(currentLoc[counter].second),Label,OpCode,Operand);
+                            fReader.writeToFile(converter.intToString(errorF));
+                            fReader.writeToFile(converter.intToString(symbolF));
+                            fReader.newLine();
+                            readNextInput();
+                        }
+
+                        pcLoc.push_back({counter,LocCtr});
+                        counter++;
+
                     }
                     else
                     {
@@ -475,8 +485,6 @@ void Pass1::beginPass1()
             
             programLength = LocCtr - startAdd;
 
-
-
             // check again 
 
             for (auto& it : literalTable.libTable) 
@@ -490,8 +498,7 @@ void Pass1::beginPass1()
 
                 if (std::find(literalDupe.begin(), literalDupe.end(),literal)!=literalDupe.end())
                 {
-                    
-
+        
                 }
                 else
                 {
@@ -505,8 +512,7 @@ void Pass1::beginPass1()
             }
 
 
-
-
+            debug();
             std::cout << "Program Length: " << programLength << std::endl;
             fReader.closeReadFile();
             fReader.closeWriteFile();
@@ -536,9 +542,20 @@ void Pass1::readNextInput()
 void Pass1::debug()
 {
 
-    for(int i = 0; i < OpCodeList.size(); i++)
-    {
-        std::cout  << "[" << LabelList.at(i) << "] [" << OpCodeList.at(i) << "] [" << OperandList.at(i) << "] " << std::endl;
+    //for(int i = 0; i < OpCodeList.size(); i++)
+    //{
+    //    std::cout  << "[" << LabelList.at(i) << "] [" << OpCodeList.at(i) << "] [" << OperandList.at(i) << "] " << std::endl;
+    //}
+
+
+    for (const auto& element : currentLoc) {
+        std::cout << "Element at index " << element.first << ": " << element.second << std::endl;
     }
+    for (const auto& element : pcLoc) {
+        std::cout << "Element at index " << element.first << ": " << element.second << std::endl;
+    }
+
+
+
 }
 

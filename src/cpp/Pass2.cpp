@@ -68,6 +68,7 @@ void Pass2::beginPass2()
             fReader.writeToFile(converter.decimalToHexFour(Address));
             fReader.newLine();
 
+            counter++;
             // read next input line
             readNextInput();
 
@@ -77,6 +78,8 @@ void Pass2::beginPass2()
         // write header
         writeHeader();
         // initalize text record
+
+        //counter++;
 
 
         while(OpCode != "END")
@@ -243,13 +246,14 @@ void Pass2::beginPass2()
                     opStruct.skip = true;
                 }
 
-                if (literalTable.checkTableExist(Operand))
-                    {
-                        symbolAddress = literalTable.getAddress(Operand);
+                if (literalTable.checkTableExist(OpCode))
+                {
+                    symbolAddress = literalTable.getAddress(OpCode);
 
-                        //literalTable.debug();
+                    std::cout << literalTable.getOperand(OpCode) << std::endl;
 
-                    }
+                }
+
 
                 /*
                 // check code counter
@@ -264,8 +268,9 @@ void Pass2::beginPass2()
 
                 //std::cout << "Operand: " << Operand << " SYMBOL: " <<  symbolAddress << std::endl;
                 
+                opStruct.currentAddr = converter.intToString(currentLoc[counter].second);
                 opStruct.baseAddr = converter.intToString(baseAddress);
-                opStruct.pcAddr = Address;
+                opStruct.pcAddr = converter.intToString(pcLoc[counter].second);
                 opStruct.label = Label;
                 opStruct.mnemonic = OpCode;
                 opStruct.operand = Operand;
@@ -285,47 +290,28 @@ void Pass2::beginPass2()
                 
                 //if(opStruct.operand != "LENGTHh" && opStruct.mnemonic != "BASEj")
                 //{
-                    genOp.setValues(opStruct);
-                    genOp.checkFormat();
-                    genOp.createObjectCode();
-                    genOp.debug();
-                    genOp.checkBits();
+                genOp.setValues(opStruct);
+                genOp.checkFormat();
+                genOp.createObjectCode();
+                genOp.debug();
+                genOp.checkBits();
                 //}
 
-                
-
-
-
-
-
-        
-
-
-
-                //std::cout << "PCAddress: " << Address << " BaseAddress: " << baseAddress << " Label: " << Label << " OpCode: " << OpCode << " Operand: " << Operand;
-                //std::cout << "Format: " << format << " OPCODE: " << sendOpcode << std::endl;
-
-                
-
-                //genOp.setValues(Address, Address, Label, OpCode, Operand);
-
-
-
-                //genOp.debug();
-
-                //std::cout << "erro    r " << std::endl;
+            
 
             } // end if not comment
 
+            if(OpCode == "LTORG")
+            {
+                std::cout << "CHECK: " << std::endl;
+            }
+            else
+            {
+                counter++;
 
-            /*
-                Write listening line 
-            */
-           readNextInput();
+            }
 
-
-
-
+            readNextInput();
 
 
         }   // end while nmot end 
@@ -335,7 +321,6 @@ void Pass2::beginPass2()
         // write end record 
 
         //write last listing line
-
 
 
 
@@ -392,4 +377,10 @@ void Pass2::setSymtable(Symtable sym)
 void Pass2::setLiteralTab(Libtab lib)
 {
     literalTable = lib;
+}
+
+void Pass2::setLocation(std::vector<std::pair<int,int>> curLoc, std::vector<std::pair<int,int>> nexLoc)
+{
+    currentLoc = curLoc;
+    pcLoc = nexLoc;
 }

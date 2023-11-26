@@ -35,23 +35,20 @@ class Pass2
         void setSymtable(Symtable sym);
         void setLiteralTab(Libtab lit);
 
+        void setLocation(std::vector<std::pair<int,int>> curLoc, std::vector<std::pair<int,int>> nextLoc);
+
         void writeHeader();
 
         Optable getOptable(Optable op);
         Symtable getSymtable(Symtable sym);
+
+
 
         void getPassData(int starting, int loc, int pLength);
 
         void debug();
 
 
-        std::vector<std::string> indexList;
-        std::vector<std::string> LabelList;
-        std::vector<std::string> OpCodeList;
-        std::vector<std::string> OperandList;
-        std::vector<std::string> CommentList;
-
-       
 
         Symtable symTable;
         Optable OPTABLE;
@@ -71,6 +68,11 @@ class Pass2
         int startAdd;
         int LocCtr;
         int programLength;
+
+        std::vector<std::pair<int,int>> currentLoc;
+        std::vector<std::pair<int,int>> pcLoc;
+        int counter = 0;
+
 
         std::string symbolAddress;
 

@@ -5,6 +5,7 @@
 
 struct OpcodeStruct
 {
+    std::string currentAddr;
     std::string baseAddr;
     std::string pcAddr;
     std::string symAddr;

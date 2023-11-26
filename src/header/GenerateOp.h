@@ -61,6 +61,7 @@ class GenerateOp
         int pcAddr;
         int baseAddr;
         int symAddr;
+        int currentAddr;
         std::string Label;
         std::string mnemonic;
         std::string operand;

@@ -361,6 +361,7 @@ void GenerateOp::createObjectCode()
 
 void GenerateOp::setValues(OpcodeStruct opStruct)
 {
+    currentAddr = converter.stringToInt(opStruct.currentAddr);
     pcAddr = converter.stringToInt(opStruct.pcAddr);
 
     //std::cout << "PC ADDR: " <<pcAddr << std::endl;
@@ -415,7 +416,10 @@ bool GenerateOp::checkPC(int value)
 void GenerateOp::debug()
 {
     //Checking Values
-    std::cout << "PCAddress: [" << converter.binaryToHex(pcAddr) 
+    std::cout 
+    
+    << "CurrentAddr: [" << converter.binaryToHex(currentAddr) 
+    << "] PCAddress: [" << converter.binaryToHex(pcAddr) 
     << "] BaseAddress: [" << converter.binaryToHex(baseAddr) 
     << "] SymbolAddress: [" << converter.binaryToHex(symAddr) 
     << "] Label: [" << Label 
