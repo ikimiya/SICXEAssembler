@@ -61,7 +61,7 @@ int Conversion::stringToInt(std::string word)
     }
     catch(const std::exception& e)
     {
-        std::cout << "STOI ERROR STRING TO INT: " << e.what() << std::endl;
+        std::cout << "Stoi String To Int Error: " << e.what() << ": " << word << std::endl;
     }
     
     return value;

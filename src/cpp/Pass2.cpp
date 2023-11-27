@@ -28,9 +28,16 @@ void Pass2::beginPass2()
     genOp.setSymtable(symTable);
     //genOp.setLiteral(litTable);
 
-    symTable.debug();
+    //symTable.debug();
+    blockTABLE.debug();
+    literalTable.debug();
+
+
+    //std::cout << "BlockTable Index at 0 :" << blockTABLE.getAddressIndex(3) << std::endl;
 
     std::string sendOpcode;
+    std::string buffer;
+    bool isBuffer = false;
     int format;
 
     if(symTable.checkTableExist("BASE"))
@@ -86,8 +93,14 @@ void Pass2::beginPass2()
         while(OpCode != "END")
         {
 
-            std::cout << "Input: ";
-            debug();
+            //std::cout << "Input: ";
+            //debug();
+
+            std::string eCode = OpCode;
+            eCode.erase(0,1);
+            std::string tempOperand = Operand;
+            tempOperand.erase(0,1);
+            buffer = "";
 
 
             if(OpCode == "BASE")
@@ -104,11 +117,6 @@ void Pass2::beginPass2()
             {
                 // search table for op code
                 // also check without special + 
-
-                std::string eCode = OpCode;
-                eCode.erase(0,1);
-                std::string tempOperand = Operand;
-                tempOperand.erase(0,1);
 
                 //std::cout << "check Operand: " << tempOperand << std::endl;
 
@@ -130,10 +138,13 @@ void Pass2::beginPass2()
                         if(keepGoing)
                         {
                             value1 = tempOp;
+                            buffer = tempOp;
+                            
                         }else if (!keepGoing)
                         {
                             value2 = tempOp;
                             indexMode = true;
+                            isBuffer = true;
                         }
                         keepGoing = false;
                     }
@@ -141,6 +152,7 @@ void Pass2::beginPass2()
                     if(Operand != "")
                     {
                         // need to check fo @ # etc.
+                        
                         if(symTable.checkTableExist(Operand))
                         {
                             //std::cout << "testing: Duplicated Symbol Found" << std::endl;
@@ -252,31 +264,97 @@ void Pass2::beginPass2()
                     opStruct.skip = true;
                 }
 
+
+                
+
                 if (literalTable.checkTableExist(OpCode))
                 {
                     symbolAddress = literalTable.getAddress(OpCode);
-                    std::cout << literalTable.getOperand(OpCode) << std::endl;
+                    //std::cout << literalTable.getOperand(OpCode) << std::endl;
 
                 }
-
+                
 
                 if(blockNumber == "")
                 {
-                    //std::cout << "THIS IS BLOCK NUMBER: " <<blockNumber << std::endl;
+        
                 }else
                 {
-                    //std::cout << "BlockNumber: " << blockTABLE.getAddressIndex(converter.stringToInt(blockNumber)) << std::endl;
 
-                    
+                        if(symTable.checkTableExist(Operand) || literalTable.checkTableExist(Operand))
+                        {
+                            int blockNum = converter.stringToInt(blockNumber);
+
+                            int symNumber = symTable.getBlockNumber(Operand);
+                            int value = symTable.getAddress(Operand);
+                            int symAddr = blockTABLE.getAddressIndex(symNumber);
 
 
+                            if (literalTable.checkTableExist(Operand))
+                            {
+                                value = converter.stringToInt(literalTable.getAddress(Operand));
+                                //std::cout << "Operand" << Operand << " Value: " << value  << "sym: " << symAddr<< std::endl;
+
+                            }
+
+                           // std::cout << symAddr << std::end;;
+
+                            int result = value + symAddr;
+
+                            //std::cout << "result is " << result << std::endl;
+
+                            symbolAddress = converter.intToString(result);
+
+                        } 
+                        else if(symTable.checkTableExist(tempOperand))
+                        {
+                            //std::cout << "temp Operand" << tempOperand << std::endl;
+
+                            if(Operand[0] == '#')
+                            {
+
+                            }
+                            else
+                            {
+                                int blockNum = converter.stringToInt(blockNumber);
 
 
-                    if(blockNumber != "0")
-                    {
-                        std::cout << "Block Number:" << blockNumber<< std::endl;
-                        //symbolAddress = converter.intToString(blockTABLE.getAddressIndex(converter.stringToInt(blockNumber)));
-                    }
+                                int symNumber = symTable.getBlockNumber(tempOperand);
+                                int value = symTable.getAddress(tempOperand);
+                                int symAddr = blockTABLE.getAddressIndex(symNumber);
+
+                                if (literalTable.checkTableExist(tempOperand))
+                                {
+                                    value = converter.stringToInt(literalTable.getAddress(tempOperand));
+                                }
+
+                                int result = value + symAddr;
+
+                                symbolAddress = converter.intToString(result);
+
+                            }
+                        }else if (isBuffer)
+                        {
+
+                                int blockNum = converter.stringToInt(blockNumber);
+
+
+                                int symNumber = symTable.getBlockNumber(buffer);
+                                int value = symTable.getAddress(buffer);
+                                int symAddr = blockTABLE.getAddressIndex(symNumber);
+
+                                int result = value + symAddr;
+
+                                symbolAddress = converter.intToString(result);
+
+
+                            isBuffer = false;
+                        }
+                        else
+                        {
+                            isBuffer = false;
+                        }
+        
                 }
 
                 
@@ -314,17 +392,14 @@ void Pass2::beginPass2()
 
                 //std::cout << "pc Address: " << opStruct.pcAddr << std::endl
 
-                
-
-                
-                //if(opStruct.operand != "LENGTHh" && opStruct.mnemonic != "BASEj")
-                //{
+             //  if(opStruct.operand == "=C'EOF'")
+             //{
                 genOp.setValues(opStruct);
                 genOp.checkFormat();
                 genOp.createObjectCode();
                 genOp.debug();
                 genOp.checkBits();
-                //}
+             //}
 
             
 

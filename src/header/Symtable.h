@@ -21,19 +21,55 @@ class Symtable
 
         ~Symtable();
 
-        void insertTable(std::string Label, int address);    
+        struct tableInfo{
+            // A or R or E
+            std::string type;
+            // the address it is at
+            int value;
 
-        // finds address
+            // blocks 
+            std::string blockName;
+            int blockNumber;
+            int address;
+            int length;
+
+        };
+
+
+        void quickInsert(std::string Label, int value);
+        void quickInsert(std::string Label, int value, int bloc);
+
+        bool checkTableExist(std::string Label);
+        void setAddress(std::string label,int address);
         int getAddress(std::string Label);
 
-        // check if exist
-        bool checkTableExist(std::string Label);
+        // blocks
+        int getBlockNumber(std::string Label);
+        int getBlockAddress(std::string Label);
+        int getBlockLength(std::string Label);  
+        int getBlockAddressIndex(int index);
+        std::string getBlockName(std::string label);  
 
+        void setBlockNumber(std::string Label, int value);
+        void setBlockAddress(std::string Label, int value);
+        void setLength(std::string Label, int value);
+
+        void insertTable(std::string Label, tableInfo &infos);
+        void resetTable();
         void debug();
 
-        std::map<std::string, int> SYMTABLE;
+        //void insertTable(std::string Label, int address);    
 
-        void setAddress(std::string label,int address);
+        // finds address
+
+        // check if exist
+
+        tableInfo infos;
+
+
+        std::map<std::string, struct tableInfo> SYMTABLE;
+
+
 
 };
 

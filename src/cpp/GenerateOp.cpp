@@ -74,16 +74,14 @@ void GenerateOp::checkFormat()
             }
         }
 
+
         if(operand == "")
         {
-            //std::cout << "NAKED: " << std::endl;
             x = 0;
             b = 0;
             p = 0;
             e = 0;
             disp = converter.displacement(0);
-
-            
         }
         else
         {
@@ -124,6 +122,7 @@ void GenerateOp::checkFormat()
         }
         else
         {
+
         }
 
         if(format == 1)
@@ -160,6 +159,7 @@ void GenerateOp::checkFormat()
 
 
                 ss << std::uppercase << opCode;
+
 
                 if(symTable.checkTableExist(value1))
                 {
@@ -206,6 +206,7 @@ void GenerateOp::checkFormat()
             pcDisp = symAddr - pcAddr;
             baseDisp = symAddr - baseAddr;
 
+
             if(n == 0 && i == 0)
             {
                 n = 1; 
@@ -213,7 +214,12 @@ void GenerateOp::checkFormat()
             }
 
             //std::cout << "SYMBOL " << symAddr << std::endl;
-            if(e == 1 && symAddr != 0)
+
+            if(operand == "")
+            {
+                p = 0;
+                b = 0;
+            }else if(e == 1 && symAddr != 0)
             {
                 // std::cout <<"TEST: ";
                 p = 0; b = 0;

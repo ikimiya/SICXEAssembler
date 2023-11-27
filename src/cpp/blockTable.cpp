@@ -15,8 +15,6 @@ BlockTable::~BlockTable()
 void BlockTable::insertTable(std::string label, blocks& block)
 {
     blockTable.insert (std::pair<std::string, blocks>(label,block));
-
-    //std::cout << "INSERT: " << label << std::endl;
 }
 
 // Check Map duplicates
@@ -53,7 +51,7 @@ int BlockTable::getAddressIndex(int index)
 {
     for (auto& it : blockTable) {
         if (it.second.blockNumber == index) {
-            return it.second.length;
+            return it.second.address;
         }
     }
     

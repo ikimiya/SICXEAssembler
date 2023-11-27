@@ -33,9 +33,6 @@ void Pass1::beginPass1()
 
 
     if (fReader.myFile.is_open()) {
-
-
-
         //while (std::getline(fReader.myFile,currentLine)) {  
 
             // default block
@@ -174,6 +171,8 @@ void Pass1::beginPass1()
                             if(symTable.checkTableExist(Label))
                             {
                                 std::cout << LocCtr << ": " << Label << std::endl;
+
+                                symTable.setBlockNumber(Label,blockCounter);
                                 //std::cout << "testing: Duplicated Symbol Found";
                                 //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
                                 symbolF = true;
@@ -182,7 +181,10 @@ void Pass1::beginPass1()
                             {   
                                 //std::cout << "inserted in " ;
                                 //std::cout  << "[" << Label << "] [" << LocCtr << "]" << std::endl;
-                                symTable.insertTable(Label,LocCtr);
+                                symTable.quickInsert(Label,LocCtr);
+                                symTable.setBlockNumber(Label,blockCounter);
+
+                                
                             }
                         }// end if symbol
 
@@ -249,7 +251,6 @@ void Pass1::beginPass1()
                                 //std::cout << "NEW INSERT: " << Operand << std::endl;
                                 literalTable.literalTable.length = converter.intToString(length);
                                 literalTable.literalTable.operand = result;
-                                //std::cout << "result: " << length << std::endl;
                                 literalTable.insertTable(Operand,literalTable.literalTable);
                                 //std::cout << "Insert End: " << Operand << std::endl;
 
@@ -370,7 +371,6 @@ void Pass1::beginPass1()
                                 {
                                     std::string literal = it.first;
                                     std::string operandName = it.second.operand;
-                                    //std::string address = it.second.address;
                                     std::string bytes = it.second.length;
                                     it.second.address = converter.intToString(LocCtr);
 
@@ -378,11 +378,18 @@ void Pass1::beginPass1()
 
 
                                     fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
-                                    //fReader.writeToFile("");
-                                    //fReader.writeToFile(operandName);
                                     fReader.writeToFile("/t");
 
                                     fReader.writeToFile(converter.intToString(blockCounter));
+
+                                    if(symTable.checkTableExist(literal))
+                                    {
+
+                                    }
+                                    else
+                                    {
+                                        symTable.quickInsert(literal,0,blockCounter);
+                                    }
 
 
                                     fReader.newLine();
@@ -495,7 +502,7 @@ void Pass1::beginPass1()
                             {
 
                                 //std::cout << " I SHOULD INSERT  " << std::endl;
-                                symTable.insertTable(OpCode,LocCtr);
+                                symTable.quickInsert(OpCode,LocCtr);
 
 
                             }
@@ -618,18 +625,18 @@ void Pass1::beginPass1()
                 }
                 else
                 {
-                    it.second.address = converter.intToString(LocCtr);
+                    //symTable.quickInsert
 
+
+                    it.second.address = converter.intToString(LocCtr);
                     fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
                     fReader.writeToFile("\t");
-                    fReader.writeToFile(converter.intToString(blockCounter));
-
                     fReader.newLine();
                     literalDupe.push_back(literal);
                 }
             }
             //std::cout << "block debug: " << std::endl;
-            //blockTABLE.debug();
+
 
             //debug();
             std::cout << "Program Length: " << programLength << std::endl;
