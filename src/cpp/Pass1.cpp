@@ -79,7 +79,7 @@ void Pass1::beginPass1()
                 LocCtr = 0;
             }   
 
-
+            // push start line
             currentLoc.push_back({counter,LocCtr});
             pcLoc.push_back({counter,LocCtr});
             counter++;
@@ -153,17 +153,18 @@ void Pass1::beginPass1()
                                 pcLoc[counter+1].second = 0;
                                 blockTABLE.insertTable(Operand,blockTABLE.bTable);
                             }
-                        }
+                        }   // end if program block
 
                         //std::cout << "CHANGING TO BLOCK:" << Operand << std::endl;
                         //blockTABLE.debug();
 
-                    }
+                    }   // end use 
 
                     // if not comment line
                     if(Label[0] != '.')
                     {
                         currentLoc.push_back({counter,LocCtr});
+
                         // if there is symbol in label field
                         if(Label != "")
                         {
@@ -576,9 +577,11 @@ void Pass1::beginPass1()
             //fReader.writeToFile(converter.intToString(errorF));
             //fReader.writeToFile(converter.intToString(symbolF));
             fReader.writeToFile(converter.intToString(blockCounter));
-
             fReader.newLine();
 
+            pcLoc.push_back({counter,LocCtr});
+            currentLoc.push_back({counter,LocCtr});
+            counter++;
 
             blockTABLE.setLength(blockName,LocCtr);
             programLength = LocCtr - startAdd;
@@ -600,6 +603,7 @@ void Pass1::beginPass1()
                     address = it->second.address;
                     value = length + address;
                     first = false;
+
                 }
                 else
                 {
@@ -608,6 +612,7 @@ void Pass1::beginPass1()
                     address = it->second.address;
                     value = length + address;
                     first = true;
+                    
                 }
             }
 
@@ -627,10 +632,10 @@ void Pass1::beginPass1()
                 {
                     //symTable.quickInsert
 
-
                     it.second.address = converter.intToString(LocCtr);
                     fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
                     fReader.writeToFile("\t");
+                    //fReader.writeToFileTab();
                     fReader.newLine();
                     literalDupe.push_back(literal);
                 }
@@ -638,7 +643,7 @@ void Pass1::beginPass1()
             //std::cout << "block debug: " << std::endl;
 
 
-            //debug();
+            debug();
             std::cout << "Program Length: " << programLength << std::endl;
             fReader.closeReadFile();
             fReader.closeWriteFile();

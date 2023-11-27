@@ -116,10 +116,11 @@ int main()
 
     FileReader fr;
 
+    std::string fileName = "literals";
 
     Pass1 p1;
 
-    p1.setFileName("prog_blocks");
+    p1.setFileName(fileName);
     p1.beginPass1();
 
     std::cout << "symtable.debug()" << std::endl;
@@ -128,7 +129,7 @@ int main()
 
     Pass2 p2;
 
-    p2.setFileName("prog_blocks");
+    p2.setFileName(fileName);
     p2.setOptable(p1.OPTABLE);
     p2.setSymtable(p1.symTable);
     p2.setLiteralTab(p1.literalTable);

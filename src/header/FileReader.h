@@ -29,6 +29,8 @@ class FileReader
 
         void writeToFile(std::string word, std::string word2, std::string word3, std::string word4);
 
+        void writeToFileTab();
+
         void newLine();
 
         void closeReadFile();

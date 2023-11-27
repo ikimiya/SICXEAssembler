@@ -57,6 +57,10 @@ void FileReader::newLine()
     outFile << "\n";
 }
 
+void FileReader::writeToFileTab()
+{
+    outFile << "\t";
+}
 
 
 void FileReader::closeReadFile()
