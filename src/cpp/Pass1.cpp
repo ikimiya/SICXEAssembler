@@ -494,7 +494,8 @@ void Pass1::beginPass1()
                         // check if label exist
                     else if(namTab.checkTableExist(OpCode))
                     {
-                        std::cout << "Label Exist" << std::endl;
+                        std::cout << "Label Exist Expanding" << std::endl;
+                        std::cout << "Label:" << Label <<" Operand: " << Operand << " OPCODE: " << OpCode << std::endl;
 
                         // set arg table 
                         std::istringstream iss(Operand);
@@ -547,9 +548,13 @@ void Pass1::beginPass1()
                         std::getline(temp2, Operand2, '\t');
                         //std::getline(temp2, Comment, '\t');
 
+
+                        std::cout << "File: " << fileLoc << std::endl;
+
                         fReader.writeToFile("."+Label,OpCode,Operand);
                         fReader.newLine();
 
+                        bool first = true;
                         beginLine++;
 
                         while(beginLine != endLine)
@@ -575,7 +580,6 @@ void Pass1::beginPass1()
                             std::getline(temp2, Operand2, '\t');
 
                             std::cout << "Current Operand:[" << Operand2 << "]" << std::endl;
-
                             std::istringstream iss(Operand2);
                             std::string value1;
                             std::string value2;
@@ -628,13 +632,10 @@ void Pass1::beginPass1()
                                 }
                             }   // end while
 
-
                             std::string newOperand = Operand2;
-
-
-                            std::cout <<  "Value1: [" << value1 << "] " << 
-                            "Value2: [" << value2 << "]" << 
-                            " Value3: [" << value3 << "]" << std::endl;
+                            //std::cout <<  "Value1: [" << value1 << "] " << 
+                            //"Value2: [" << value2 << "]" << 
+                            //" Value3: [" << value3 << "]" << std::endl;
                         
 
                             std::string newInt; 
@@ -667,16 +668,25 @@ void Pass1::beginPass1()
                             }
                         
                             
+                            if(first)
+                            {
+                                Label2 = Label;
+                                first = false;
+                            }
+
+                            std::cout << fileLoc << " " << Label2 << " " << OpCode2 << " " << newOperand << std::endl;
+
                             fReader.writeToFile(fileLoc,Label2,OpCode2,newOperand);
                             fReader.newLine();
-
                             beginLine++;
                         }
+                        
+                        readNextInput();
+                        //fReader.newLine();
 
-
-                        // expand, write to file the macro line by line 
                     }
-                    else if (OpCode == "MACRO")
+                
+                    else if(OpCode == "MACRO")
                     {
                         // -1, -1 starting
                         std::string macroName = Label;
@@ -719,7 +729,7 @@ void Pass1::beginPass1()
                                 std::string value1;
                                 std::string value2;
                                 std::string value3;
-    
+
                                 //std::cout << "coutner check: " << defTab.counter << std::endl;
                                 std::istringstream iss(Operand);
                                 //std::string value1;
@@ -834,23 +844,22 @@ void Pass1::beginPass1()
         
                         notation.clear();
 
-                    } // end if macro define
-
-                    else
-                    {
-                        //std::cout << "Error Flag invalid Operation Code";
-
-                        if(OpCode == "BASE")
+                        } // end if macro define
+                        else
                         {
+                            //std::cout << "Error Flag invalid Operation Code";
 
-                            //std::cout << " I SHOULD INSERT  " << std::endl;
-                            symTable.quickInsert(OpCode,LocCtr);
+                            if(OpCode == "BASE")
+                            {
+
+                                //std::cout << " I SHOULD INSERT  " << std::endl;
+                                symTable.quickInsert(OpCode,LocCtr);
 
 
-                        }
-                        errorF = true;
-                        //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
-                    }   // end check optab for opcode
+                            }
+                            errorF = true;
+                            //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+                        }   // end check optab for opcode
 
                     errorFlag.push_back(errorF);
                     symbolFlag.push_back(symbolF);
