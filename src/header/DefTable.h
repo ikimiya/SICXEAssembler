@@ -19,12 +19,12 @@ class DefTable
 
         ~DefTable();
 
-        void insertTable(std::stringstream word); 
+        void insertTable(std::string word); 
         bool checkTableExist(int index);
 
         std::string getMacro(int index);
 
-        std::map<int, std::stringstream> defTab;
+        std::map<int, std::string> defTab;
 
         void debug();
 

@@ -12,9 +12,9 @@ DefTable::~DefTable()
 
 }
 
-void DefTable::insertTable(std::stringstream label)
+void DefTable::insertTable(std::string label)
 {
-    defTab[counter] << label.str();
+    defTab[counter] = label;
     counter++;
 }
 
@@ -31,7 +31,7 @@ std::string DefTable::getMacro(int index)
 {
     auto it = defTab.find(index);
     if (it != defTab.end()) {
-        return it->second.str();
+        return it->second;
     } else {
         return "Null";
     }
@@ -41,10 +41,10 @@ std::string DefTable::getMacro(int index)
 void DefTable::debug()
 {
 
-    for(auto it = defTab.rbegin(); it != defTab.rend(); it++)
+    for(auto it = defTab.begin(); it != defTab.end(); it++)
     {
         std::cout << "int: [" << it->first 
-                  << "] stringstream.str(): [" << it->second.str() << "]\n";
+                  << "] stringstream.str(): [" << it->second << "]\n";
     }
 
     //std::cout <<  "test:" << DefTablele.begin()->second << std::endl;

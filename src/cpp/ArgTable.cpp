@@ -12,9 +12,9 @@ ArgTable::~ArgTable()
 
 }
 
-void ArgTable::insertTable(std::string label)
+void ArgTable::insertTable(std::string label, int value)
 {
-    argTab[label];
+    argTab[label] = value;
 }
 
 // Check Map duplicates
@@ -28,22 +28,22 @@ bool ArgTable::checkTableExist(std::string label)
 
 bool ArgTable::checkTableExistInt(int index)
 {
-    auto it = argTab.find("");
-    if (it != argTab.end() && it->second == index) {
-        return true; 
-    } else {
-        return false; 
+    for (const auto& entry : argTab) {
+        if (entry.second == index) {
+            return true;
+        }
     }
+    return false;
 }
 
 std::string ArgTable::getArg(int index)
 {
-    auto it = argTab.find("");
-    if (it != argTab.end() && it->second == index) {
-        return it->first; 
-    } else {
-        return "NULL"; 
+    for (const auto& entry : argTab) {
+        if (entry.second == index) {
+            return entry.first;
+        }
     }
+    return "NULL";
 }
 
 void ArgTable::cleanTable()

@@ -14,6 +14,9 @@
 #include "../../Math/Conversion.h"
 #include "../header/Optable.h"
 #include "../header/blockTable.h"
+#include "../header/ArgTable.h"
+#include "../header/NamTable.h"
+#include "../header/DefTable.h"
 
 class Pass1
 {   
@@ -61,12 +64,27 @@ class Pass1
         Libtab literalTable;
         BlockTable blockTABLE;
 
+        // csect
+        std::string controlName;
+
+
+        //Macros
+        ArgTable argTab;
+        DefTable defTab;
+        NamTable namTab;
+
+        int macroCounter = 0;
+        bool macroExist = false;
+
+        std::vector<std::string> notation;
+        bool expanding;
+
+
 
         FileReader fReader;
         Conversion converter;
 
         std::string fileName;
-        std::string controlName;
 
         std::stringstream ss;
         std::string currentLine; 

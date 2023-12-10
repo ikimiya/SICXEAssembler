@@ -20,7 +20,7 @@ class ArgTable
 
         ~ArgTable();
 
-        void insertTable(std::string Label); 
+        void insertTable(std::string Label, int value); 
         bool checkTableExist(std::string Label);
         bool checkTableExistInt(int index);
 

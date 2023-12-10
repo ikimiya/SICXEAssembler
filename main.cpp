@@ -115,15 +115,15 @@ int main()
 
     FileReader fr;
 
-    std::string fileName = "control_section";
+    std::string fileName = "macros";
 
     Pass1 p1;
 
     p1.setFileName(fileName);
     p1.beginPass1();
 
-    std::cout << "symtable.debug()" << std::endl;
-    p1.symTable.debug();
+    //std::cout << "symtable.debug()" << std::endl;
+    //p1.symTable.debug();
 
 
     Pass2 p2;

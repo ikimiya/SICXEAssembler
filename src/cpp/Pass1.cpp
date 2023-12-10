@@ -82,15 +82,17 @@ void Pass1::beginPass1()
             pcLoc.push_back({counter,LocCtr});
             counter++;
 
+            expanding = false;
+
             while(OpCode != "END")
             {
 
-                std::cout  << 
-                "Counter: [" << counter << "] " << "PcCounter: " <<
-                "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+                //std::cout << "Counter: [" << counter << "] " << "PcCounter: " << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+
 
                 if(OpCode == "USE")
                 {
+
                     // if empty, it is default block
                     std::cout << "currentBlockName" << blockName << std::endl;
                     if(Operand == "")
@@ -151,8 +153,6 @@ void Pass1::beginPass1()
 
                 }   // end use 
 
-
-
                 // if not comment line
                 if(Label[0] != '.')
                 {
@@ -166,28 +166,31 @@ void Pass1::beginPass1()
                         {
                             std::cout << LocCtr << ": " << Label << std::endl;
                             symTable.setBlockNumber(Label,blockCounter);
-
-
                             if(symTable.getAddress(Label) > LocCtr)
                             {
-
                                 std::string newLabel = Label+controlName;
-                                //std::cout << newLabel << " [" << LocCtr << "]" << std::endl;
                                 symTable.quickInsert(newLabel,LocCtr);
                             }
 
-                            //std::cout << "testing: Duplicated Symbol Found";
-                            //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
                             symbolF = true;
 
                         }else
                         {   
                             //std::cout << "inserted in " ;
-                            //std::cout  << "[" << Label << "] [" << LocCtr << "]" << std::endl;
-                            symTable.quickInsert(Label,LocCtr);
-                            symTable.setBlockNumber(Label,blockCounter);
-
+                            std::cout  << "[" << Label << "] [" << LocCtr << "]" << std::endl;
                             
+
+                            if(namTab.checkTableExist(Label))
+                            {
+                                std::cout << "checkTTExist: " << Label << std::endl;
+                            }
+                            else
+                            {
+                                symTable.quickInsert(Label,LocCtr);
+                                symTable.setBlockNumber(Label,blockCounter);
+
+                            }
+                              
                         }
                     }// end if symbol
 
@@ -359,7 +362,6 @@ void Pass1::beginPass1()
                         
                         if(literalTable.libTable.empty())
                         {
-
                         }
                         else
                         {
@@ -439,18 +441,15 @@ void Pass1::beginPass1()
 
                                 if(symTable.checkTableExist(result1))
                                 {
-                                    
                                     first = symTable.getAddress(result1);
                                 }
                                 else
                                 {
-                                    
                                     first = converter.stringToInt(result1);
                                 }
 
                                 if(symTable.checkTableExist(result2))
-                                {
-                                    
+                                { 
                                     second = symTable.getAddress(result2);
                                 }
                                 else
@@ -461,17 +460,19 @@ void Pass1::beginPass1()
                                 if(mathType == "-")
                                 {
                                     final = first - second;
-                                } else if (mathType == "+")
+                                } 
+                                else if (mathType == "+")
                                 {
                                     final = first + second;
-                                }else if (mathType == "/")
+                                }
+                                else if (mathType == "/")
                                 {
                                     final = first / second;           
-                                }else if (mathType == "*")
+                                }
+                                else if (mathType == "*")
                                 {
                                     final = first * second;
                                 }
-
                                 std::cout << "FINAL: " << final << std::endl;
 
                                 symTable.setAddress(Label,final);
@@ -490,9 +491,353 @@ void Pass1::beginPass1()
                         currentLoc[counter].second = 0;
                         pcLoc[counter+1].second = 0;
                     }
+                        // check if label exist
+                    else if(namTab.checkTableExist(OpCode))
+                    {
+                        std::cout << "Label Exist" << std::endl;
+
+                        // set arg table 
+                        std::istringstream iss(Operand);
+                        std::string temp;
+
+                        argTab.cleanTable();
+                    
+                        int argCounter = 0;
+                        while(std::getline(iss,temp,','))
+                        {
+                            std::cout << "argTable: " << temp << std::endl;
+                            argTab.insertTable(temp,argCounter);
+                            argCounter++;
+                        }
+
+                        argTab.debug();
+
+                        std::cout << "Myarg: " << argTab.getArg(1) << std::endl;
+
+                        // write comment line
+                        int beginLine = namTab.getStart(OpCode);
+                        int endLine = namTab.getEnd(OpCode);
+
+
+                        std::cout << "begin: " << beginLine << " end: " << endLine << std::endl;
+
+                        std::string expandFile = defTab.getMacro(beginLine);
+
+                        //std::cout << "explandFile: " << expandFile << std::endl;
+
+                        std::cout << "before: " << Label << std::endl;
+                        
+                        std::stringstream ssT;
+                        std::stringstream temp2;
+
+                        ssT << expandFile;
+                        std::string currentL;
+
+                        std::string fileLoc;
+                        std::string Label2;
+                        std::string OpCode2;
+                        std::string Operand2;
+
+                        std::getline(ssT,currentL);
+                        temp2 << currentL;
+    
+                        std::getline(temp2, fileLoc, '\t');
+                        std::getline(temp2, Label2, '\t');
+                        std::getline(temp2, OpCode2, '\t');
+                        std::getline(temp2, Operand2, '\t');
+                        //std::getline(temp2, Comment, '\t');
+
+                        fReader.writeToFile("."+Label,OpCode,Operand);
+                        fReader.newLine();
+
+                        beginLine++;
+
+                        while(beginLine != endLine)
+                        {
+                            bool changeArg = false;
+                            std::string expandFile = defTab.getMacro(beginLine);
+                            std::stringstream ssT;
+                            std::stringstream temp2;
+
+                            ssT << expandFile;
+                            std::string currentL;
+                            std::string fileLoc;
+                            std::string Label2;
+                            std::string OpCode2;
+                            std::string Operand2;
+
+                            std::getline(ssT,currentL);
+                            temp2 << currentL;
+        
+                            std::getline(temp2, fileLoc, '\t');
+                            std::getline(temp2, Label2, '\t');
+                            std::getline(temp2, OpCode2, '\t');
+                            std::getline(temp2, Operand2, '\t');
+
+                            std::cout << "Current Operand:[" << Operand2 << "]" << std::endl;
+
+                            std::istringstream iss(Operand2);
+                            std::string value1;
+                            std::string value2;
+                            std::string value3;
+
+                            char currentChar;
+                            bool quoteStart = false;
+                            bool findQuote = false;
+                            
+                            while (iss.get(currentChar)) 
+                            {
+                                if(Operand2[0] == '?')
+                                {
+                                    quoteStart = true;
+                                }
+
+                                if(quoteStart)
+                                {
+                                    if (currentChar == ',' && !findQuote) {
+                                        findQuote = true;
+                                        value3 += currentChar;
+                                    } 
+                                    else if (currentChar == '\'' && findQuote) 
+                                    {
+                                        value3 += currentChar;
+                                    } else {
+                                        if (!findQuote) {
+                                            value2 += currentChar;
+                                        } else {
+                                            value3 += currentChar;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (currentChar == '\'' && !findQuote) {
+                                        findQuote = true;
+                                        value1 += currentChar;
+                                    } 
+                                    else if (currentChar == '\'' && findQuote) 
+                                    {
+                                        value3 += currentChar;
+                                    } else {
+                                        if (!findQuote) {
+                                            value1 += currentChar;
+                                        } else {
+                                            value2 += currentChar;
+                                        }
+                                    }
+                                }
+                            }   // end while
+
+
+                            std::string newOperand = Operand2;
+
+
+                            std::cout <<  "Value1: [" << value1 << "] " << 
+                            "Value2: [" << value2 << "]" << 
+                            " Value3: [" << value3 << "]" << std::endl;
+                        
+
+                            std::string newInt; 
+                            int index;
+                            if(value2[0] == '?')
+                            {
+                                int i = 0; 
+                                while (i < value2.size()) {
+                                    if (value2[i] == '?') 
+                                    {
+                                        changeArg = true;
+                                    } 
+                                    else {
+                                        newInt += value2[i];
+                                    }
+                                    i++;
+                                }
+                                index = converter.stringToInt(newInt);
+                                //std::cout << "index test: " << index << std::endl;
+                            }
+                            
+                            if(changeArg)
+                            {
+                                if(argTab.checkTableExistInt(index))
+                                {
+                                    newOperand = value1 + argTab.getArg(index) + value3;
+
+                                }
+                                std::cout << "New OP: " << newOperand << std::endl;
+                            }
+                        
+                            
+                            fReader.writeToFile(fileLoc,Label2,OpCode2,newOperand);
+                            fReader.newLine();
+
+                            beginLine++;
+                        }
+
+
+                        // expand, write to file the macro line by line 
+                    }
+                    else if (OpCode == "MACRO")
+                    {
+                        // -1, -1 starting
+                        std::string macroName = Label;
+                        //std::cout << "isMacro:" << macroName << std::endl;
+                        namTab.resetTable();
+                        int startCounter = defTab.counter;
+                        int endCounter;
+                        namTab.insertTable(macroName,namTab.namTabLoc);
+
+                        if(namTab.checkTableExist(Label))
+                        {
+                        }
+
+                        std::istringstream iss(Operand);
+                        std::string temp;
+                        
+                        while(std::getline(iss,temp,','))
+                        {
+                            //std::cout << "notation: " << temp << std::endl;
+                            notation.push_back(temp);
+                        }
+
+                        // insert defTable
+                        std::stringstream ss;
+                        ss << converter.intToString(LocCtr) << "\t" << Label << "\t" << OpCode
+                        << "\t" << Operand << "\t" << blockCounter;
+
+                        defTab.insertTable(ss.str());
+
+                        int level = 1;
+
+                        while(level > 0)
+                        {
+                            readNextInput();
+                            bool foundChange = false;
+
+                            if(Label[0] != '.')
+                            {
+
+                                std::string value1;
+                                std::string value2;
+                                std::string value3;
+    
+                                //std::cout << "coutner check: " << defTab.counter << std::endl;
+                                std::istringstream iss(Operand);
+                                //std::string value1;
+                                //std::string value2;
+                                //std::string value3;
+                                char currentChar;
+
+                                bool findQuote = false;
+                                bool quoteStart = false;
+
+                                while (iss.get(currentChar)) {
+
+                                    if(Operand[0] == '&')
+                                    {
+                                        quoteStart = true;
+                                    }
+
+                                    if(quoteStart)
+                                    {
+                                        if (currentChar == ',' && !findQuote) {
+                                            findQuote = true;
+                                            value3 += currentChar;
+                                        } 
+                                        else if (currentChar == '\'' && findQuote) 
+                                        {
+                                            value3 += currentChar;
+                                        } else 
+                                        {
+                                            if (!findQuote) {
+                                                value2 += currentChar;
+                                            } else {
+                                                value3 += currentChar;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (currentChar == '\'' && !findQuote) {
+                                            findQuote = true;
+                                            value1 += currentChar;
+                                        } 
+                                        else if (currentChar == '\'' && findQuote) 
+                                        {
+                                            value3 += currentChar;
+                                        } else {
+
+                                            if (!findQuote) {
+                                                value1 += currentChar;
+                                            } else {
+                                                value2 += currentChar;
+                                            }
+                                        }
+                                    }
+
+                                }   // end while find buffer,x etc
+                            
+                                auto it = std::find(notation.begin(), notation.end(), value2);
+                                int index;
+
+                                if (it != notation.end()) {
+                                    index = std::distance(notation.begin(), it);
+                                    foundChange = true;
+                                } else {
+                                    //std::cout << "'" << Operand << "' second Not Found" << std::endl;
+                                }
+
+                                std::string newOperand = Operand;
+
+                                //std::cout << "Value1: [" << value1 << "]" << std::endl;
+                                //std::cout << "Value2: [" << value2 << "]" << std::endl;
+                                //std::cout << "Value3: [" << value3 << "]" << std::endl;
+
+                                if(foundChange)
+                                {
+                                    newOperand = value1 + "?" + converter.intToString(index) + value3;
+                                    //std::cout << "NewOperand [" << newOperand << "]" << std::endl;
+                                }
+
+                                //if(foundChange)
+
+                                std::stringstream ss;
+                                ss << converter.intToString(LocCtr) << "\t" << Label << "\t" << OpCode
+                                << "\t" << newOperand << "\t" << blockCounter;
+
+                                //std::cout << ss.str() << std::endl;
+                                if(OpCode == "MEND")
+                                {
+
+                                }else
+                                {
+                                    defTab.insertTable(ss.str());
+                                }
+
+
+                                if(OpCode == "MACRO")
+                                {
+                                    level = level + 1;
+                                }
+                                else if(OpCode == "MEND")
+                                {
+                                    level = level - 1;
+                                    endCounter = defTab.counter;
+                                    
+                                }
+
+                            } // end if comment 
+                        }   // ene level
+                        namTab.setStart(macroName,startCounter);
+                        namTab.setEnd(macroName,endCounter);
+                        defTab.counter++;
+
+        
+                        notation.clear();
+
+                    } // end if macro define
+
                     else
                     {
-                        
                         //std::cout << "Error Flag invalid Operation Code";
 
                         if(OpCode == "BASE")
@@ -529,13 +874,23 @@ void Pass1::beginPass1()
                     }
                     else
                     {
-                        fReader.writeToFile(converter.intToString(currentLoc[counter].second),Label,OpCode,Operand);
-                        //fReader.writeToFile(converter.intToString(errorF));
-                        //fReader.writeToFile(converter.intToString(symbolF));
-                        fReader.writeToFile(converter.intToString(blockCounter));
+                        if(OpCode == "MEND")
+                        {
+                            readNextInput();
+                        }
+                        else
+                        {
 
-                        fReader.newLine();
-                        readNextInput();
+                            fReader.writeToFile(converter.intToString(currentLoc[counter].second),Label,OpCode,Operand);
+                            //fReader.writeToFile(converter.intToString(errorF));
+                            //fReader.writeToFile(converter.intToString(symbolF));
+                            fReader.writeToFile(converter.intToString(blockCounter));
+
+                            fReader.newLine();
+                            readNextInput();
+
+                        }
+
                     }
 
                     pcLoc.push_back({counter,LocCtr});
@@ -637,9 +992,10 @@ void Pass1::beginPass1()
                 }
             }
             //std::cout << "block debug: " << std::endl;
-            literalTable.debug();
-        
+            //literalTable.debug();
+            //namTab.debug();
             //debug();
+            defTab.debug();
             std::cout << "Program Length: " << programLength << std::endl;
             fReader.closeReadFile();
             fReader.closeWriteFile();

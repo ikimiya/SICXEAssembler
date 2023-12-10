@@ -29,8 +29,8 @@ void Pass2::beginPass2()
     //genOp.setLiteral(litTable);
 
     //symTable.debug();
-    blockTABLE.debug();
-    literalTable.debug();
+    //blockTABLE.debug();
+    //literalTable.debug();
 
 
     //std::cout << "BlockTable Index at 0 :" << blockTABLE.getAddressIndex(3) << std::endl;
@@ -447,8 +447,6 @@ void Pass2::beginPass2()
 
                 }
 
-
-
                 // control section check
                 std::istringstream iss(Operand);
                 std::string temp;
@@ -533,11 +531,11 @@ void Pass2::beginPass2()
 
             //if(opStruct.operand == "MAXLEN")
             // {
-                genOp.setValues(opStruct);
-                genOp.checkFormat();
-                genOp.createObjectCode();
-                genOp.debug();
-                genOp.checkBits();
+            //    genOp.setValues(opStruct);
+            //    genOp.checkFormat();
+            //    genOp.createObjectCode();
+            //    genOp.debug();
+            //    genOp.checkBits();
             // }
 
             
