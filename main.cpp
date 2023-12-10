@@ -21,7 +21,6 @@ std::map<std::string, std::pair<int, std::string>> OPTABLE;
 void createOPTABLE()
 {
     OPTABLE["Test"] = std::make_pair(3, "18");
-
 }
 
 
@@ -116,7 +115,7 @@ int main()
 
     FileReader fr;
 
-    std::string fileName = "literals";
+    std::string fileName = "control_section";
 
     Pass1 p1;
 

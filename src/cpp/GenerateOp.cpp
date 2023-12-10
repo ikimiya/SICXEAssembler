@@ -24,11 +24,20 @@ void GenerateOp::setObject(int format_, std::string oCode)
 
 void GenerateOp::checkFormat()
 {
+
+    if(cSect)
+    {
+        //std::cout << "Check Csect" << opCode << "." << operand << ": [" << cSect << "]" << std::endl;
+    }
     if(skip)
     {
     }
     else if (mnemonic == "BYTE" || mnemonic == "WORD")
     {
+        if(cSect)
+        {
+            
+        }
 
     }
     else{
@@ -176,6 +185,8 @@ void GenerateOp::checkFormat()
 
                 objectCode = converter.fillHex(ss.str());
 
+                //std::cout << "OjbectCode" << objectCode << std::endl;
+
             }
             else
             {
@@ -209,11 +220,11 @@ void GenerateOp::checkFormat()
 
             if(n == 0 && i == 0)
             {
+                
                 n = 1; 
                 i = 1;
             }
-
-            //std::cout << "SYMBOL " << symAddr << std::endl;
+        
 
             if(operand == "")
             {
@@ -221,13 +232,12 @@ void GenerateOp::checkFormat()
                 b = 0;
             }else if(e == 1 && symAddr != 0)
             {
-                // std::cout <<"TEST: ";
                 p = 0; b = 0;
                 disp = converter.displacementExtend(symAddr);
-                //std::cout <<"TEST: " << disp;
             }
             else if(n == 0 && i == 1 && symAddr == 0 && e != 1)
             {
+                
                 p = 0; b = 0;
                 std::string temp = operand;
                 temp.erase(0,1);
@@ -237,6 +247,8 @@ void GenerateOp::checkFormat()
             }
             else if(n == 0 && i == 1 && symAddr == 0 && e == 1)
             {
+                
+                
                 p = 0; b = 0;
                 std::string temp = operand;
                 temp.erase(0,1);
@@ -245,24 +257,40 @@ void GenerateOp::checkFormat()
             }
             else if(checkPC(pcDisp))
             {
-                //std::cout << "Check PC TRUE1" << std::endl;
+
                 //std::cout << "symbol: " << symAddr << " pc: " << pcAddr << std::endl;
                 if(e == 1)
                 {
                     p = 0; b = 0;
-                    disp = converter.displacementExtend(pcDisp);
+                    //std::cout << "csect: " << cSect << std::endl
+                    if(cSect)
+                    {
+                        disp = converter.displacementExtend(symAddr);
+                    }
+                    else
+                    {
+                    std::cout << "abcTest: " << std::endl;
+
+                        disp = converter.displacementExtend(pcDisp);
+                    }
                 } else if (n == 0 && i == 1)
                 {
+
+                    
                     p = 1; b = 0;
                     disp = converter.displacement(pcDisp);
                 }
                 else if (n == 1 && i == 0)
                 {
+
+                    
                     p = 1; b = 0;
                     disp = converter.displacement(pcDisp);
                 }
                 else
                 {
+
+                    
                     p = 1; b = 0;
                     disp = converter.displacement(pcDisp);
                 }
@@ -287,7 +315,7 @@ void GenerateOp::checkFormat()
             }
             else
             {
-                //std::cout << "Failure, PC: " << pcDisp << " baseDisp: " << baseDisp << std::endl;
+                std::cout << "Failure, PC: " << pcDisp << " baseDisp: " << baseDisp << std::endl;
                 //objectCode = "NULL";
             }
             
@@ -307,7 +335,9 @@ void GenerateOp::createObjectCode()
     }
     else if (mnemonic == "BYTE" || mnemonic == "WORD")
     {
+        //std::cout << "csect: " << cSect << std::endl;
         objectCode = resultByte;
+
     }
     else
     {
@@ -328,11 +358,8 @@ void GenerateOp::createObjectCode()
             }
             
             tempCode = converter.decimalToHexTwo(opCode);
-
             operandCode << tempCode << n << i << x << b << p << e << disp;
-
             std::string code = converter.opcodeHex(operandCode.str());
-          
             objectCode = converter.opcodeHex(operandCode.str());    
             
         }
@@ -351,6 +378,17 @@ void GenerateOp::createObjectCode()
 
 void GenerateOp::setValues(OpcodeStruct opStruct)
 {
+
+    /*
+    std::cout 
+    << "CurrentAddr: [" << (opStruct.currentAddr) 
+    << "] PCAddress: [" << (opStruct.pcAddr) 
+    << "] BaseAddress: [" << (opStruct.baseAddr) 
+    << "] SymbolAddress: [" << (opStruct.symAddr) << "]"
+    << std::endl;
+    */
+
+    
     currentAddr = converter.stringToInt(opStruct.currentAddr);
     pcAddr = converter.stringToInt(opStruct.pcAddr);
 
@@ -372,6 +410,7 @@ void GenerateOp::setValues(OpcodeStruct opStruct)
     format = opStruct.format;   
     skip = opStruct.skip;
     resultByte = opStruct.byte;
+    cSect = opStruct.cSect;
 }
 
 

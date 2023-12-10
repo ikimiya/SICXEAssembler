@@ -125,7 +125,6 @@ int Symtable::getBlockAddressIndex(int index)
             return it.second.length;
         }
     }
-    
     return -1;
 }
 
@@ -166,6 +165,44 @@ void Symtable::setLength(std::string label, int value)
     }
     
 }
+void Symtable::setDef(std::string label, int value)
+{
+    auto it = SYMTABLE.find(label);
+    if (it != SYMTABLE.end()) {
+        it->second.extDef = value;
+    } else {
+    }
+}
+
+void Symtable::setRef(std::string label, int value)
+{
+    auto it = SYMTABLE.find(label);
+    if (it != SYMTABLE.end()) {
+        it->second.extRef = value;
+    } else {
+    }
+}
+
+bool Symtable::getDef(std::string label)
+{
+    auto it = SYMTABLE.find(label);
+    if (it != SYMTABLE.end()) {
+        return it->second.extDef; 
+    } else {
+        return -1; 
+    }
+}
+
+bool Symtable::getRef(std::string label)
+{
+    auto it = SYMTABLE.find(label);
+    if (it != SYMTABLE.end()) {
+        return it->second.extRef; 
+    } else {
+        return -1; 
+    }
+}
+
 
 void Symtable::debug()
 {
@@ -179,7 +216,10 @@ void Symtable::debug()
                   << "] type: [" << it->second.type 
                   << "] blockNumber: [" << it->second.blockNumber 
                   << "] Address: [" << it->second.address 
-                  << "] Length: [" << it->second.length << "]\n";
+                  << "] Length: [" << it->second.length 
+                  << "] ExtDef: [" << it->second.extDef 
+                  << "] ExtRef: [" << it->second.extRef 
+                  << "]\n";
     }
     std::cout << "ENDDEBUG: " << std::endl;
 
@@ -193,4 +233,6 @@ void Symtable::resetTable()
     infos.blockNumber = 0;
     infos.address = 0;
     infos.length = 0;
+    infos.extDef = 0;
+    infos.extRef = 0;
 }

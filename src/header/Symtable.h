@@ -33,6 +33,11 @@ class Symtable
             int address;
             int length;
 
+            // control sectrol
+
+            bool extDef;
+            bool extRef;
+
         };
 
 
@@ -53,6 +58,14 @@ class Symtable
         void setBlockNumber(std::string Label, int value);
         void setBlockAddress(std::string Label, int value);
         void setLength(std::string Label, int value);
+
+        // control section
+        void setDef(std::string Label, int value);
+        void setRef(std::string Label, int value);
+
+        bool getDef(std::string label);
+        bool getRef(std::string label);
+
 
         void insertTable(std::string Label, tableInfo &infos);
         void resetTable();

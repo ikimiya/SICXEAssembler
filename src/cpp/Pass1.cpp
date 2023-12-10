@@ -35,7 +35,7 @@ void Pass1::beginPass1()
     if (fReader.myFile.is_open()) {
         //while (std::getline(fReader.myFile,currentLine)) {  
 
-            // default block
+            // Setup Default Blokcs 
             blockTABLE.bTable.address = 0;
             blockTABLE.bTable.length = 0;
             blockTABLE.bTable.blockNumber = blockCounter;
@@ -54,14 +54,12 @@ void Pass1::beginPass1()
 
             if(OpCode == "START")
             {
+                controlName = OpCode;
                 // save #operand as starting address 
                 startAdd = converter.stringToInt(Operand);
 
                 // convert locctr to int
                 LocCtr = converter.stringToInt(Operand);
-
-                //std::cout << "LOC: " << LocCtr << std::endl;
-
 
                 // write to Line imemdiate file
                 std::cout << "beginning line: ";
@@ -85,488 +83,486 @@ void Pass1::beginPass1()
             counter++;
 
             while(OpCode != "END")
+            {
+
+                std::cout  << 
+                "Counter: [" << counter << "] " << "PcCounter: " <<
+                "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+
+                if(OpCode == "USE")
                 {
+                    // if empty, it is default block
+                    std::cout << "currentBlockName" << blockName << std::endl;
+                    if(Operand == "")
+                    {                           
+                        // this sets the last locctr to block name
+                        blockTABLE.setLength(blockName,LocCtr);
 
-                    if(OpCode == "USE")
+                        // load the new blockName
+                        blockName = "DEFAULT";
+                        LocCtr = blockTABLE.getLength(blockName);
+                        currentLine = blockTABLE.getLength(blockName);
+                        blockCounter = blockTABLE.getBlockNumber(blockName);
+                        currentLoc[counter].second = blockTABLE.getLength(blockName);
+                        pcLoc[counter+1].second = blockTABLE.getLength(blockName);
+
+                    }
+                    else if(Operand != "")
                     {
-                        // if empty it is default block
-
-                        std::cout << "currentBlockName" << blockName << std::endl;
-                        if(Operand == "")
-                        {
-                            //std::cout << "Changing TO DEfault block" << std::endl;
-                            /*
-                            change loc, block name, block number to it
-                            */
-                           
-                            // this sets the last locctr to block name
+                        // Check If there is block exist
+                        if(blockTABLE.checkTableExist(Operand))
+                        {                                
+                            // save previous block to length
                             blockTABLE.setLength(blockName,LocCtr);
-
-                            // load the new blockName
-                            blockName = "DEFAULT";
-                            LocCtr = blockTABLE.getLength(blockName);
+                            
+                            // change to new block name
+                            blockName = Operand;
                             currentLine = blockTABLE.getLength(blockName);
                             blockCounter = blockTABLE.getBlockNumber(blockName);
                             currentLoc[counter].second = blockTABLE.getLength(blockName);
                             pcLoc[counter+1].second = blockTABLE.getLength(blockName);
 
-                            //blockTABLE.setLength(blockName,LocCtr);
-
-                        } else if(Operand != "")
+                            LocCtr = blockTABLE.getLength(blockName);
+                        }
+                        else    // else add new block
                         {
-                            // Check If there is block exist
-                            if(blockTABLE.checkTableExist(Operand))
-                            {
-                                // if exist change into that table
-                                
-                                // save previous block to length
-                                blockTABLE.setLength(blockName,LocCtr);
-                                
-                                // change to new block name
-                                blockName = Operand;
-                                currentLine = blockTABLE.getLength(blockName);
-                                blockCounter = blockTABLE.getBlockNumber(blockName);
-                                currentLoc[counter].second = blockTABLE.getLength(blockName);
-                                pcLoc[counter+1].second = blockTABLE.getLength(blockName);
+                            // New block start at zero
 
-                                LocCtr = blockTABLE.getLength(blockName);
-                                //blockTABLE.setLength(blockName,LocCtr);
-                            }
-                            else    // else add new block
-                            {
-                                // New block start at zero
-                                //std::cout << "CHANGING TO BLOCK:" << Operand << std::endl;
+                            // save previous blockname
+                            blockTABLE.setLength(blockName,LocCtr);
 
-                                // save previous blockname
-                                blockTABLE.setLength(blockName,LocCtr);
+                            // add new block to blockTable
+                            blockCounter++;
+                            blockName = Operand;
+                            blockTABLE.bTable.address = 0;
+                            blockTABLE.bTable.length = 0;
+                            blockTABLE.bTable.blockNumber = blockCounter;
 
-                                // add new block to blockTable
-                                blockCounter++;
-                                blockName = Operand;
-                                blockTABLE.bTable.address = 0;
-                                blockTABLE.bTable.length = 0;
-                                blockTABLE.bTable.blockNumber = blockCounter;
+                            // start at locCtr 0
+                            LocCtr = 0;
+                            currentLoc[counter].second = 0;
+                            pcLoc[counter+1].second = 0;
+                            blockTABLE.insertTable(Operand,blockTABLE.bTable);
+                        }
+                    }   // end if program block
 
-                                // start at locCtr 0
-                                LocCtr = 0;
-                                currentLoc[counter].second = 0;
-                                pcLoc[counter+1].second = 0;
-                                blockTABLE.insertTable(Operand,blockTABLE.bTable);
-                            }
-                        }   // end if program block
+                    //std::cout << "CHANGING TO BLOCK:" << Operand << std::endl;
+                    //blockTABLE.debug();
 
-                        //std::cout << "CHANGING TO BLOCK:" << Operand << std::endl;
-                        //blockTABLE.debug();
+                }   // end use 
 
-                    }   // end use 
 
-                    // if not comment line
-                    if(Label[0] != '.')
+
+                // if not comment line
+                if(Label[0] != '.')
+                {
+                    currentLoc.push_back({counter,LocCtr});
+
+                    // if there is symbol in label field
+                    if(Label != "")
                     {
-                        currentLoc.push_back({counter,LocCtr});
 
-                        // if there is symbol in label field
-                        if(Label != "")
+                        if(symTable.checkTableExist(Label))
                         {
+                            std::cout << LocCtr << ": " << Label << std::endl;
+                            symTable.setBlockNumber(Label,blockCounter);
 
-                            if(symTable.checkTableExist(Label))
+
+                            if(symTable.getAddress(Label) > LocCtr)
                             {
-                                std::cout << LocCtr << ": " << Label << std::endl;
 
-                                symTable.setBlockNumber(Label,blockCounter);
-                                //std::cout << "testing: Duplicated Symbol Found";
-                                //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
-                                symbolF = true;
-
-                            }else
-                            {   
-                                //std::cout << "inserted in " ;
-                                //std::cout  << "[" << Label << "] [" << LocCtr << "]" << std::endl;
-                                symTable.quickInsert(Label,LocCtr);
-                                symTable.setBlockNumber(Label,blockCounter);
-
-                                
-                            }
-                        }// end if symbol
-
-
-                        if(Operand[0] == '=')
-                        {
-                            literalTable.resetTable();
-                            //std::cout << "LITERAL: " << std::endl;
-
-
-                            std::istringstream iss(Operand);
-                            std::string temp;
-                            std::string result;
-                            std::string type;
-
-                            int byte;
-                            while(std::getline(iss,temp,'\''))
-                            {
-                                if(temp != "=C" || temp != "X" || temp != "=X")
-                                {
-                                    result = temp;
-                                }
-                                if(temp == "=C" || temp == "X" || temp == "=X")
-                                {
-                                    type = temp;
-                                }
-                            }
-                            //std::cout << "TEMP: " << result << std::endl;
-                            //std::cout << "type: " << type << std::endl;
-                            
-                            int length;
-                            std::strtol(result.c_str(),nullptr,16);
-                            byte = (result.length() +1)/2;
-
-                            if(type == "=C")
-                            {
-                                //std::cout << "ResultC" << result << std::endl;
-                                length = result.size();
-                                result = converter.byteCalc(result);
-                            }
-                            else if (type == "X")
-                            {
-                                //std::cout << "ResultX" << result << std::endl;
-                                result = result;
-                                
-                            }
-                            else if (type == "=X")
-                            {
-                                //std::cout << "Result=X" << result << std::endl;
-                                length = byte;
-                                result = result;
+                                std::string newLabel = Label+controlName;
+                                //std::cout << newLabel << " [" << LocCtr << "]" << std::endl;
+                                symTable.quickInsert(newLabel,LocCtr);
                             }
 
-                            //std::cout << "result: " << result << std::endl;
-                            //std::cout << "byyte: " << byte << std::endl;
+                            //std::cout << "testing: Duplicated Symbol Found";
+                            //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+                            symbolF = true;
+
+                        }else
+                        {   
+                            //std::cout << "inserted in " ;
+                            //std::cout  << "[" << Label << "] [" << LocCtr << "]" << std::endl;
+                            symTable.quickInsert(Label,LocCtr);
+                            symTable.setBlockNumber(Label,blockCounter);
 
                             
-                            if(literalTable.checkTableExist(Operand))
-                            {
-                                // skip it exist already 
-                            }
-                            else
-                            {
-                                //std::cout << "NEW INSERT: " << Operand << std::endl;
-                                literalTable.literalTable.length = converter.intToString(length);
-                                literalTable.literalTable.operand = result;
-                                literalTable.insertTable(Operand,literalTable.literalTable);
-                                //std::cout << "Insert End: " << Operand << std::endl;
-
-                            }
                         }
+                    }// end if symbol
 
+                    // check for literals
+                    if(Operand[0] == '=')
+                    {
+                        literalTable.resetTable();
+    
+                        std::istringstream iss(Operand);
+                        std::string temp;
+                        std::string result;
+                        std::string type;
 
-                        //Search OPTAB for code
-                        //temp 
-                        std::string eCode = OpCode;
-                        eCode.erase(0,1);
-
-                        // Check If Optable exist
-                        if(OPTABLE.checkOpExist(OpCode))
+                        int byte;
+                        while(std::getline(iss,temp,'\''))
                         {
-                            //std::cout << "OpCODE: " << OpCode << std::endl;
-                            int format = OPTABLE.getFormat(OpCode);
-                            if(format == 3)
+                            if(temp != "=C" || temp != "X" || temp != "=X")
                             {
-                                LocCtr += 3;
+                                result = temp;
                             }
-                            else if (format = 2)
+                            if(temp == "=C" || temp == "X" || temp == "=X")
                             {
-                                LocCtr += 2;
-                            }else if (format = 1){
-
-                                LocCtr += 1;
+                                type = temp;
                             }
                         }
-                        else if(OpCode == "WORD")
+                        //std::cout << "TEMP: " << result << std::endl;
+                        //std::cout << "type: " << type << std::endl;
+                        
+                        int length;
+                        std::strtol(result.c_str(),nullptr,16);
+                        byte = (result.length() +1)/2;
+
+                        if(type == "=C")
+                        {
+                            //std::cout << "ResultC" << result << std::endl;
+                            length = result.size();
+                            result = converter.byteCalc(result);
+                        }
+                        else if (type == "X")
+                        {
+                            //std::cout << "ResultX" << result << std::endl;
+                            result = result;
+                            
+                        }
+                        else if (type == "=X")
+                        {
+                            //std::cout << "Result=X" << result << std::endl;
+                            length = byte;
+                            result = result;
+                        }
+
+                        //std::cout << "result: " << result << std::endl;
+                        //std::cout << "byyte: " << byte << std::endl;
+                        
+                        if(literalTable.checkTableExist(Operand))
+                        {
+                            // skip it exist already 
+                        }
+                        else
+                        {
+                            //std::cout << "NEW INSERT: " << Operand << std::endl;
+                            literalTable.literalTable.length = converter.intToString(length);
+                            literalTable.literalTable.operand = result;
+                            literalTable.insertTable(Operand,literalTable.literalTable);
+                            //std::cout << "Insert End: " << Operand << std::endl;
+                        }
+                    }
+
+                    //Search OPTAB for code
+                    //temp 
+                    std::string eCode = OpCode;
+                    eCode.erase(0,1);
+
+                    // Check If Optable exist
+                    if(OPTABLE.checkOpExist(OpCode))
+                    {
+                        //std::cout << "OpCODE: " << OpCode << std::endl;
+                        int format = OPTABLE.getFormat(OpCode);
+                        if(format == 3)
                         {
                             LocCtr += 3;
                         }
-                        else if (OpCode == "RESW")
+                        else if (format = 2)
                         {
-                            int temp = converter.stringToInt(Operand);
-                            LocCtr += (3*temp);
+                            LocCtr += 2;
+                        }else if (format = 1){
+
+                            LocCtr += 1;
                         }
-                        else if (OpCode == "RESB")
+                    }
+                    else if(OpCode == "WORD")
+                    {
+                        LocCtr += 3;
+                    }
+                    else if (OpCode == "RESW")
+                    {
+                        int temp = converter.stringToInt(Operand);
+                        LocCtr += (3*temp);
+                    }
+                    else if (OpCode == "RESB")
+                    {
+                        // add #operand 
+                        // remember its binary need to switch to hex later
+                        LocCtr += converter.stringToInt(Operand);  
+                    }
+                    else if (OpCode == "BYTE")
+                    {
+                        std::istringstream iss(Operand);
+                        std::string temp;
+                        std::string result;
+
+                        std::string type;
+
+                        int byte;
+
+                        while(std::getline(iss,temp,'\''))
                         {
-                            // add #operand 
-                            // remember its binary need to switch to hex later
-                            LocCtr += converter.stringToInt(Operand);  
-                        }
-                        else if (OpCode == "BYTE")
-                        {
-                            std::istringstream iss(Operand);
-                            std::string temp;
-                            std::string result;
-
-                            std::string type;
-
-                            int byte;
-
-                            while(std::getline(iss,temp,'\''))
+                            if(temp != "C" || temp != "X" || temp != "=X")
                             {
-                                if(temp != "C" || temp != "X" || temp != "=X")
-                                {
-                                    result = temp;
-                                }
-                                if(temp == "C" || temp == "X" || temp == "=X")
-                                {
-                                    type = temp;
-                                }
+                                result = temp;
                             }
-                            //std::cout << "HERE TYEP: " << type << std::endl;
-                            //std::cout << "HERE result: " << result << std::endl;
-                            //std::cout << "result rseult: " << (256/converter.hexToBinary(result)) << std::endl;
-
-                            // convert result to hex, then calculate byte
-                            std::strtol(result.c_str(),nullptr,16);
-                            byte = (result.length() +1)/2;
-
-                            //std::cout << "BYTE: " << byte << std::endl;
-                            if(type == "C")
+                            if(temp == "C" || temp == "X" || temp == "=X")
                             {
-                                LocCtr += result.size();
-                            }
-                            else if (type == "X")
-                            {
-                                //LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
-                                LocCtr += byte;
-
-                            }
-                            else if (type == "=X")
-                            {
-                                //LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
-                                LocCtr += result.size();
-
-                            }
-
-                            // find length of constant in byte
-                            // add length to locctr
-
-                        }else if (OPTABLE.checkOpExist(eCode))
-                        {
-                            //std::cout << OpCode << std::endl;
-
-                            if(OpCode[0] == '+'){
-
-                                LocCtr += 4; 
+                                type = temp;
                             }
                         }
-                        else if(OpCode == "LTORG")
+                        //std::cout << "HERE TYEP: " << type << std::endl;
+                        //std::cout << "HERE result: " << result << std::endl;
+                        //std::cout << "result rseult: " << (256/converter.hexToBinary(result)) << std::endl;
+
+                        // convert result to hex, then calculate byte
+                        std::strtol(result.c_str(),nullptr,16);
+                        byte = (result.length() +1)/2;
+
+                        //std::cout << "BYTE: " << byte << std::endl;
+                        if(type == "C")
                         {
-                            //literalTable.debug();
-
-                            fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-                            fReader.newLine();
-                            
-                            if(literalTable.libTable.empty())
-                            {
-
-                            }
-                            else
-                            {
-                                for (auto& it : literalTable.libTable) 
-                                {
-                                    std::string literal = it.first;
-                                    std::string operandName = it.second.operand;
-                                    std::string bytes = it.second.length;
-                                    it.second.address = converter.intToString(LocCtr);
-
-                                    LocCtr += converter.stringToInt(bytes);
-
-
-                                    fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
-                                    fReader.writeToFile("/t");
-
-                                    fReader.writeToFile(converter.intToString(blockCounter));
-
-                                    if(symTable.checkTableExist(literal))
-                                    {
-
-                                    }
-                                    else
-                                    {
-                                        symTable.quickInsert(literal,0,blockCounter);
-                                    }
-
-
-                                    fReader.newLine();
-                                    literalDupe.push_back(literal);
-                                }
-                            }
+                            LocCtr += result.size();
+                        }
+                        else if (type == "X")
+                        {
+                            //LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
+                            LocCtr += byte;
 
                         }
-                        else if(OpCode == "EQU")
+                        else if (type == "=X")
                         {
-                            if(symTable.checkTableExist(Label))
+                            //LocCtr += (256%converter.hexToBinary(result))/256 + 1;   
+                            LocCtr += result.size();
+
+                        }
+
+                        // find length of constant in byte
+                        // add length to locctr
+
+                    }else if (OPTABLE.checkOpExist(eCode))
+                    {
+                        //std::cout << OpCode << std::endl;
+
+                        if(OpCode[0] == '+'){
+
+                            LocCtr += 4; 
+                        }
+                    }
+                    else if(OpCode == "LTORG")
+                    {
+                        fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+                        fReader.newLine();
+                        
+                        if(literalTable.libTable.empty())
+                        {
+
+                        }
+                        else
+                        {
+                            for (auto& it : literalTable.libTable) 
                             {
-                                if(Operand == "*")
+                                std::string literal = it.first;
+                                std::string operandName = it.second.operand;
+                                std::string bytes = it.second.length;
+                                it.second.address = converter.intToString(LocCtr);
+
+                                LocCtr += converter.stringToInt(bytes);
+                                fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
+                                fReader.writeToFile("/t");
+
+                                fReader.writeToFile(converter.intToString(blockCounter));
+
+                                if(symTable.checkTableExist(literal))
                                 {
-                                    symTable.setAddress(Label, LocCtr);
                                 }
                                 else
                                 {
-                                
-                                    std::istringstream iss(Operand);
-                                    std::string temp;
-                                    std::string result1;
-                                    std::string result2;
-            
-                                    std::string mathType;
-                                    int byte;
+                                    symTable.quickInsert(literal,0,blockCounter);
+                                }
 
-                                    bool keepGoing = true;
-
-                                    //std::cout << "OPERNAD CHECK: " << Operand << std::endl;
-
-                                    for(int i = 0; i < Operand.size(); i++)
-                                    {
-
-                                        if(Operand[i] == '+' || Operand[i] == '-' || Operand[i] == '*' || Operand[i] == '/')
-                                        {
-                                            mathType = Operand[i];
-                                            keepGoing = false;
-                                        }
-                                        else if(keepGoing)
-                                        {
-                                            result1 += Operand[i];
-                                        }
-                                        else
-                                        {
-                                            result2 += Operand[i];
-                                        }
-
-                                        //std::cout << "CURRENT: " << Operand[i] << std::endl;
-
-                                    }
-                                    int first, second, final;
-
-                                    //std::cout << "MATHRESULT: [" << result1 << "][" <<  mathType << "][" << result2 << "]." << std::endl;
-
-                                    if(symTable.checkTableExist(result1))
-                                    {
-                                        
-                                        first = symTable.getAddress(result1);
-                                    }
-                                    else
-                                    {
-                                        
-                                        first = converter.stringToInt(result1);
-                                    }
-
-                                    if(symTable.checkTableExist(result2))
-                                    {
-                                        
-                                        second = symTable.getAddress(result2);
-                                    }
-                                    else
-                                    {
-                                        second = converter.stringToInt(result2);
-                                    }
-
-                                    if(mathType == "-")
-                                    {
-                                        final = first - second;
-                                    } else if (mathType == "+")
-                                    {
-                                        final = first + second;
-                                    }else if (mathType == "/")
-                                    {
-                                        final = first / second;           
-                                    }else if (mathType == "*")
-                                    {
-                                        final = first * second;
-                                    }
-
-                                    std::cout << "FINAL: " << final << std::endl;
-
-                                    symTable.setAddress(Label,final);
-                                    LocCtr = final;
-
-                                }   // end whilke
-
-                            
-
+                                fReader.newLine();
+                                literalDupe.push_back(literal);
                             }
-
-                            //std::cout << "OPERAND: " << Operand << " opcode: " << OpCode << std::endl;
                         }
-                        else
-                        {
-                            
-                            //std::cout << "Error Flag invalid Operation Code";
 
-                            if(OpCode == "BASE")
+                    }
+                    else if(OpCode == "EQU")
+                    {
+                        if(symTable.checkTableExist(Label))
+                        {
+                            if(Operand == "*")
                             {
-
-                                //std::cout << " I SHOULD INSERT  " << std::endl;
-                                symTable.quickInsert(OpCode,LocCtr);
-
-
+                                symTable.setAddress(Label, LocCtr);
                             }
-                            errorF = true;
-                            //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
-                        }   // end check optab for opcode
+                            else
+                            {
+                        
+                                std::istringstream iss(Operand);
+                                std::string temp;
+                                std::string result1;
+                                std::string result2;
+        
+                                std::string mathType;
+                                int byte;
 
-                        errorFlag.push_back(errorF);
-                        symbolFlag.push_back(symbolF);
+                                bool keepGoing = true;
 
-                        if (OpCode == "LTORG")
-                        {
-                            readNextInput();
+                                //std::cout << "OPERNAD CHECK: " << Operand << std::endl;
+
+                                for(int i = 0; i < Operand.size(); i++)
+                                {
+
+                                    if(Operand[i] == '+' || Operand[i] == '-' || Operand[i] == '*' || Operand[i] == '/')
+                                    {
+                                        mathType = Operand[i];
+                                        keepGoing = false;
+                                    }
+                                    else if(keepGoing)
+                                    {
+                                        result1 += Operand[i];
+                                    }
+                                    else
+                                    {
+                                        result2 += Operand[i];
+                                    }
+
+                                    //std::cout << "CURRENT: " << Operand[i] << std::endl;
+
+                                }
+                                int first, second, final;
+
+                                //std::cout << "MATHRESULT: [" << result1 << "][" <<  mathType << "][" << result2 << "]." << std::endl;
+
+                                if(symTable.checkTableExist(result1))
+                                {
+                                    
+                                    first = symTable.getAddress(result1);
+                                }
+                                else
+                                {
+                                    
+                                    first = converter.stringToInt(result1);
+                                }
+
+                                if(symTable.checkTableExist(result2))
+                                {
+                                    
+                                    second = symTable.getAddress(result2);
+                                }
+                                else
+                                {
+                                    second = converter.stringToInt(result2);
+                                }
+
+                                if(mathType == "-")
+                                {
+                                    final = first - second;
+                                } else if (mathType == "+")
+                                {
+                                    final = first + second;
+                                }else if (mathType == "/")
+                                {
+                                    final = first / second;           
+                                }else if (mathType == "*")
+                                {
+                                    final = first * second;
+                                }
+
+                                std::cout << "FINAL: " << final << std::endl;
+
+                                symTable.setAddress(Label,final);
+                                LocCtr = final;
+
+                            }   // end equ*
+
                         }
-                        else if(OpCode == "EQU")
-                        {
-                            fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-                            //fReader.writeToFile(converter.intToString(errorF));
-                            //fReader.writeToFile(converter.intToString(symbolF));
 
-                            //fReader.writeToFile("BNUM" + converter.intToString(blockCounter));
-                            
-                            fReader.newLine();
-                            int temp = counter - 1;
-                            LocCtr = pcLoc[temp].second;
-                            readNextInput();
-                        }
-                        else
-                        {
-                            fReader.writeToFile(converter.intToString(currentLoc[counter].second),Label,OpCode,Operand);
-                            //fReader.writeToFile(converter.intToString(errorF));
-                            //fReader.writeToFile(converter.intToString(symbolF));
-                            fReader.writeToFile(converter.intToString(blockCounter));
-
-                            fReader.newLine();
-                            readNextInput();
-                        }
-
-                        pcLoc.push_back({counter,LocCtr});
-                        counter++;
-
+                        //std::cout << "OPERAND: " << Operand << " opcode: " << OpCode << std::endl;
+                    }
+                    else if (OpCode == "CSECT")
+                    {
+                        controlName = Label;
+                        LocCtr = 0;
+                        currentLoc[counter].second = 0;
+                        pcLoc[counter+1].second = 0;
                     }
                     else
                     {
-                        readNextInput();
-                    } // end if not comment
+                        
+                        //std::cout << "Error Flag invalid Operation Code";
+
+                        if(OpCode == "BASE")
+                        {
+
+                            //std::cout << " I SHOULD INSERT  " << std::endl;
+                            symTable.quickInsert(OpCode,LocCtr);
 
 
-
-                    if(Label[0] == '.')
-                    {
-
-                    }else
-                    {
-                        //std::cout << "wrote Line: " << std::endl;
+                        }
+                        errorF = true;
                         //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+                    }   // end check optab for opcode
 
+                    errorFlag.push_back(errorF);
+                    symbolFlag.push_back(symbolF);
+
+                    if (OpCode == "LTORG")
+                    {
+                        readNextInput();
                     }
-                    // write to line intermediate
-                    // read next input line 
+                    else if(OpCode == "EQU")
+                    {
+                        fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+                        //fReader.writeToFile(converter.intToString(errorF));
+                        //fReader.writeToFile(converter.intToString(symbolF));
+
+                        //fReader.writeToFile("BNUM" + converter.intToString(blockCounter));
+                        
+                        fReader.newLine();
+                        int temp = counter - 1;
+                        LocCtr = pcLoc[temp].second;
+                        readNextInput();
+                    }
+                    else
+                    {
+                        fReader.writeToFile(converter.intToString(currentLoc[counter].second),Label,OpCode,Operand);
+                        //fReader.writeToFile(converter.intToString(errorF));
+                        //fReader.writeToFile(converter.intToString(symbolF));
+                        fReader.writeToFile(converter.intToString(blockCounter));
+
+                        fReader.newLine();
+                        readNextInput();
+                    }
+
+                    pcLoc.push_back({counter,LocCtr});
+                    counter++;
+
+                }
+                else
+                {
+                    readNextInput();
+                } // end if not comment
 
 
-                } // end while not end
+
+                if(Label[0] == '.')
+                {
+
+                }else
+                {
+                    //std::cout << "wrote Line: " << std::endl;
+                    //std::cout  << "[" << LocCtr << "] [" << Label << "] [" << OpCode << "] [" << Operand << "]" << std::endl;
+
+                }
+                // write to line intermediate
+                // read next input line 
+
+
+            } // end while not end
 
             //std::cout << "Testing Input Place Here2!" << std::endl;
 
@@ -641,9 +637,9 @@ void Pass1::beginPass1()
                 }
             }
             //std::cout << "block debug: " << std::endl;
-
-
-            debug();
+            literalTable.debug();
+        
+            //debug();
             std::cout << "Program Length: " << programLength << std::endl;
             fReader.closeReadFile();
             fReader.closeWriteFile();
@@ -656,16 +652,32 @@ void Pass1::beginPass1()
 void Pass1::readNextInput()
 {
     std::getline(fReader.myFile,currentLine);
-    ss.clear();
-    ss.str(std::string());
-    ss << currentLine;
-    std::getline(ss, Label, '\t');
-    std::getline(ss, OpCode, '\t');
-    std::getline(ss, Operand, '\t');
-    std::getline(ss, Comment, '\t');
 
-    errorF = false;
-    symbolF = false;
+    if(currentLine.empty())
+    {
+        std::cout << "line Empty" << std::endl;
+        Label = "";
+        OpCode = "";
+        Operand = "";
+        Comment = "";
+        
+    }
+    else
+    {
+
+        ss.clear();
+        ss.str(std::string());
+        ss << currentLine;
+        std::getline(ss, Label, '\t');
+        std::getline(ss, OpCode, '\t');
+        std::getline(ss, Operand, '\t');
+        std::getline(ss, Comment, '\t');
+
+        errorF = false;
+        symbolF = false;
+
+    }
+
 
 }
 

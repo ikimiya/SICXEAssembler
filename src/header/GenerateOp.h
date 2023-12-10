@@ -69,6 +69,7 @@ class GenerateOp
         std::string resultByte;
         int format;
         bool skip;
+        bool cSect;
 
         Conversion converter;
 

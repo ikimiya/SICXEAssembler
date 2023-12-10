@@ -66,6 +66,7 @@ class Pass1
         Conversion converter;
 
         std::string fileName;
+        std::string controlName;
 
         std::stringstream ss;
         std::string currentLine; 

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "f:/IUPUI FALL 2023/System Software and Programming/FinalProjectFolder",
-      "program": "f:/IUPUI FALL 2023/System Software and Programming/FinalProjectFolder/build/Debug/outDebug",
+      "cwd": "f:/C++Projects2023/SICXEAssembler",
+      "program": "f:/C++Projects2023/SICXEAssembler/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

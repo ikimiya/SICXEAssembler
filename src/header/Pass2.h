@@ -76,6 +76,13 @@ class Pass2
 
         std::vector<std::pair<int,int>> currentLoc;
         std::vector<std::pair<int,int>> pcLoc;
+
+
+        std::vector<std::string> externalRef;
+        std::vector<std::string> externalDef;
+
+        std::string controlName;
+        std::string firstControl;
         int counter = 0;
 
 
