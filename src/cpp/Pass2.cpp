@@ -235,6 +235,7 @@ void Pass2::beginPass2()
                         symbolAddress = "0";
                     }
                 }
+                
                 else if (OPTABLE.checkOpExist(eCode))
                 {
                     sendOpcode = OPTABLE.getOpcode(eCode);
@@ -302,7 +303,7 @@ void Pass2::beginPass2()
                         result = (result);
                     }
                     opStruct.byte = result; 
-                    //std::cout << "byte check: " << result << std::endl;
+                    std::cout << "byte check: " << result << std::endl;
 
                     // convert to object code with constants
                 }
@@ -491,7 +492,7 @@ void Pass2::beginPass2()
                     }
                 }
 
-                // check for cs
+                // check for cs and pblocks
                 if(OpCode == "BYTE" || OpCode == "WORD")
                 {
                     if(opStruct.cSect)
@@ -499,7 +500,6 @@ void Pass2::beginPass2()
                         // if extref 
                         opStruct.byte = "000000";
                     }
-
                 }
 
 
@@ -544,7 +544,6 @@ void Pass2::beginPass2()
                 genOp.checkBits();
             // }
 
-
             if(literalTable.checkTableExist(OpCode))
             {
                 std::cout << "Literal Exist: " << std::endl;
@@ -569,6 +568,11 @@ void Pass2::beginPass2()
                 counter++;
             }
 
+            if(OpCode == "BYTE")
+            {
+                genOp.objectCode = opStruct.byte;
+            }
+            
             if(genOp.e && symTable.checkTableExist(genOp.operand))
             {
                 //std::cout << Operand << "MODIFICATION " << Label << std::endl;
@@ -580,7 +584,6 @@ void Pass2::beginPass2()
                 std::string finalText = converter.fillHexNum(nextGen,6) + converter.fillHexNum(opDisp.size(),2);
                 initializeMod(finalText);
             }
-
 
             if(OpCode == "RESW")
             {
@@ -598,7 +601,15 @@ void Pass2::beginPass2()
                 }
 
                 //initializeText();
-            }
+            } else if(OpCode == "USE")
+            {
+                    textLength += genOp.objectCode.size();
+                    textLength -= genOp.objectCode.size();
+                    writeText();
+                    fReader.newLine();
+                    initializeText();
+                    writeObjectCode();
+            } 
             else
 
             {
@@ -623,7 +634,6 @@ void Pass2::beginPass2()
                     {
                         textLength -= genOp.objectCode.size();
                         writeText();
-
                         fReader.newLine();
                         initializeText();
                         writeObjectCode();

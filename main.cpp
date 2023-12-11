@@ -14,6 +14,8 @@
 #include "src/header/GenerateOp.h"
 #include "src/header/Libtab.h"
 
+#include <filesystem>
+
 #include <vector>
 
 std::map<std::string, std::pair<int, std::string>> OPTABLE;
@@ -30,6 +32,15 @@ int main()
 
     Symtable sym;
 
+    std::string path = "Input";
+    std::string resultPath;
+    for (const auto & entry : std::filesystem::directory_iterator(path))
+    {
+        std::cout << entry.path().stem() << std::endl;
+        resultPath = entry.path().stem().u8string();
+    }
+
+    std::cout << resultPath << std::endl;
 
     std::vector<int> location;
 
@@ -41,9 +52,6 @@ int main()
     location.push_back(61);
 
     std::cout << location[1] << std::endl;
-
-
-
 
     std::string test = "Test";
     Optable op;
@@ -115,16 +123,16 @@ int main()
 
     FileReader fr;
 
-    std::string fileName = "literals";
+    std::string fileName = "prog_blocks";
 
     Pass1 p1;
 
     p1.setFileName(fileName);
     p1.beginPass1();
-    p1.literalTable.debug();
+    //p1.literalTable.debug();
 
     //std::cout << "symtable.debug()" << std::endl;
-    //p1.symTable.debug();
+    p1.symTable.debug();
 
 
     Pass2 p2;
