@@ -42,12 +42,12 @@ void Pass2::beginPass2()
 
     if(symTable.checkTableExist("BASE"))
     {
-        std::cout << "ExistOP " << std::endl;
+        //std::cout << "ExistOP " << std::endl;
         baseAddress = symTable.getAddress("BASE");
 
     } else
     {
-        std::cout << "NotExist " << std::endl;
+        //std::cout << "NotExist " << std::endl;
         baseAddress = -1;
         
     }
@@ -73,7 +73,10 @@ void Pass2::beginPass2()
             controlName = Label;
             firstControl = Label;
             // write something
-            fReader.writeToFile(converter.decimalToHexFour(Address));
+            std::cout << "address: " << converter.decimalToHexFour(Address) << std::endl;
+            
+            writeHeader();
+            //fReader.writeToFile(converter.decimalToHexFour(Address));
             fReader.newLine();
 
             counter++;
@@ -88,9 +91,13 @@ void Pass2::beginPass2()
 
 
         // write header
-        writeHeader();
-        // initalize text record
 
+        textLength = 0;
+        std::string programName = "T"+Label;
+        std::string startingAddress = "T"+converter.binaryToHexByte(genOp.currentAddr);
+        std::string testing = "T" + converter.fillHexNum(Address,6);
+
+        fReader.writeToFileNoTab(testing);
         //counter++;
 
 
@@ -152,7 +159,6 @@ void Pass2::beginPass2()
                 // also check without special + 
 
                 //std::cout << "check Operand: " << tempOperand << std::endl;
-
                 if(OPTABLE.checkOpExist(OpCode))
                 {
                     sendOpcode = OPTABLE.getOpcode(OpCode);
@@ -348,8 +354,6 @@ void Pass2::beginPass2()
                     //std::cout << literalTable.getOperand(OpCode) << std::endl;
                 }
 
-                
-
                 // BlocKNumber
                 if(blockNumber == "")
                 {
@@ -531,14 +535,16 @@ void Pass2::beginPass2()
 
             //if(opStruct.operand == "MAXLEN")
             // {
-            //    genOp.setValues(opStruct);
-            //    genOp.checkFormat();
-            //    genOp.createObjectCode();
-            //    genOp.debug();
-            //    genOp.checkBits();
+                genOp.setValues(opStruct);
+                genOp.checkFormat();
+                genOp.createObjectCode();
+                genOp.debug();
+                genOp.checkBits();
             // }
 
             
+
+
 
             //std::cout << "Pass 2 Address Start 3" << std::endl;
 
@@ -554,50 +560,199 @@ void Pass2::beginPass2()
                 counter++;
             }
 
+            if(genOp.e && symTable.checkTableExist(genOp.operand))
+            {
+                std::cout << Operand << "MODIFICATION " << Label << std::endl;
+                int nextGen = genOp.currentAddr + 1;
+                std::string opDisp = converter.opcodeHex(genOp.disp);
+                //std::cout << "Mod: " << converter.fillHexNum(nextGen,6) << " ," << converter.fillHexNum(opDisp.size(),2) << std::endl;
+                //std::cout << "DISP: " << genOp.disp.size() << std::endl;
+
+                std::string finalText = converter.fillHexNum(nextGen,6) + converter.fillHexNum(opDisp.size(),2);
+                initializeMod(finalText);
+            }
+
+
+            if(OpCode == "RESW")
+            {
+                //writeObjectCode()
+                if(genOp.objectCode == "")
+                {
+                    std::cout << "objectCode L : [" << genOp.objectCode << "]" << std::endl;
+                    //textLength += genOp.objectCode.size();
+                    if(begin)
+                    {
+                        writeText();
+                        fReader.newLine();
+                    }
+                    begin = false;
+                }
+
+                //initializeText();
+            }
+            else
+
+            {
+                //std::cout << "Text Length:" << textLength << std::endl;
+
+                //std::cout << "checking object size: " << genOp.objectCode.size() << std::endl;
+                //std::cout << "checking text size: " << textLength << std::endl;
+                textLength += genOp.objectCode.size();
+                if(genOp.objectCode == "")
+                {
+                }
+                else
+                {
+
+                    if(!begin)
+                    {
+                        begin = true;
+                        initializeText();
+                    }
+
+                    if(textLength > 60)
+                    {
+                        textLength -= genOp.objectCode.size();
+                        writeText();
+
+                        fReader.newLine();
+                        initializeText();
+                        writeObjectCode();
+
+                    }else
+                    {
+                        writeObjectCode();
+                    }
+                }
+            }
             readNextInput();
-
-
         }   // end while nmot end 
 
+        std::cout << "last: " << ssObject.str() << std::endl;
 
+        std::cout << "LAST label: " << Label << " OP: " << OpCode << " Operandl: " << Operand << std::endl; 
+        if(textStarted)
+        {
+            writeText(); 
+            fReader.newLine();
+        }else
+        {
 
+        }
 
         // write text to Text object program
 
+        // write modifictation record
+        writeMod();
         // write end record 
 
         //write last listing line
+
+        writeEnd();
 
 
 
     }   // end myfile is open
 
 
-
-
-
     //symTable.debug();
-
 
 }
 
 void Pass2::writeHeader()
 {
-    // Need to check Label length of 6
-    std::string programName = "H"+Label;
-    std::string startingAddress = "00"+converter.binaryToHexByte(startAdd);
-    std::string objectLength = "00"+converter.binaryToHexByte(programLength);
+    // Need to check Label length of 
+    if(Label.size() > 5)
+    {
+        std::string newString = Label.substr(0,6);
+        Label = newString;
+    }
+    else
+    {
+        Label.append(5 - Label.size(), ' ');
+    }
 
-    fReader.writeToFile(programName);
+    std::string programName = "H"+Label;
+    std::string startingAddress = converter.fillHexNum(startAdd,6);
+    std::string objectLength = converter.fillHexNum(programLength,6);
+
+    fReader.writeToFileNoTab(programName);
     fReader.writeToFileNoTab(startingAddress);
     fReader.writeToFileNoTab(objectLength);
-    fReader.newLine();
 
+}
+
+void Pass2::writeText()
+{
+
+    int newText = textLength/2;
+    std::string objLen = converter.fillHexNum(newText,2);
+
+    std::string finalText = objLen + ssObject.str();
+
+    std::cout << "writing: [" << objLen << "]" << std::endl;
+    std::cout << "writing: [" << ssObject.str() << "]" << std::endl;
+    std::cout << "writing: [" << finalText << "]" << std::endl;
+    fReader.writeToFileNoTab(finalText);
+
+    ssObject.str("");
+    ssObject.clear();
+    textStarted = false;
+
+    
+
+
+}
+
+void Pass2::initializeText()
+{
+    textStarted = true;
+    textLength = genOp.objectCode.size();
+    // Need to check Label length of 6
+
+    std::cout << "Generating at: " << OpCode << " : " << genOp.objectCode<< std::endl;
+
+    std::string programName = "T"+Label;
+    std::string startingAddress = "T"+converter.binaryToHexByte(genOp.currentAddr);
+    std::string testing = "T" + converter.fillHexNum(genOp.currentAddr,6);
+    fReader.writeToFileNoTab(testing);
+}
+
+void Pass2::writeObjectCode()
+{
+    //std::cout << "gen OP:" << genOp.objectCode << std::endl;
+    //ssObject << genOp.objectCode;
+
+    ssObject << genOp.objectCode;
+    
+}
+
+void Pass2::initializeMod(std::string word)
+{
+    std::string start = "M"+word;
+    ssMod << start << "\n";
+}
+
+void Pass2::writeMod()
+{
+    fReader.writeToFileNoTab(ssMod.str());
+    ssMod.str("");
+    ssMod.clear();
+}
+
+void Pass2::writeEnd()
+{
+
+    std::string objectLength = converter.fillHexNum(startAdd,6);
+    std::string programName = "E" + objectLength;
+
+    fReader.writeToFileNoTab(programName);
+    fReader.newLine();
 }
 
 void Pass2::getPassData(int starting, int loc, int pLength)
 {
-    startAdd = startAdd;
+    startAdd = starting;
     //LocCtr = loc;
     programLength = pLength;
 }

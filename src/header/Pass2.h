@@ -39,7 +39,25 @@ class Pass2
 
         void setLocation(std::vector<std::pair<int,int>> curLoc, std::vector<std::pair<int,int>> nextLoc);
 
+
+        // writing
+        std::stringstream ssObject;
+        int writeCurrent;
+        bool begin = true;;
         void writeHeader();
+        void initializeText();
+        void writeText();
+        void writeObjectCode();
+
+        bool textStarted = false;
+        std::stringstream ssMod;
+        void initializeMod(std::string word);
+        void writeMod();
+        void writeEnd();
+
+
+
+        int textLength = 0;
 
         Optable getOptable(Optable op);
         Symtable getSymtable(Symtable sym);

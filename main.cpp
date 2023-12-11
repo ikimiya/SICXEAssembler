@@ -115,7 +115,7 @@ int main()
 
     FileReader fr;
 
-    std::string fileName = "macros";
+    std::string fileName = "literals";
 
     Pass1 p1;
 

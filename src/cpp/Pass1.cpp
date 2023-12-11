@@ -177,12 +177,11 @@ void Pass1::beginPass1()
                         }else
                         {   
                             //std::cout << "inserted in " ;
-                            std::cout  << "[" << Label << "] [" << LocCtr << "]" << std::endl;
                             
 
                             if(namTab.checkTableExist(Label))
                             {
-                                std::cout << "checkTTExist: " << Label << std::endl;
+                                //std::cout << "checkTTExist: " << Label << std::endl;
                             }
                             else
                             {
@@ -473,7 +472,7 @@ void Pass1::beginPass1()
                                 {
                                     final = first * second;
                                 }
-                                std::cout << "FINAL: " << final << std::endl;
+                                //std::cout << "FINAL: " << final << std::endl;
 
                                 symTable.setAddress(Label,final);
                                 LocCtr = final;
@@ -494,8 +493,8 @@ void Pass1::beginPass1()
                         // check if label exist
                     else if(namTab.checkTableExist(OpCode))
                     {
-                        std::cout << "Label Exist Expanding" << std::endl;
-                        std::cout << "Label:" << Label <<" Operand: " << Operand << " OPCODE: " << OpCode << std::endl;
+                        //std::cout << "Label Exist Expanding" << std::endl;
+                        //std::cout << "Label:" << Label <<" Operand: " << Operand << " OPCODE: " << OpCode << std::endl;
 
                         // set arg table 
                         std::istringstream iss(Operand);
@@ -506,27 +505,23 @@ void Pass1::beginPass1()
                         int argCounter = 0;
                         while(std::getline(iss,temp,','))
                         {
-                            std::cout << "argTable: " << temp << std::endl;
+                            //std::cout << "argTable: " << temp << std::endl;
                             argTab.insertTable(temp,argCounter);
                             argCounter++;
                         }
 
-                        argTab.debug();
+                       
 
-                        std::cout << "Myarg: " << argTab.getArg(1) << std::endl;
+                        //std::cout << "Myarg: " << argTab.getArg(1) << std::endl;
 
                         // write comment line
                         int beginLine = namTab.getStart(OpCode);
                         int endLine = namTab.getEnd(OpCode);
 
 
-                        std::cout << "begin: " << beginLine << " end: " << endLine << std::endl;
+                        //std::cout << "begin: " << beginLine << " end: " << endLine << std::endl;
 
                         std::string expandFile = defTab.getMacro(beginLine);
-
-                        //std::cout << "explandFile: " << expandFile << std::endl;
-
-                        std::cout << "before: " << Label << std::endl;
                         
                         std::stringstream ssT;
                         std::stringstream temp2;
@@ -548,8 +543,6 @@ void Pass1::beginPass1()
                         std::getline(temp2, Operand2, '\t');
                         //std::getline(temp2, Comment, '\t');
 
-
-                        std::cout << "File: " << fileLoc << std::endl;
 
                         fReader.writeToFile("."+Label,OpCode,Operand);
                         fReader.newLine();
@@ -579,7 +572,7 @@ void Pass1::beginPass1()
                             std::getline(temp2, OpCode2, '\t');
                             std::getline(temp2, Operand2, '\t');
 
-                            std::cout << "Current Operand:[" << Operand2 << "]" << std::endl;
+                            //std::cout << "Current Operand:[" << Operand2 << "]" << std::endl;
                             std::istringstream iss(Operand2);
                             std::string value1;
                             std::string value2;
@@ -664,7 +657,7 @@ void Pass1::beginPass1()
                                     newOperand = value1 + argTab.getArg(index) + value3;
 
                                 }
-                                std::cout << "New OP: " << newOperand << std::endl;
+                            
                             }
                         
                             
@@ -674,7 +667,7 @@ void Pass1::beginPass1()
                                 first = false;
                             }
 
-                            std::cout << fileLoc << " " << Label2 << " " << OpCode2 << " " << newOperand << std::endl;
+                            //std::cout << fileLoc << " " << Label2 << " " << OpCode2 << " " << newOperand << std::endl;
 
                             fReader.writeToFile(fileLoc,Label2,OpCode2,newOperand);
                             fReader.newLine();
@@ -1004,7 +997,8 @@ void Pass1::beginPass1()
             //literalTable.debug();
             //namTab.debug();
             //debug();
-            defTab.debug();
+            //defTab.debug();
+            
             std::cout << "Program Length: " << programLength << std::endl;
             fReader.closeReadFile();
             fReader.closeWriteFile();

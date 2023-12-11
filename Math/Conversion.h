@@ -50,6 +50,10 @@ class Conversion
     std::string byteCalc(std::string input);
 
     std::string fillHex(std::string input);
+
+    std::string fillHexNum(std::string input, int num);
+    std::string fillHexNum(int input, int num);
+
     
 
 

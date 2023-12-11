@@ -79,6 +79,8 @@ std::string Conversion::binaryToHexByte(int number)
     //std::string hex = binaryToHex(number);
     std::stringstream ss;
 
+    ss << std::uppercase;
+
     ss << std::setfill('0') << std::setw(4) << std::hex << number;
    
     return ss.str();
@@ -243,3 +245,44 @@ std::string Conversion::fillHex(std::string input)
     return ss.str();
 
 }
+
+std::string Conversion::fillHexNum(std::string input, int num)
+{
+
+    long long unsigned int n = hexToBinary(input);     
+
+    std::stringstream ss;
+
+    ss << std::uppercase;
+    std::string temp = input;
+
+    ss.clear();
+    ss.str("");
+
+    ss << std::setw(num) << std::setfill('0') << std::right << input;
+
+    return ss.str();
+
+}
+
+std::string Conversion::fillHexNum(int input, int num)
+{    
+
+    std::string newString = binaryToHex(input);
+
+    std::stringstream ss;
+
+    ss << std::uppercase;
+    std::string temp = newString;
+
+    ss.clear();
+    ss.str("");
+
+    ss << std::setw(num) << std::setfill('0') << std::right << newString;
+
+
+    return ss.str();
+
+}
+
+
