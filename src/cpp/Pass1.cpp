@@ -923,23 +923,6 @@ void Pass1::beginPass1()
 
             //std::cout << "Testing Input Place Here2!" << std::endl;
 
-            // write last line to intermediate file
-            errorFlag.push_back(errorF);
-            symbolFlag.push_back(symbolF);
-            fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-            //fReader.writeToFile(converter.intToString(errorF));
-            //fReader.writeToFile(converter.intToString(symbolF));
-            fReader.writeToFile(converter.intToString(blockCounter));
-            fReader.newLine();
-
-            pcLoc.push_back({counter,LocCtr});
-            currentLoc.push_back({counter,LocCtr});
-            counter++;
-
-            blockTABLE.setLength(blockName,LocCtr);
-            programLength = LocCtr - startAdd;
-
-
             // update block table
             bool first = true;
             for(auto it = blockTABLE.blockTable.rbegin(); it != blockTABLE.blockTable.rend(); it++)
@@ -988,11 +971,29 @@ void Pass1::beginPass1()
                     fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
                     fReader.writeToFile("\t");
                     //fReader.writeToFileTab();
+                    LocCtr += converter.stringToInt(it.second.length);
                     
                     fReader.newLine();
                     literalDupe.push_back(literal);
                 }
             }
+
+            // write last line to intermediate file
+            errorFlag.push_back(errorF);
+            symbolFlag.push_back(symbolF);
+            fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+            //fReader.writeToFile(converter.intToString(errorF));
+            //fReader.writeToFile(converter.intToString(symbolF));
+            fReader.writeToFile(converter.intToString(blockCounter));
+            fReader.newLine();
+
+            pcLoc.push_back({counter,LocCtr});
+            currentLoc.push_back({counter,LocCtr});
+            counter++;
+
+            blockTABLE.setLength(blockName,LocCtr);
+            programLength = LocCtr - startAdd;
+
             //std::cout << "block debug: " << std::endl;
             //literalTable.debug();
             //namTab.debug();
