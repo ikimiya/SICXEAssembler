@@ -939,6 +939,7 @@ void Pass1::beginPass1()
             blockTABLE.setLength(blockName,LocCtr);
             programLength = LocCtr - startAdd;
 
+
             // update block table
             bool first = true;
             for(auto it = blockTABLE.blockTable.rbegin(); it != blockTABLE.blockTable.rend(); it++)
@@ -968,7 +969,7 @@ void Pass1::beginPass1()
                     
                 }
             }
-
+            
             // check lietral 
             for (auto& it : literalTable.libTable) 
             {
@@ -979,16 +980,15 @@ void Pass1::beginPass1()
 
                 if (std::find(literalDupe.begin(), literalDupe.end(),literal)!=literalDupe.end())
                 {
-        
                 }
                 else
                 {
                     //symTable.quickInsert
-
                     it.second.address = converter.intToString(LocCtr);
                     fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
                     fReader.writeToFile("\t");
                     //fReader.writeToFileTab();
+                    
                     fReader.newLine();
                     literalDupe.push_back(literal);
                 }
@@ -998,7 +998,6 @@ void Pass1::beginPass1()
             //namTab.debug();
             //debug();
             //defTab.debug();
-            
             std::cout << "Program Length: " << programLength << std::endl;
             fReader.closeReadFile();
             fReader.closeWriteFile();
@@ -1023,7 +1022,6 @@ void Pass1::readNextInput()
     }
     else
     {
-
         ss.clear();
         ss.str(std::string());
         ss << currentLine;
@@ -1039,7 +1037,6 @@ void Pass1::readNextInput()
 
 
 }
-
 
 void Pass1::debug()
 {

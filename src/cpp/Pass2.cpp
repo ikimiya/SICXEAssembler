@@ -504,6 +504,8 @@ void Pass2::beginPass2()
 
 
 
+
+
                 /*
                 // check code counter
                 if object code is >= 10 * 3, 
@@ -542,8 +544,15 @@ void Pass2::beginPass2()
                 genOp.checkBits();
             // }
 
-            
 
+            if(literalTable.checkTableExist(OpCode))
+            {
+                std::cout << "Literal Exist: " << std::endl;
+                genOp.objectCode = literalTable.getOperand(OpCode);
+
+                genOp.debug();
+                genOp.checkBits();
+            }
 
 
             //std::cout << "Pass 2 Address Start 3" << std::endl;
@@ -562,7 +571,7 @@ void Pass2::beginPass2()
 
             if(genOp.e && symTable.checkTableExist(genOp.operand))
             {
-                std::cout << Operand << "MODIFICATION " << Label << std::endl;
+                //std::cout << Operand << "MODIFICATION " << Label << std::endl;
                 int nextGen = genOp.currentAddr + 1;
                 std::string opDisp = converter.opcodeHex(genOp.disp);
                 //std::cout << "Mod: " << converter.fillHexNum(nextGen,6) << " ," << converter.fillHexNum(opDisp.size(),2) << std::endl;
@@ -578,7 +587,7 @@ void Pass2::beginPass2()
                 //writeObjectCode()
                 if(genOp.objectCode == "")
                 {
-                    std::cout << "objectCode L : [" << genOp.objectCode << "]" << std::endl;
+                    //std::cout << "objectCode L : [" << genOp.objectCode << "]" << std::endl;
                     //textLength += genOp.objectCode.size();
                     if(begin)
                     {
@@ -690,9 +699,9 @@ void Pass2::writeText()
 
     std::string finalText = objLen + ssObject.str();
 
-    std::cout << "writing: [" << objLen << "]" << std::endl;
-    std::cout << "writing: [" << ssObject.str() << "]" << std::endl;
-    std::cout << "writing: [" << finalText << "]" << std::endl;
+    //std::cout << "writing: [" << objLen << "]" << std::endl;
+    //std::cout << "writing: [" << ssObject.str() << "]" << std::endl;
+    //std::cout << "writing: [" << finalText << "]" << std::endl;
     fReader.writeToFileNoTab(finalText);
 
     ssObject.str("");

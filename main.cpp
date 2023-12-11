@@ -121,6 +121,7 @@ int main()
 
     p1.setFileName(fileName);
     p1.beginPass1();
+    p1.literalTable.debug();
 
     //std::cout << "symtable.debug()" << std::endl;
     //p1.symTable.debug();
