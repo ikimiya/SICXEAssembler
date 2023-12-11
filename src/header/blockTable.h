@@ -14,7 +14,6 @@ class BlockTable
 
     private: 
 
-
     public:
 
 
@@ -35,7 +34,11 @@ class BlockTable
         int getBlockNumber(std::string Label);
         int getAddress(std::string Label);
         int getLength(std::string Label);  
+        int getLengthIndex(int index);
         int getAddressIndex(int index);
+        int getHighestBlock();
+
+
         std::string getBlockName(std::string label);  
 
 

@@ -123,7 +123,7 @@ int main()
 
     FileReader fr;
 
-    std::string fileName = "prog_blocks";
+    std::string fileName = "literals";
 
     Pass1 p1;
 
@@ -132,7 +132,7 @@ int main()
     //p1.literalTable.debug();
 
     //std::cout << "symtable.debug()" << std::endl;
-    p1.symTable.debug();
+    //p1.symTable.debug();
 
 
     Pass2 p2;

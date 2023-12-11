@@ -922,7 +922,47 @@ void Pass1::beginPass1()
 
             } // end while not end
 
-            //std::cout << "Testing Input Place Here2!" << std::endl;
+            // check lietral 
+            for (auto& it : literalTable.libTable) 
+            {
+                std::string literal = it.first;
+                std::string operandName = it.second.operand;
+                std::string address = it.second.address;
+                std::string bytes = it.second.length;
+
+                if (std::find(literalDupe.begin(), literalDupe.end(),literal)!=literalDupe.end())
+                {
+                }
+                else
+                {
+                    //symTable.quickInsert
+                    it.second.address = converter.intToString(LocCtr);
+                    fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
+                    fReader.writeToFile("\t");
+                    //fReader.writeToFileTab();
+                    LocCtr += converter.stringToInt(it.second.length);
+                    fReader.newLine();
+                    literalDupe.push_back(literal);
+                }
+            }
+
+            // write last line to intermediate file
+            errorFlag.push_back(errorF);
+            symbolFlag.push_back(symbolF);
+            fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
+            //fReader.writeToFile(converter.intToString(errorF));
+            //fReader.writeToFile(converter.intToString(symbolF));
+            fReader.writeToFile(converter.intToString(blockCounter));
+            fReader.newLine();
+            blockTABLE.setLength(blockName,LocCtr);
+
+            pcLoc.push_back({counter,LocCtr});
+            currentLoc.push_back({counter,LocCtr});
+            counter++;
+
+            programLength = LocCtr - startAdd;
+
+            blockTABLE.debug();
 
             // update block table
             bool first = true;
@@ -950,56 +990,29 @@ void Pass1::beginPass1()
                     address = it->second.address;
                     value = length + address;
                     first = true;
-                    
-                }
-            }
-            
-            // check lietral 
-            for (auto& it : literalTable.libTable) 
-            {
-                std::string literal = it.first;
-                std::string operandName = it.second.operand;
-                std::string address = it.second.address;
-                std::string bytes = it.second.length;
-
-                if (std::find(literalDupe.begin(), literalDupe.end(),literal)!=literalDupe.end())
-                {
-                }
-                else
-                {
-                    //symTable.quickInsert
-                    it.second.address = converter.intToString(LocCtr);
-                    fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
-                    fReader.writeToFile("\t");
-                    //fReader.writeToFileTab();
-                    LocCtr += converter.stringToInt(it.second.length);
-                    
-                    fReader.newLine();
-                    literalDupe.push_back(literal);
                 }
             }
 
-            // write last line to intermediate file
-            errorFlag.push_back(errorF);
-            symbolFlag.push_back(symbolF);
-            fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-            //fReader.writeToFile(converter.intToString(errorF));
-            //fReader.writeToFile(converter.intToString(symbolF));
-            fReader.writeToFile(converter.intToString(blockCounter));
-            fReader.newLine();
 
-            pcLoc.push_back({counter,LocCtr});
-            currentLoc.push_back({counter,LocCtr});
-            counter++;
+            blockTABLE.debug();
 
-            blockTABLE.setLength(blockName,LocCtr);
-            programLength = LocCtr - startAdd;
+
 
             //std::cout << "block debug: " << std::endl;
             //literalTable.debug();
             //namTab.debug();
             //debug();
             //defTab.debug();
+            blockTABLE.debug();
+            programLength = LocCtr - startAdd;
+            std::cout << "highest block: " << blockTABLE.getHighestBlock() << std::endl;
+
+            int highestBlock = blockTABLE.getHighestBlock();
+
+            programLength = blockTABLE.getAddressIndex(highestBlock) + blockTABLE.getLengthIndex(highestBlock);
+            
+
+
             std::cout << "Program Length: " << programLength << std::endl;
             fReader.closeReadFile();
             fReader.closeWriteFile();

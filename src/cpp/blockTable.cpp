@@ -58,6 +58,17 @@ int BlockTable::getAddressIndex(int index)
     return -1;
 }
 
+int BlockTable::getLengthIndex(int index)
+{
+    for (auto& it : blockTable) {
+        if (it.second.blockNumber == index) {
+            return it.second.length;
+        }
+    }
+    return -1;
+}
+
+
 int BlockTable::getLength(std::string label)
 {
     auto it = blockTable.find(label);
@@ -78,6 +89,10 @@ int BlockTable::getBlockNumber(std::string label)
     }
 }
 
+int BlockTable::getHighestBlock()
+{
+    return blockTable.begin()->second.blockNumber;
+}
 
 void BlockTable::setAddress(std::string label, int value)
 {
@@ -112,6 +127,8 @@ void BlockTable::resetTable()
     bTable.length = -1;
 
 }
+
+
 
 
 void BlockTable::debug()

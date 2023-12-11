@@ -551,7 +551,7 @@ void Pass2::beginPass2()
 
             if(literalTable.checkTableExist(OpCode))
             {
-                std::cout << "Literal Exist: " << std::endl;
+                //std::cout << "Literal Exist: " << std::endl;
                 genOp.objectCode = literalTable.getOperand(OpCode);
 
                 genOp.debug();
@@ -735,7 +735,7 @@ void Pass2::initializeText()
     textLength = genOp.objectCode.size();
     // Need to check Label length of 6
 
-    std::cout << "Generating at: " << OpCode << " : " << genOp.objectCode<< std::endl;
+    //std::cout << "Generating at: " << OpCode << " : " << genOp.objectCode<< std::endl;
 
     std::string programName = "T"+Label;
     std::string startingAddress = "T"+converter.binaryToHexByte(genOp.currentAddr);
