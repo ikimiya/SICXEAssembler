@@ -472,9 +472,10 @@ void Pass1::beginPass1()
                                 {
                                     final = first * second;
                                 }
-                                //std::cout << "FINAL: " << final << std::endl;
+                                std::cout << "FINAL: " << final << std::endl;
 
                                 symTable.setAddress(Label,final);
+                                
                                 LocCtr = final;
 
                             }   // end equ*

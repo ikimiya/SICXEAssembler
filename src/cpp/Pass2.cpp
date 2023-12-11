@@ -352,8 +352,12 @@ void Pass2::beginPass2()
                 if (literalTable.checkTableExist(Operand))
                 {
                     symbolAddress = literalTable.getAddress(Operand);
+
                     //std::cout << literalTable.getOperand(OpCode) << std::endl;
+                    std::cout << "current Symbol: " << symbolAddress << std::endl;
                 }
+
+    
 
                 // BlocKNumber
                 if(blockNumber == "")
@@ -372,21 +376,20 @@ void Pass2::beginPass2()
                         {
                             value = converter.stringToInt(literalTable.getAddress(Operand));
                             //std::cout << "Operand" << Operand << " Value: " << value  << "sym: " << symAddr<< std::endl;
-                        }
 
-                        // std::cout << symAddr << std::end;;
+
+                            
+                        }else
+                        {
 
                         int result = value + symAddr;
-
-                        //std::cout << "result is " << result << std::endl;
-
-
-
                         symbolAddress = converter.intToString(result);
                         if(symTable.checkTableExist(cOperand))
                         {
                             symbolAddress = converter.intToString(symTable.getAddress(cOperand));
                         }
+                        }
+
 
                         
                     } 
@@ -401,8 +404,6 @@ void Pass2::beginPass2()
                         else
                         {
                             int blockNum = converter.stringToInt(blockNumber);
-
-
                             int symNumber = symTable.getBlockNumber(tempOperand);
                             int value = symTable.getAddress(tempOperand);
                             int symAddr = blockTABLE.getAddressIndex(symNumber);
@@ -445,12 +446,16 @@ void Pass2::beginPass2()
                     {
                         if (literalTable.checkTableExist(Operand))
                         {
+                            
                             symbolAddress = literalTable.getAddress(Operand);
                             //std::cout << literalTable.getOperand(OpCode) << std::endl;
                         }
                     }
 
                 }
+
+
+                
 
                 // control section check
                 std::istringstream iss(Operand);
@@ -535,14 +540,14 @@ void Pass2::beginPass2()
 
                 //std::cout << "pc Address: " << opStruct.pcAddr << std::endl
 
-            //if(opStruct.operand == "MAXLEN")
-            // {
+            //if(opStruct.operand == "#MAXLEN")
+            //{
                 genOp.setValues(opStruct);
                 genOp.checkFormat();
                 genOp.createObjectCode();
                 genOp.debug();
                 genOp.checkBits();
-            // }
+            //}
 
             if(literalTable.checkTableExist(OpCode))
             {
@@ -562,6 +567,7 @@ void Pass2::beginPass2()
             {
                 std::cout << "CHECK: LTORG " << std::endl;
                 //std::cout << "Operand: " << literalTable.getOperand(Operand) << std::endl;
+
             }
             else
             {

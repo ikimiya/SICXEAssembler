@@ -80,7 +80,7 @@ void Symtable::setAddress(std::string label, int value)
 {
     auto it = SYMTABLE.find(label);
     if (it != SYMTABLE.end()) {
-        it->second.address = value;
+        it->second.value = value;
     } else {
     }
 }

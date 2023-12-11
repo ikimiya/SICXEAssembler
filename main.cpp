@@ -37,7 +37,7 @@ int main()
     for (const auto & entry : std::filesystem::directory_iterator(path))
     {
         std::cout << entry.path().stem() << std::endl;
-        resultPath = entry.path().stem().u8string();
+        resultPath = entry.path().stem().u8string(); 
     }
 
     std::cout << resultPath << std::endl;
@@ -136,6 +136,7 @@ int main()
 
 
     Pass2 p2;
+    p1.literalTable.debug();
 
     p2.setFileName(fileName);
     p2.setOptable(p1.OPTABLE);
