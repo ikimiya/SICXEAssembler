@@ -40,14 +40,13 @@ void genSingleFile(std::string fileName)
 {
     Pass1 p1;
     Pass2 p2;
-
+    //
     std::cout << "Running: " << fileName << ".txt" << std::endl;
     p1.setFileName(fileName);
 
     if(p1.fReader.fileNotExist)
     {
         std::cout << "Aborting Error File Name: " << fileName << ".txt" << std::endl;
-        std::cout << " " << std::endl;
     }
     else
     {
