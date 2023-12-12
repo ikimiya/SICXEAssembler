@@ -180,9 +180,7 @@ void GenerateOp::checkFormat()
                 {
                     int tempValue = symTable.getAddress(value1);
                     ss << tempValue;
-
                 }
-
                 objectCode = converter.fillHex(ss.str());
             }
         }
@@ -192,7 +190,6 @@ void GenerateOp::checkFormat()
             pcDisp = symAddr - pcAddr;
             baseDisp = symAddr - baseAddr;
 
-
             if(n == 0 && i == 0)
             {
                 
@@ -200,7 +197,6 @@ void GenerateOp::checkFormat()
                 i = 1;
             }
         
-
             if(operand == "")
             {
                 p = 0;
@@ -212,18 +208,14 @@ void GenerateOp::checkFormat()
             }
             else if(n == 0 && i == 1 && symAddr == 0 && e != 1)
             {
-                
                 p = 0; b = 0;
                 std::string temp = operand;
                 temp.erase(0,1);
                 int iAdd = converter.stringToInt(temp);
-
                 disp = converter.displacement(iAdd);
             }
             else if(n == 0 && i == 1 && symAddr == 0 && e == 1)
-            {
-                
-                
+            {  
                 p = 0; b = 0;
                 std::string temp = operand;
                 temp.erase(0,1);
@@ -245,22 +237,16 @@ void GenerateOp::checkFormat()
                     }
                 } else if (n == 0 && i == 1)
                 {
-
-                    
                     p = 1; b = 0;
                     disp = converter.displacement(pcDisp);
                 }
                 else if (n == 1 && i == 0)
                 {
-
-                    
                     p = 1; b = 0;
                     disp = converter.displacement(pcDisp);
                 }
                 else
                 {
-
-                    
                     p = 1; b = 0;
                     disp = converter.displacement(pcDisp);
                 }
