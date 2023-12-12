@@ -83,7 +83,6 @@ void Pass1::beginPass1()
             if(OpCode == "USE")
             {
                 // if empty, it is default block
-                std::cout << "currentBlockName" << blockName << std::endl;
                 if(Operand == "")
                 {                           
                     // this sets the last locctr to block name
@@ -794,7 +793,6 @@ void Pass1::beginPass1()
                 it.second.address = converter.intToString(LocCtr);
                 fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
                 fReader.writeToFile("\t");
-                //fReader.writeToFileTab();
                 LocCtr += converter.stringToInt(it.second.length);
                 fReader.newLine();
                 literalDupe.push_back(literal);
@@ -849,7 +847,6 @@ void Pass1::beginPass1()
         int highestBlock = blockTABLE.getHighestBlock();
         programLength = blockTABLE.getAddressIndex(highestBlock) + blockTABLE.getLengthIndex(highestBlock);
         
-        std::cout << "Program Length: " << programLength << std::endl;
         fReader.closeReadFile();
         fReader.closeWriteFile();
     } // end if

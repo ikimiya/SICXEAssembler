@@ -10,35 +10,30 @@
 #include <sstream>
 #include "../header/OpcodeStruct.h"
 #include "../header/Symtable.h"
-
-
 #include "../../Math/Conversion.h"
 
 class GenerateOp
 {
     public:
         GenerateOp();
-
         ~GenerateOp();
 
-        void setObject(int format, std::string oCode);
 
-        void createObjectCode();
-
+        // get op,bits,disp
         void checkFormat();
 
+        // use to generate opCode
+        void createObjectCode();
 
         void setValues(OpcodeStruct opStruct);
 
+        // check PC/Base Boundaries
         bool checkPC(int value);
-
         bool checkBase(int value);
 
-
-        void checkBits();
-
+        // debug need to run debug->checkBits
         void debug();
-
+        void checkBits();
 
         void setSymtable(Symtable sym);
 

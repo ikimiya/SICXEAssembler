@@ -14,30 +14,18 @@ GenerateOp::~GenerateOp()
 
 }
 
-void GenerateOp::setObject(int format_, std::string oCode)
-{
-    //format = format_;
-    objectCode = oCode;
-
-    checkFormat();
-}
-
 void GenerateOp::checkFormat()
 {
-
     if(cSect)
     {
-        //std::cout << "Check Csect" << opCode << "." << operand << ": [" << cSect << "]" << std::endl;
+
     }
     if(skip)
     {
+
     }
     else if (mnemonic == "BYTE" || mnemonic == "WORD")
     {
-        if(cSect)
-        {
-            
-        }
 
     }
     else{
@@ -54,9 +42,7 @@ void GenerateOp::checkFormat()
         bool extended = false;
         bool indirect = false; 
 
-
         //  Opcode check [0]
-        //  Operand check ,
         if(format == 3)
         {
             n = 1, i = 1;
@@ -82,7 +68,6 @@ void GenerateOp::checkFormat()
                 keepGoing = false;      
             }
         }
-
 
         if(operand == "")
         {
@@ -131,13 +116,10 @@ void GenerateOp::checkFormat()
         }
         else
         {
-
         }
 
         if(format == 1)
         {
-
-
         }
         else if (format == 2)
         {
@@ -166,15 +148,11 @@ void GenerateOp::checkFormat()
                 ss.clear();
                 ss.str("");
 
-
                 ss << std::uppercase << opCode;
-
-
                 if(symTable.checkTableExist(value1))
                 {
                     int tempValue = symTable.getAddress(value1);
                     ss << tempValue;
-
                 }
 
                 if(symTable.checkTableExist(value2))
@@ -184,9 +162,6 @@ void GenerateOp::checkFormat()
                 }
 
                 objectCode = converter.fillHex(ss.str());
-
-                //std::cout << "OjbectCode" << objectCode << std::endl;
-
             }
             else
             {
@@ -257,20 +232,15 @@ void GenerateOp::checkFormat()
             }
             else if(checkPC(pcDisp))
             {
-
-                //std::cout << "symbol: " << symAddr << " pc: " << pcAddr << std::endl;
                 if(e == 1)
                 {
                     p = 0; b = 0;
-                    //std::cout << "csect: " << cSect << std::endl
                     if(cSect)
                     {
                         disp = converter.displacementExtend(symAddr);
                     }
                     else
                     {
-                    std::cout << "abcTest: " << std::endl;
-
                         disp = converter.displacementExtend(pcDisp);
                     }
                 } else if (n == 0 && i == 1)
@@ -294,13 +264,10 @@ void GenerateOp::checkFormat()
                     p = 1; b = 0;
                     disp = converter.displacement(pcDisp);
                 }
-                // any other things
                 // generate object code
 
             }else if (checkBase(baseDisp))
             {
-                //std::cout << "TestBASE" << std::endl;
-
                 p = 0; b = 1;
 
                 if(e)
@@ -311,97 +278,55 @@ void GenerateOp::checkFormat()
                 {
                     disp = converter.displacement(baseDisp);
                 }
-
             }
             else
             {
-                std::cout << "Failure, PC: " << pcDisp << " baseDisp: " << baseDisp << std::endl;
+                //std::cout << "Failure, PC: " << pcDisp << " baseDisp: " << baseDisp << std::endl;
                 //objectCode = "NULL";
             }
-            
         }
-
     }
-
 }
 
 void GenerateOp::createObjectCode()
 {
     // need to check format before doing decimal two/four
-
     if(skip)
     {
         objectCode = "";
     }
     else if (mnemonic == "BYTE" || mnemonic == "WORD")
     {
-        //std::cout << "csect: " << cSect << std::endl;
         objectCode = resultByte;
-
     }
     else
     {
-
         if(format == 3)
         {
             std::string tempCode;
             std::stringstream operandCode;
-
             if(e)
             {
-            //std::cout << "Testing: " << disp << " E:" << e << std::endl;
-                //std::string tempCode = converter.decimalToHexTwo(opCode);
+
             }
             else
             {
 
             }
-            
             tempCode = converter.decimalToHexTwo(opCode);
             operandCode << tempCode << n << i << x << b << p << e << disp;
             std::string code = converter.opcodeHex(operandCode.str());
             objectCode = converter.opcodeHex(operandCode.str());    
-            
         }
-
-
-
-
     }
-
-
-  
-
 }
-
-
 
 void GenerateOp::setValues(OpcodeStruct opStruct)
 {
-
-    /*
-    std::cout 
-    << "CurrentAddr: [" << (opStruct.currentAddr) 
-    << "] PCAddress: [" << (opStruct.pcAddr) 
-    << "] BaseAddress: [" << (opStruct.baseAddr) 
-    << "] SymbolAddress: [" << (opStruct.symAddr) << "]"
-    << std::endl;
-    */
-
-    
+    // set Values to Compute object code
     currentAddr = converter.stringToInt(opStruct.currentAddr);
     pcAddr = converter.stringToInt(opStruct.pcAddr);
-
-    //std::cout << "PC ADDR: " <<pcAddr << std::endl;
-    //std::cout << "PC ADDR: " <<opStruct.pcAddr << std::endl;
     baseAddr = converter.stringToInt(opStruct.baseAddr);
-
-    // for sym depending on what it is and if symbol exist
-    /*
-    
-        resb resw base start end no opcode
-    */
-
     symAddr = converter.stringToInt(opStruct.symAddr);
     Label = opStruct.label;
     mnemonic = opStruct.mnemonic;
@@ -413,9 +338,6 @@ void GenerateOp::setValues(OpcodeStruct opStruct)
     cSect = opStruct.cSect;
 }
 
-
-
-
 bool GenerateOp::checkBase(int value)
 {
     /*
@@ -423,7 +345,6 @@ bool GenerateOp::checkBase(int value)
     2. int - int for pc
     3. using hex to int find the  borders.
     */
-   
     if(0 <= value && 4095 >= value)
     {
         return true;
@@ -433,12 +354,10 @@ bool GenerateOp::checkBase(int value)
 
 bool GenerateOp::checkPC(int value)
 {
-
     if(-2048 <= value && 2047 >= value)
     {
         return true;
     }
-
     return false;
 }
 
