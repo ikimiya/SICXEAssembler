@@ -54,7 +54,7 @@ void Pass1::beginPass1()
 
             if(OpCode == "START")
             {
-                controlName = OpCode;
+                controlName = Label;
                 // save #operand as starting address 
                 startAdd = converter.stringToInt(Operand);
 
@@ -69,6 +69,11 @@ void Pass1::beginPass1()
                 //fReader.writeToFile(converter.intToString(errorF));
                 //fReader.writeToFile(converter.intToString(symbolF));
                 fReader.newLine();
+
+                // csect begin and end
+                conTable.resetTable();
+                conTable.insertTable(controlName, conTable.cSectTable);
+                conTable.setBeginAddress(controlName,LocCtr);
 
                 readNextInput();
                 
@@ -486,10 +491,17 @@ void Pass1::beginPass1()
                     }
                     else if (OpCode == "CSECT")
                     {
+                        conTable.setEndAddress(controlName, LocCtr);
+
                         controlName = Label;
+                        conTable.resetTable();
+                        conTable.insertTable(controlName,conTable.cSectTable);
+
                         LocCtr = 0;
                         currentLoc[counter].second = 0;
                         pcLoc[counter+1].second = 0;
+
+                        conTable.setBeginAddress(controlName,LocCtr);
                     }
                         // check if label exist
                     else if(namTab.checkTableExist(OpCode))
@@ -922,6 +934,8 @@ void Pass1::beginPass1()
 
             } // end while not end
 
+            // set lastValue control section
+
             // check lietral 
             for (auto& it : literalTable.libTable) 
             {
@@ -1000,6 +1014,10 @@ void Pass1::beginPass1()
             //debug();
             //defTab.debug();
             //blockTABLE.debug();
+
+            // set last value control section
+            conTable.setEndAddress(controlName, LocCtr);
+
             programLength = LocCtr - startAdd;
             //std::cout << "highest block: " << blockTABLE.getHighestBlock() << std::endl;
 

@@ -203,7 +203,6 @@ bool Symtable::getRef(std::string label)
     }
 }
 
-
 void Symtable::debug()
 {
     //std::cout << "Testing: " << infos.blockName << std::endl;

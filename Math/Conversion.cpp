@@ -285,4 +285,31 @@ std::string Conversion::fillHexNum(int input, int num)
 
 }
 
+std::string Conversion::checkLength(std::string input)
+{
+    std::string newString;
+    std::string temp;
+
+    std::stringstream ss;
+
+    // Need to check Label length of 
+    if(input.size() > 5)
+    {
+        std::string newString = input.substr(0,6);
+        temp = newString;
+        return temp;
+    }
+    else
+    {
+        ss << std::setw(6) << std::left << input;
+        return ss.str();
+    }
+
+
+
+    return temp;
+
+
+}
+
 

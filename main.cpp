@@ -123,7 +123,7 @@ int main()
 
     FileReader fr;
 
-    std::string fileName = "prog_blocks";
+    std::string fileName = "control_section";
 
     Pass1 p1;
 
@@ -132,7 +132,11 @@ int main()
     //p1.literalTable.debug();
 
     //std::cout << "symtable.debug()" << std::endl;
-    //p1.symTable.debug();
+    p1.symTable.debug();
+
+    std::cout << "control Tab debug " << std::endl;
+    p1.conTable.ifControl();
+    p1.conTable.debug();
 
 
     Pass2 p2;
@@ -143,9 +147,11 @@ int main()
     p2.setSymtable(p1.symTable);
     p2.setLiteralTab(p1.literalTable);
     p2.setBlockTab(p1.blockTABLE);
+    p2.setControlTab(p1.conTable);
     p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
     p2.setLocation(p1.currentLoc,p1.pcLoc);
     p2.beginPass2();
+
 
 
     std::string firstFile = "Immediate/";

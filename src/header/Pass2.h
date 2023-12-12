@@ -17,6 +17,8 @@
 #include "../header/GenerateOp.h"
 #include "../header/OpcodeStruct.h"
 #include "../header/blockTable.h"
+#include "../header/ControlTab.h"
+
 
 class Pass2
 {   
@@ -36,14 +38,19 @@ class Pass2
         void setSymtable(Symtable sym);
         void setLiteralTab(Libtab lit);
         void setBlockTab(BlockTable bloc);
-
+        void setControlTab(ControlTab conT);
         void setLocation(std::vector<std::pair<int,int>> curLoc, std::vector<std::pair<int,int>> nextLoc);
+        
 
 
         // writing
         std::stringstream ssObject;
         int writeCurrent;
-        bool begin = true;;
+        bool begin = true;
+
+        std::stringstream startWrite;
+
+        void writeStartHeader();
         void writeHeader();
         void initializeText();
         void writeText();
@@ -54,8 +61,6 @@ class Pass2
         void initializeMod(std::string word);
         void writeMod();
         void writeEnd();
-
-
 
         int textLength = 0;
 
@@ -78,10 +83,10 @@ class Pass2
         GenerateOp genOp;
         Libtab literalTable;
         BlockTable blockTABLE;
+        ControlTab conTab;
+
     
-
         std::string fileName;
-
         std::string currentLine; 
         std::string Address, Label, OpCode, Operand;
         std::string blockNumber;
@@ -95,12 +100,20 @@ class Pass2
         std::vector<std::pair<int,int>> currentLoc;
         std::vector<std::pair<int,int>> pcLoc;
 
-
+        // control section
         std::vector<std::string> externalRef;
         std::vector<std::string> externalDef;
 
         std::string controlName;
         std::string firstControl;
+
+        bool isCsect = false;
+
+        std::stringstream ssDefine;
+        std::stringstream ssRecord;
+        void writeDefine();
+        void writeRecord();
+
         int counter = 0;
 
 

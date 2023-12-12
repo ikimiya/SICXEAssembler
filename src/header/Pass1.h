@@ -17,6 +17,7 @@
 #include "../header/ArgTable.h"
 #include "../header/NamTable.h"
 #include "../header/DefTable.h"
+#include "../header/ControlTab.h"
 
 class Pass1
 {   
@@ -65,6 +66,7 @@ class Pass1
         BlockTable blockTABLE;
 
         // csect
+        ControlTab conTable;
         std::string controlName;
 
 

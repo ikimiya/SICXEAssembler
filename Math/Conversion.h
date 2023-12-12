@@ -54,6 +54,8 @@ class Conversion
     std::string fillHexNum(std::string input, int num);
     std::string fillHexNum(int input, int num);
 
+    std::string checkLength(std::string length);
+
     
 
 

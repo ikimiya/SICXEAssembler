@@ -34,7 +34,6 @@ class Symtable
             int length;
 
             // control sectrol
-
             bool extDef;
             bool extRef;
 
