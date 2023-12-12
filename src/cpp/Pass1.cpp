@@ -962,8 +962,6 @@ void Pass1::beginPass1()
 
             programLength = LocCtr - startAdd;
 
-            blockTABLE.debug();
-
             // update block table
             bool first = true;
             for(auto it = blockTABLE.blockTable.rbegin(); it != blockTABLE.blockTable.rend(); it++)
@@ -994,8 +992,6 @@ void Pass1::beginPass1()
             }
 
 
-            blockTABLE.debug();
-
 
 
             //std::cout << "block debug: " << std::endl;
@@ -1003,9 +999,9 @@ void Pass1::beginPass1()
             //namTab.debug();
             //debug();
             //defTab.debug();
-            blockTABLE.debug();
+            //blockTABLE.debug();
             programLength = LocCtr - startAdd;
-            std::cout << "highest block: " << blockTABLE.getHighestBlock() << std::endl;
+            //std::cout << "highest block: " << blockTABLE.getHighestBlock() << std::endl;
 
             int highestBlock = blockTABLE.getHighestBlock();
 

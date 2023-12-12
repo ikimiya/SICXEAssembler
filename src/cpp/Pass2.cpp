@@ -353,8 +353,27 @@ void Pass2::beginPass2()
                 {
                     symbolAddress = literalTable.getAddress(Operand);
 
-                    //std::cout << literalTable.getOperand(OpCode) << std::endl;
-                    std::cout << "current Symbol: " << symbolAddress << std::endl;
+                    // block differenec adding
+                    if (symTable.checkTableExist(Operand))
+                    {
+                        int firstBlock = converter.stringToInt(blockNumber);
+                        int secondBlock = symTable.getBlockNumber(Operand);
+
+                        int blockDiff = secondBlock - firstBlock;
+                        int newBlock = blockTABLE.getAddressIndex(secondBlock);
+                        int currentSymbol = converter.stringToInt(symbolAddress);
+
+                        int finalBlock = newBlock + currentSymbol;
+
+                        symbolAddress = converter.intToString(finalBlock);
+                    }
+            
+
+                    /*
+
+                    */
+
+
                 }
 
     
@@ -554,8 +573,8 @@ void Pass2::beginPass2()
                 //std::cout << "Literal Exist: " << std::endl;
                 genOp.objectCode = literalTable.getOperand(OpCode);
 
-                genOp.debug();
-                genOp.checkBits();
+                //genOp.debug();
+                //genOp.checkBits();
             }
 
 
@@ -715,9 +734,9 @@ void Pass2::writeText()
 
     std::string finalText = objLen + ssObject.str();
 
-    //std::cout << "writing: [" << objLen << "]" << std::endl;
-    //std::cout << "writing: [" << ssObject.str() << "]" << std::endl;
-    //std::cout << "writing: [" << finalText << "]" << std::endl;
+    std::cout << "writing: [" << objLen << "]" << std::endl;
+    std::cout << "writing: [" << ssObject.str() << "]" << std::endl;
+    std::cout << "writing: [" << finalText << "]" << std::endl;
     fReader.writeToFileNoTab(finalText);
 
     ssObject.str("");
