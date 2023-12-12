@@ -1,3 +1,4 @@
+BASIC	START	0	
 	LDS	#3	.Initialize Register S to 3
 	LDT	#300	.Initialize Register T to 300
 	LDX	#0	.Initialize Index Register to 0
@@ -10,3 +11,4 @@ ADDLP	LDA	ALPHA,X	.Load Word from ALPHA into Register A
 ALPHA	RESW	100
 BETA	RESW	100
 GAMMA	RESW	100
+	END	BASIC

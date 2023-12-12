@@ -19,7 +19,7 @@ void FileReader::readFile(std::string fileName)
 
     if(myFile.fail())
     {
- 		std::cout << "Error opening the file : "  << std::endl;
+ 		std::cout << "Error opening the file : [" << fileName << "]"  << std::endl;
 		exit(1);
     }
 

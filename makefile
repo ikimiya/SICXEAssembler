@@ -47,8 +47,13 @@ clean:
 	rm -f *.o
 	rm -f Math/*.o
 	rm -f src/*/*.o
-
 	rm assembler
+
+cleanResult:
+	rm -f Result/*.txt
+
+cleanImt:
+	rm -f Immediate/*.txt
 
 run: assembler
 	./assembler
