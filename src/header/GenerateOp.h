@@ -18,7 +18,6 @@ class GenerateOp
         GenerateOp();
         ~GenerateOp();
 
-
         // get op,bits,disp
         void checkFormat();
 
@@ -34,25 +33,20 @@ class GenerateOp
         // debug need to run debug->checkBits
         void debug();
         void checkBits();
-
         void setSymtable(Symtable sym);
 
         Symtable symTable;
-
         OpcodeStruct opStruct;
 
         std::string objectCode;
         std::stringstream ss;
 
-
         bool n,i,x,b,p,e;
 
         std::string disp;
-
         std::string Address;
 
-
-        // use for transition
+        // use for opstruct address
         int pcAddr;
         int baseAddr;
         int symAddr;
@@ -67,21 +61,6 @@ class GenerateOp
         bool cSect;
 
         Conversion converter;
-
-        /*
-        PC = Next
-
-        Base = Base
-        
-        
-        */
-
-
-
-
-
-
-
 };
 
 #endif // !__GENERATEOP_H_

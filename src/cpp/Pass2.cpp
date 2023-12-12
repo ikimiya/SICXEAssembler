@@ -17,7 +17,6 @@ void Pass2::setFileName(std::string fileName_)
 {
     fileName = fileName_;
     fReader.readFile("Immediate/" + fileName + "testIMT.txt");
-
 }
 
 void Pass2::beginPass2()
@@ -26,7 +25,6 @@ void Pass2::beginPass2()
     bool firstEnd = true;
 
     genOp.setSymtable(symTable);
-    //genOp.setLiteral(litTable);
 
     std::string sendOpcode;
     std::string buffer;
@@ -35,16 +33,14 @@ void Pass2::beginPass2()
 
     if(symTable.checkTableExist("BASE"))
     {
-        //std::cout << "ExistOP " << std::endl;
         baseAddress = symTable.getAddress("BASE");
-
-    } else
+    } 
+    else
     {
-        //std::cout << "NotExist " << std::endl;
         baseAddress = -1;
     }
 
-
+    // write to file location
     fReader.writeFile("Result/" + fileName + "result.txt");
 
     if(fReader.myFile.is_open())
@@ -61,31 +57,24 @@ void Pass2::beginPass2()
 
         if(OpCode == "START")
         {
-
             controlName = Label;
             firstControl = Label;
-            // write something
-            std::cout << "address: " << converter.decimalToHexFour(Address) << std::endl;
-            
+
+            // write header
             writeHeader();
             fReader.newLine();
-            //fReader.writeToFile(converter.decimalToHexFour(Address));
-
-
             counter++;
+
             // read next input line
             readNextInput();
         }   // end if start
 
-
-        //std::cout << "Pass 2 Address Start 2" << std::endl;
-
+        // set length for text record
         textLength = 0;
 
+        // check if control section 
         if(conTab.ifControl())
         {
-            std::cout << "control true:" << conTab.ifControl() << std::endl;
-            std::cout << "Control size:" << conTab.controlTable.size() << std::endl;
             isCsect = true;
         }else
         {
@@ -95,13 +84,10 @@ void Pass2::beginPass2()
             fReader.writeToFileNoTab(testing);
         }
 
-
+        // keep Read while not end
         while(OpCode != "END")
         {
-            //std::cout << "Input: ";
-            //debug();
             opStruct.cSect = false;
-
             std::string eCode = OpCode;
             eCode.erase(0,1);
             std::string tempOperand = Operand;
@@ -114,12 +100,9 @@ void Pass2::beginPass2()
             } 
             else if(OpCode == "CSECT")
             {
-                std::cout << "CSECT RESET VECTORS " << std::endl;
-
                 controlName = Label;
 
                 writeText();
-
                 fReader.newLine();
                 writeMod();
 
@@ -156,22 +139,16 @@ void Pass2::beginPass2()
                 externalDef.clear();
                 externalRef.clear();
             }
-
+            // csection
             std::string cOperand = Operand + controlName;
+
             // if it is not comment line 
             if(Label[0] != '.')
             {
-
-                //std::cout << controlName << std::endl;
-                // search table for op code
-                // also check without special + 
-
-                //std::cout << "check Operand: " << tempOperand << std::endl;
                 if(OPTABLE.checkOpExist(OpCode))
                 {
                     sendOpcode = OPTABLE.getOpcode(OpCode);
                     format = OPTABLE.getFormat(OpCode);
-                    //std::cout << "Operand: " << Operand << std::endl;
 
                     std::istringstream iss(Operand);
                     std::string tempOp;
@@ -194,8 +171,9 @@ void Pass2::beginPass2()
                             isBuffer = true;
                         }
                         keepGoing = false;
-                    }
+                    }   // end while getline
 
+                    // check if not empty
                     if(Operand != "")
                     {
                         // need to check fo @ # etc.
@@ -216,8 +194,6 @@ void Pass2::beginPass2()
                         }
                         else if(indexMode)
                         {
-                            //std::cout << "INDEX MODE!!" << std::endl;
-                            //std::cout << "BUFFER:" << value1 << std::endl;
                             if(symTable.checkTableExist(value1))
                             {
                                 symbolAddress = converter.intToString(symTable.getAddress(value1));
@@ -229,15 +205,13 @@ void Pass2::beginPass2()
                         }
                         else
                         {   
-                            //std::cout << "Operand Checking: " << Operand << std::endl;
                             symbolAddress = "0";
-                            //std::cout << "Set Error Flag Undefined Symbol" << std::endl;         
                         }
                     }
                     else
                     {
                         symbolAddress = "0";
-                    }
+                    }   // end if it is not empty
                 }
                 else if (OPTABLE.checkOpExist(eCode))
                 {
@@ -248,7 +222,6 @@ void Pass2::beginPass2()
                             // need to check fo @ # etc.
                             if(symTable.checkTableExist(Operand))
                             {
-                                //std::cout << "testing: Duplicated Symbol Found" << std::endl;
                                 symbolAddress = converter.intToString(symTable.getAddress(Operand));
                                 opStruct.skip = false;
 
@@ -258,16 +231,15 @@ void Pass2::beginPass2()
 
                             }else
                             {   
-                                symbolAddress = "0";
-                                //std::cout << "Set Error Flag Undefined Symbol" << std::endl;         
+                                symbolAddress = "0";     
                             }
-                    }else
+                    }
+                    else
                     {
                         
-                    }
-                    // end if symbol
-                    // calculate Object code
-                }else if (OpCode == "BYTE" || OpCode == "WORD")
+                    }   // end if not empty
+                }
+                else if (OpCode == "BYTE" || OpCode == "WORD")
                 {
                     std::istringstream iss(Operand);
                     std::string temp;
@@ -289,23 +261,17 @@ void Pass2::beginPass2()
 
                     if(type == "C")
                     {
-                        //std::cout << "ResultC" << result << std::endl;
                         result = converter.byteCalc(result);
                     }
                     else if (type == "X")
                     {
-                        //std::cout << "ResultX" << result << std::endl;
                         result = (result);
-                        
                     }
                     else if (type == "=X")
                     {
-                        //std::cout << "Result=X" << result << std::endl;
                         result = (result);
                     }
                     opStruct.byte = result; 
-                    //std::cout << "byte check: " << result << std::endl;
-
                     // convert to object code with constants
                 }
                 else if(OpCode == "EXTDEF")
@@ -314,16 +280,12 @@ void Pass2::beginPass2()
                     std::string temp;
 
                     ssDefine << "D";
-
                     while(std::getline(iss,temp,','))
                     {
-
-                        std::cout << "extDef: " << temp << std::endl;
                         externalDef.push_back(temp);
                         if(symTable.checkTableExist(temp))
                         {
                             int number = symTable.getAddress(temp);
-                            std::cout << "Converted:" << number << std::endl;
                             ssDefine << converter.checkLength(temp) << converter.fillHexNum(number,6);
                             symTable.setDef(temp,1);
                         }
@@ -340,8 +302,6 @@ void Pass2::beginPass2()
                     ssRecord << "R";
                     while(std::getline(iss,temp,','))
                     {
-
-                        std::cout << "ExtRef: " << temp << std::endl;
                         externalRef.push_back(temp);
                         if(symTable.checkTableExist(temp))
                         {
@@ -353,11 +313,11 @@ void Pass2::beginPass2()
                     fReader.newLine();
                     symbolAddress = "0";
                     initializeText();
-                }else
-                {
-                    //std::cout << "Does Not Exist: " << OpCode << std::endl;
-                    opStruct.skip = true;
                 }
+                else
+                {
+                    opStruct.skip = true;
+                }   // end check if exist opcode
 
                 // Literal Table
                 if (literalTable.checkTableExist(Operand))
@@ -378,12 +338,13 @@ void Pass2::beginPass2()
 
                         symbolAddress = converter.intToString(finalBlock);
                     }
-                }
+                }   // end if literal table exist
 
-                // BlocKNumber
+                // Check for block number
                 if(blockNumber == "")
                 {
-                }else
+                }
+                else
                 {
                     if(symTable.checkTableExist(Operand) || literalTable.checkTableExist(Operand))
                     {
@@ -394,9 +355,7 @@ void Pass2::beginPass2()
 
                         if (literalTable.checkTableExist(Operand))
                         {
-                            value = converter.stringToInt(literalTable.getAddress(Operand));
-                            //std::cout << "Operand" << Operand << " Value: " << value  << "sym: " << symAddr<< std::endl;
-                        }
+                            value = converter.stringToInt(literalTable.getAddress(Operand));                        }
                         else
                         {
                         int result = value + symAddr;
@@ -405,16 +364,14 @@ void Pass2::beginPass2()
                             {
                                 symbolAddress = converter.intToString(symTable.getAddress(cOperand));
                             }
-                        }
+                        }   // end check if literalTable exist
                         
                     } 
                     else if(symTable.checkTableExist(tempOperand))
                     {
-                        //std::cout << "temp Operand" << tempOperand << std::endl;
 
                         if(Operand[0] == '#')
                         {
-
                         }
                         else
                         {
@@ -431,26 +388,24 @@ void Pass2::beginPass2()
                             int result = value + symAddr;
 
                             symbolAddress = converter.intToString(result);
-
-                        }
-                    }else if (isBuffer)
+                        }   // end immediate
+                    }
+                    else if (isBuffer)
                     {
 
-                            int blockNum = converter.stringToInt(blockNumber);
-                            int symNumber = symTable.getBlockNumber(buffer);
-                            int value = symTable.getAddress(buffer);
-                            int symAddr = blockTABLE.getAddressIndex(symNumber);
+                        int blockNum = converter.stringToInt(blockNumber);
+                        int symNumber = symTable.getBlockNumber(buffer);
+                        int value = symTable.getAddress(buffer);
+                        int symAddr = blockTABLE.getAddressIndex(symNumber);
 
-                            int result = value + symAddr;
-                            symbolAddress = converter.intToString(result);
-
-
+                        int result = value + symAddr;
+                        symbolAddress = converter.intToString(result);
                         isBuffer = false;
                     }
                     else
                     {
                         isBuffer = false;
-                    }
+                    }   // end symtable exist
 
                     // means it is not control block
                     if(controlName == firstControl)
@@ -462,23 +417,20 @@ void Pass2::beginPass2()
                         if (literalTable.checkTableExist(Operand))
                         {
                             symbolAddress = literalTable.getAddress(Operand);
-                            //std::cout << literalTable.getOperand(OpCode) << std::endl;
                         }
-                    }
+                    }    // end control sect
 
                 }   // end check block
-
 
                 // check for blockNumber difference and add the address to original current addr
                 if(blockNumber != "")
                 {
                     if(converter.stringToInt(blockNumber) != 0)
                     {
-                        std::cout << blockNumber << std::endl;
                         int intBlock = converter.stringToInt(blockNumber);
                         currentLoc[counter].second += blockTABLE.getAddressIndex(intBlock);
                     }
-                }
+                }   // end if not blockNumber
 
                 // control section check
                 std::istringstream iss(Operand);
@@ -510,15 +462,13 @@ void Pass2::beginPass2()
                 {
                     if(symTable.getRef(value1))
                     {
-                        //std::cout << "External Ref: [" << Operand << "]" << symTable.getRef(value1) <<std::endl;
                         symbolAddress = "0";
                         opStruct.cSect = true; 
                     }else
                     {
                         opStruct.cSect = false;
-
                     }
-                }
+                }   // end symTable
 
                 // check for cs and pblocks
                 if(OpCode == "BYTE" || OpCode == "WORD")
@@ -530,21 +480,7 @@ void Pass2::beginPass2()
                     }
                 }
 
-                /*
-                // check code counter
-                if object code is >= 10 * 3, 
-                    create new text record
-                else
-                add object cord to text record
-
-                */
-                //std::cout << "error " << std::endl;
-                //std::string baseAddress = converter.intToString(symTable.getAddress("BASE"));
-
-                //std::cout << "Operand: " << Operand << " SYMBOL: " <<  symbolAddress << std::endl;
-            
-                //std::cout << "Pass 2 Address Start 2" << std::endl;
-                
+                // Set Values to Generate Object Code
                 opStruct.currentAddr = converter.intToString(currentLoc[counter].second);
                 opStruct.baseAddr = converter.intToString(baseAddress);
                 opStruct.pcAddr = converter.intToString(pcLoc[counter].second);
@@ -555,20 +491,12 @@ void Pass2::beginPass2()
                 opStruct.format = format;
                 opStruct.symAddr = symbolAddress;
 
-                //std::cout << "CHECKBASE: " << opStruct.baseAddr << std::endl
-
-                //std::cout << "pc Address: " << opStruct.pcAddr << std::endl
-
-            //if(opStruct.operand == "#MAXLEN")
-            //{
+                // generate object code
                 genOp.setValues(opStruct);
                 genOp.checkFormat();
                 genOp.createObjectCode();
-                genOp.debug();
-                genOp.checkBits();
-            //}
 
-
+                // Modification for cSection
                 if(OpCode == "EXTREF" || OpCode == "EXTDEF")
                 {
                 }
@@ -604,26 +532,19 @@ void Pass2::beginPass2()
                             }
                         }
                     }
-                }
+                }   // end cModification
 
-
-
-
+                // update object for literalTable
                 if(literalTable.checkTableExist(OpCode))
                 {
-                    //std::cout << "Literal Exist: " << std::endl;
                     genOp.objectCode = literalTable.getOperand(OpCode);
-
-                    //genOp.debug();
-                    //genOp.checkBits();
                 }
 
             } // end if not comment
 
             if(OpCode == "LTORG")
             {
-                //std::cout << "CHECK: LTORG " << std::endl;
-
+                // "LTORG"
             }
             else
             {
@@ -635,9 +556,9 @@ void Pass2::beginPass2()
                 genOp.objectCode = opStruct.byte;
             }
             
+            // Generate Modification Record for nonCsect
             if(genOp.e && symTable.checkTableExist(genOp.operand))
             {
-                //std::cout << Operand << "MODIFICATION " << Label << std::endl;
                 if(isCsect)
                 {
 
@@ -649,15 +570,13 @@ void Pass2::beginPass2()
                     std::string finalText = converter.fillHexNum(nextGen,6) + converter.fillHexNum(opDisp.size(),2);
                     initializeMod(finalText);
                 }
-            }
+            }   // end noncSect Modification
 
+            // Resw section
             if(OpCode == "RESW")
             {
-                //writeObjectCode()
                 if(genOp.objectCode == "")
                 {
-                    //std::cout << "objectCode L : [" << genOp.objectCode << "]" << std::endl;
-                    //textLength += genOp.objectCode.size();
                     if(begin)
                     {
                         writeText();
@@ -665,11 +584,9 @@ void Pass2::beginPass2()
                     }
                     begin = false;
                 }
-
-                //initializeText();
-            } else if(OpCode == "USE")
+            } 
+            else if(OpCode == "USE")
             {
-
                 if(genOp.objectCode == "")
                 {
                     if(begin)
@@ -682,17 +599,12 @@ void Pass2::beginPass2()
             } 
             else
             {
-                //std::cout << "Text Length:" << textLength << std::endl;
-
-                //std::cout << "checking object size: " << genOp.objectCode.size() << std::endl;
-                //std::cout << "checking text size: " << textLength << std::endl;
                 textLength += genOp.objectCode.size();
                 if(genOp.objectCode == "")
                 {
                 }
                 else
                 {
-
                     if(!begin)
                     {
                         begin = true;
@@ -706,19 +618,17 @@ void Pass2::beginPass2()
                         fReader.newLine();
                         initializeText();
                         writeObjectCode();
-
-                    }else
+                    }
+                    else
                     {
                         writeObjectCode();
                     }
-                }
-            }
+                }   // end if not opcode empty
+            }   // end if else
             readNextInput();
-        }   // end while nmot end 
+        }   // end while not end
 
-        std::cout << "last: " << ssObject.str() << std::endl;
-
-        std::cout << "LAST label: " << Label << " OP: " << OpCode << " Operandl: " << Operand << std::endl; 
+        // Write Last Text Input
         if(textStarted)
         {
             writeText(); 
@@ -727,14 +637,10 @@ void Pass2::beginPass2()
         {
         }
 
-        // write text to Text object program
-
-        // write modifictation record
+        // Write Last Modification Record
         writeMod();
-        // write end record 
 
-        //write last listing line
-
+        // Write Last End Record
         if(isCsect)
         {
             if(firstEnd)
@@ -744,30 +650,21 @@ void Pass2::beginPass2()
             }else
             {
                 fReader.writeToFileNoTab("E");
-            }
+            }   // end if is csect
         }
         else
         {
             writeEnd();
         }
 
-        std::cout << "CSECT: " << isCsect << std::endl;
-
-
     }   // end myfile is open
 
-
-    //symTable.debug();
-
-}
+}   // end pass2
 
 void Pass2::writeHeader()
 {
-
-
+    // Header
     std::string newLabel;
-    // Need to check Label length of 
-
     newLabel = converter.checkLength(Label);
     std::string programName = "H"+newLabel;
     std::string startingAddress = converter.fillHexNum(startAdd,6);
@@ -783,59 +680,35 @@ void Pass2::writeHeader()
     fReader.writeToFileNoTab(programName);
     fReader.writeToFileNoTab(startingAddress);
     fReader.writeToFileNoTab(objectLength);
-
 }
 
 void Pass2::writeText()
 {
-
     int newText = textLength/2;
     std::string objLen = converter.fillHexNum(newText,2);
-
     std::string finalText = objLen + ssObject.str();
 
-    //std::cout << "writing: [" << objLen << "]" << std::endl;
-    //std::cout << "writing: [" << ssObject.str() << "]" << std::endl;
-    //std::cout << "writing: [" << finalText << "]" << std::endl;
     fReader.writeToFileNoTab(finalText);
-
     ssObject.str("");
     ssObject.clear();
     textStarted = false;
-
-
-
 }
 
 void Pass2::initializeText()
 {
     textStarted = true;
     textLength = genOp.objectCode.size();
-    // Need to check Label length of 6
-
-    //std::cout << "Generating at: " << OpCode << " : " << genOp.objectCode<< std::endl;
 
     std::string programName = "T"+converter.checkLength(Label);
     std::string startingAddress = "T"+converter.binaryToHexByte(genOp.currentAddr);
     std::string testing = "T" + converter.fillHexNum(genOp.currentAddr,6);
+
     fReader.writeToFileNoTab(testing);
 }
 
 void Pass2::writeObjectCode()
 {
-    //std::cout << "gen OP:" << genOp.objectCode << std::endl;
-    //ssObject << genOp.objectCode;
-
     ssObject << genOp.objectCode;
-    
-}
-
-void Pass2::writeStartHeader()
-{
-    fReader.writeToFileNoTab(startWrite.str());
-    startWrite.str("");
-    startWrite.clear();
-    fReader.newLine();
 }
 
 void Pass2::initializeMod(std::string word)
@@ -863,7 +736,6 @@ void Pass2::writeEnd()
 void Pass2::getPassData(int starting, int loc, int pLength)
 {
     startAdd = starting;
-    //LocCtr = loc;
     programLength = pLength;
 }
 
@@ -880,7 +752,6 @@ void Pass2::readNextInput()
     std::getline(ss, blockNumber, '\t');
 }
 
-
 void Pass2::writeRecord()
 {
     fReader.writeToFileNoTab(ssRecord.str());
@@ -894,6 +765,7 @@ void Pass2::writeDefine()
     ssDefine.str("");
     ssDefine.clear();
 }
+
 void Pass2::setOptable(Optable op)
 {
     OPTABLE = op;
@@ -926,7 +798,6 @@ void Pass2::setControlTab(ControlTab cont)
 
 void Pass2::debug()
 {
-
     std::cout 
     << "Address: [" << Address
     << "] Label: [" << Label 

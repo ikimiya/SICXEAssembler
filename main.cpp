@@ -12,12 +12,12 @@ void genObj(std::string fileName)
     Pass1 p1;
     Pass2 p2;
 
-    std::cout << "Running: " << fileName << ".txt" << std::endl;
+    std::cout << "[Running: " << fileName << ".txt].." << std::endl;
     p1.setFileName(fileName);
 
     if(p1.fReader.fileNotExist)
     {
-        std::cout << "Aborting Error File Name: " << fileName << ".txt" << std::endl;
+        std::cout << "[Aborting Error File Name: " << fileName << ".txt]....." << std::endl;
         std::cout << " " << std::endl;
     }
     else
@@ -32,7 +32,7 @@ void genObj(std::string fileName)
         p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
         p2.setLocation(p1.currentLoc,p1.pcLoc);
         p2.beginPass2();
-        std::cout << "Ending: " << fileName << ".txt" << std::endl;
+        std::cout << "[Finish: " << fileName << ".txt].....\n" << std::endl;
     }
 }
 
@@ -84,6 +84,6 @@ int main()
     //std::string fileName = "functions";
     //genSingleFile(fileName);
 
-    std::cout << "End Program" << std::endl;
+    std::cout << "Program Finished" << std::endl;
 
 }

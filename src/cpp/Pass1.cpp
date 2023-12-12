@@ -860,7 +860,8 @@ void Pass1::readNextInput()
 
     if(currentLine.empty())
     {
-        std::cout << "line Empty" << std::endl;
+        //std::cout << "line Empty" << std::endl;
+        // ignore empty line
         Label = "";
         OpCode = "";
         Operand = "";
