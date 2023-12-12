@@ -55,5 +55,13 @@ cleanResult:
 cleanImt:
 	rm -f Immediate/*.txt
 
+cleanall:
+	rm -f Immediate/*.txt
+	rm -f Result/*.txt
+	rm -f *.o
+	rm -f Math/*.o
+	rm -f src/*/*.o
+	rm assembler
+	
 run: assembler
 	./assembler

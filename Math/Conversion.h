@@ -16,20 +16,20 @@ class Conversion
 
     ~Conversion();
 
-    void convertBinToHex(int binary);
 
+    // convert int number to hex
     std::string binaryToHex(int binary);
 
+    // convert hex number to int
     int hexToBinary(std::string hex);
 
-    int stringToInt(std::string string);
 
+    int stringToInt(std::string string);
     std::string intToString(int number);
 
-
+    // writing text
     std::string binaryToHexByte(int number);
 
-    
     std::string opcodeHex(std::string number);
 
     // format 4 opcode 8 
@@ -45,15 +45,12 @@ class Conversion
 
     std::string displacementExtend(int number);
 
-    std::string calculateDisplacement(int binary);
-
     std::string byteCalc(std::string input);
-
     std::string fillHex(std::string input);
-
     std::string fillHexNum(std::string input, int num);
     std::string fillHexNum(int input, int num);
 
+    // check Header length
     std::string checkLength(std::string length);
 
     
