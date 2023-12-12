@@ -136,7 +136,7 @@ int main()
 
 
     Pass2 p2;
-    //p1.literalTable.debug();
+    p1.literalTable.debug();
 
     p2.setFileName(fileName);
     p2.setOptable(p1.OPTABLE);

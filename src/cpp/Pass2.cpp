@@ -140,16 +140,11 @@ void Pass2::beginPass2()
                         symTable.setDef(*it,0);
                     }
                 }
-
                 externalDef.clear();
                 externalRef.clear();
-
             }
 
             std::string cOperand = Operand + controlName;
-
-        
-
             // if it is not comment line 
             if(Label[0] != '.')
             {
@@ -191,18 +186,15 @@ void Pass2::beginPass2()
                     if(Operand != "")
                     {
                         // need to check fo @ # etc.
-                        
                         if(symTable.checkTableExist(Operand))
                         {
                             //std::cout << "testing: Duplicated Symbol Found" << std::endl;
                             symbolAddress = converter.intToString(symTable.getAddress(Operand));
 
-
                             if(symTable.checkTableExist(cOperand))
                             {
                                 symbolAddress = converter.intToString(symTable.getAddress(cOperand));
                             }
-
                             opStruct.skip = false;
                         }
                         else if(symTable.checkTableExist(tempOperand))
@@ -228,14 +220,12 @@ void Pass2::beginPass2()
                             symbolAddress = "0";
                             //std::cout << "Set Error Flag Undefined Symbol" << std::endl;         
                         }
-                            
                     }
                     else
                     {
                         symbolAddress = "0";
                     }
                 }
-                
                 else if (OPTABLE.checkOpExist(eCode))
                 {
                     sendOpcode = OPTABLE.getOpcode(eCode);
@@ -264,10 +254,8 @@ void Pass2::beginPass2()
                     }
                     // end if symbol
                     // calculate Object code
-                    
                 }else if (OpCode == "BYTE" || OpCode == "WORD")
                 {
-
                     std::istringstream iss(Operand);
                     std::string temp;
                     std::string result;
@@ -303,7 +291,7 @@ void Pass2::beginPass2()
                         result = (result);
                     }
                     opStruct.byte = result; 
-                    std::cout << "byte check: " << result << std::endl;
+                    //std::cout << "byte check: " << result << std::endl;
 
                     // convert to object code with constants
                 }
@@ -347,8 +335,6 @@ void Pass2::beginPass2()
                 }
 
                 // Literal Table
-
-
                 if (literalTable.checkTableExist(Operand))
                 {
                     symbolAddress = literalTable.getAddress(Operand);
@@ -367,16 +353,7 @@ void Pass2::beginPass2()
 
                         symbolAddress = converter.intToString(finalBlock);
                     }
-            
-
-                    /*
-
-                    */
-
-
                 }
-
-    
 
                 // BlocKNumber
                 if(blockNumber == "")
@@ -390,26 +367,20 @@ void Pass2::beginPass2()
                         int value = symTable.getAddress(Operand);
                         int symAddr = blockTABLE.getAddressIndex(symNumber);
 
-
                         if (literalTable.checkTableExist(Operand))
                         {
                             value = converter.stringToInt(literalTable.getAddress(Operand));
                             //std::cout << "Operand" << Operand << " Value: " << value  << "sym: " << symAddr<< std::endl;
-
-
-                            
-                        }else
+                        }
+                        else
                         {
-
                         int result = value + symAddr;
                         symbolAddress = converter.intToString(result);
-                        if(symTable.checkTableExist(cOperand))
-                        {
-                            symbolAddress = converter.intToString(symTable.getAddress(cOperand));
+                            if(symTable.checkTableExist(cOperand))
+                            {
+                                symbolAddress = converter.intToString(symTable.getAddress(cOperand));
+                            }
                         }
-                        }
-
-
                         
                     } 
                     else if(symTable.checkTableExist(tempOperand))
@@ -465,16 +436,27 @@ void Pass2::beginPass2()
                     {
                         if (literalTable.checkTableExist(Operand))
                         {
-                            
                             symbolAddress = literalTable.getAddress(Operand);
                             //std::cout << literalTable.getOperand(OpCode) << std::endl;
                         }
                     }
 
+                }   // end check block
+
+
+                // check for blockNumber difference and add the address to original current addr
+                if(blockNumber != "")
+                {
+                    if(converter.stringToInt(blockNumber) != 0)
+                    {
+                        std::cout << blockNumber << std::endl;
+                        int intBlock = converter.stringToInt(blockNumber);
+                        currentLoc[counter].second += blockTABLE.getAddressIndex(intBlock);
+                    }
                 }
 
 
-                
+
 
                 // control section check
                 std::istringstream iss(Operand);
@@ -526,10 +508,6 @@ void Pass2::beginPass2()
                     }
                 }
 
-
-
-
-
                 /*
                 // check code counter
                 if object code is >= 10 * 3, 
@@ -568,25 +546,23 @@ void Pass2::beginPass2()
                 genOp.checkBits();
             //}
 
-            if(literalTable.checkTableExist(OpCode))
-            {
-                //std::cout << "Literal Exist: " << std::endl;
-                genOp.objectCode = literalTable.getOperand(OpCode);
+                if(literalTable.checkTableExist(OpCode))
+                {
+                    //std::cout << "Literal Exist: " << std::endl;
+                    genOp.objectCode = literalTable.getOperand(OpCode);
 
-                //genOp.debug();
-                //genOp.checkBits();
-            }
-
-
+                    //genOp.debug();
+                    //genOp.checkBits();
+                }
             //std::cout << "Pass 2 Address Start 3" << std::endl;
-
             } // end if not comment
 
             if(OpCode == "LTORG")
             {
                 std::cout << "CHECK: LTORG " << std::endl;
-                //std::cout << "Operand: " << literalTable.getOperand(Operand) << std::endl;
+                    // block differenec adding
 
+                //std::cout << "Operand: " << literalTable.getOperand(Operand) << std::endl
             }
             else
             {
@@ -628,15 +604,18 @@ void Pass2::beginPass2()
                 //initializeText();
             } else if(OpCode == "USE")
             {
-                    textLength += genOp.objectCode.size();
-                    textLength -= genOp.objectCode.size();
-                    writeText();
-                    fReader.newLine();
-                    initializeText();
-                    writeObjectCode();
+
+                if(genOp.objectCode == "")
+                {
+                    if(begin)
+                    {
+                        writeText();
+                        fReader.newLine();
+                    }
+                    begin = false;
+                }
             } 
             else
-
             {
                 //std::cout << "Text Length:" << textLength << std::endl;
 
