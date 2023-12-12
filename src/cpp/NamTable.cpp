@@ -17,12 +17,9 @@ void NamTable::insertTable(std::string label, namLoc& nLoc)
     namTab.insert(std::pair<std::string, namLoc>(label,nLoc));
 }
 
-// Check Map duplicates
 bool NamTable::checkTableExist(std::string label)
 {
     auto it = namTab.find(label);
-
-    // Check if the key exists
     return it != namTab.end();
 }
 
@@ -35,7 +32,6 @@ std::string NamTable::getName(std::string label)
         return "null"; 
     }
 }
-
 
 int NamTable::getStart(std::string label)
 {
@@ -80,17 +76,12 @@ void NamTable::resetTable()
     namTabLoc.endIndex = -1;
 }
 
-
 void NamTable::debug()
 {
-
     for(auto it = namTab.rbegin(); it != namTab.rend(); it++)
     {
         std::cout << "Macro Name: [" << it->first 
                   << "] Starting Loc: [" << it->second.startIndex 
                   << "] Ending Loc: [" << it->second.endIndex << "]\n";
     }
-
-    //std::cout <<  "test:" << NamTablele.begin()->second << std::endl;
-
 }

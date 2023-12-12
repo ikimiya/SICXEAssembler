@@ -20,17 +20,15 @@ void FileReader::readFile(std::string fileName)
     if(myFile.fail())
     {
  		std::cout << "Error opening the file : [" << fileName << "]"  << std::endl;
-		exit(1);
+        fileNotExist = true;
+        this->closeReadFile();
     }
-
 }
 
 void FileReader::writeFile(std::string fileName)
 {
     outFile.open(fileName);
 }
-
-
 
 void FileReader::writeToFileNoTab(std::string value)
 {
@@ -61,7 +59,6 @@ void FileReader::writeToFileTab()
 {
     outFile << "\t";
 }
-
 
 void FileReader::closeReadFile()
 {

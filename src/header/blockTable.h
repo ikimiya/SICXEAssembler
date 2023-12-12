@@ -10,12 +10,9 @@
 
 class BlockTable
 {
-
-
     private: 
 
     public:
-
 
         struct blocks
         {
@@ -25,7 +22,6 @@ class BlockTable
         };
 
         BlockTable();
-
         ~BlockTable();
 
         void insertTable(std::string Label, blocks& blockT);    
@@ -38,9 +34,7 @@ class BlockTable
         int getAddressIndex(int index);
         int getHighestBlock();
 
-
         std::string getBlockName(std::string label);  
-
 
         void setBlockNumber(std::string Label, int value);
         void setAddress(std::string Label, int value);
@@ -48,15 +42,11 @@ class BlockTable
 
         // check if exist
         bool checkTableExist(std::string Label);
-
         void resetTable();
-
         void debug();
 
         blocks bTable;
-
         std::map<std::string, struct blocks> blockTable;
-
 };
 
 #endif

@@ -14,18 +14,26 @@ void genObj(std::string fileName)
 
     std::cout << "Running: " << fileName << ".txt" << std::endl;
     p1.setFileName(fileName);
-    p1.beginPass1();
 
-    p2.setFileName(fileName);
-    p2.setOptable(p1.OPTABLE);
-    p2.setSymtable(p1.symTable);
-    p2.setLiteralTab(p1.literalTable);
-    p2.setBlockTab(p1.blockTABLE);
-    p2.setControlTab(p1.conTable);
-    p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
-    p2.setLocation(p1.currentLoc,p1.pcLoc);
-    p2.beginPass2();
-    std::cout << "Ending: " << fileName << ".txt" << std::endl;
+    if(p1.fReader.fileNotExist)
+    {
+        std::cout << "Aborting Error File Name: " << fileName << ".txt" << std::endl;
+        std::cout << " " << std::endl;
+    }
+    else
+    {
+        p1.beginPass1();
+        p2.setFileName(fileName);
+        p2.setOptable(p1.OPTABLE);
+        p2.setSymtable(p1.symTable);
+        p2.setLiteralTab(p1.literalTable);
+        p2.setBlockTab(p1.blockTABLE);
+        p2.setControlTab(p1.conTable);
+        p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
+        p2.setLocation(p1.currentLoc,p1.pcLoc);
+        p2.beginPass2();
+        std::cout << "Ending: " << fileName << ".txt" << std::endl;
+    }
 }
 
 void genSingleFile(std::string fileName)
@@ -35,19 +43,26 @@ void genSingleFile(std::string fileName)
 
     std::cout << "Running: " << fileName << ".txt" << std::endl;
     p1.setFileName(fileName);
-    p1.beginPass1();
 
-    p2.setFileName(fileName);
-    p2.setOptable(p1.OPTABLE);
-    p2.setSymtable(p1.symTable);
-    p2.setLiteralTab(p1.literalTable);
-    p2.setBlockTab(p1.blockTABLE);
-    p2.setControlTab(p1.conTable);
-    p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
-    p2.setLocation(p1.currentLoc,p1.pcLoc);
-    p2.beginPass2();
-    std::cout << "Ending: " << fileName << ".txt" << std::endl;
-
+    if(p1.fReader.fileNotExist)
+    {
+        std::cout << "Aborting Error File Name: " << fileName << ".txt" << std::endl;
+        std::cout << " " << std::endl;
+    }
+    else
+    {
+        p1.beginPass1();
+        p2.setFileName(fileName);
+        p2.setOptable(p1.OPTABLE);
+        p2.setSymtable(p1.symTable);
+        p2.setLiteralTab(p1.literalTable);
+        p2.setBlockTab(p1.blockTABLE);
+        p2.setControlTab(p1.conTable);
+        p2.getPassData(p1.startAdd,p1.LocCtr,p1.programLength);
+        p2.setLocation(p1.currentLoc,p1.pcLoc);
+        p2.beginPass2();
+        std::cout << "Ending: " << fileName << ".txt" << std::endl;
+    }
 }
 
 int main()
@@ -63,13 +78,13 @@ int main()
         genObj(resultPath);
     }
 
-
     /*
     fileName: basic.txt
     fileName = basic
     */ 
-    std::string fileName = "";
-    //genSingleFile();
+    //std::string fileName = "functions";
+    //genSingleFile(fileName);
+
     std::cout << "End Program" << std::endl;
 
 }

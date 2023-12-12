@@ -12,7 +12,6 @@ class DefTable
 {
     private: 
 
-
     public:
 
         DefTable();
@@ -27,9 +26,7 @@ class DefTable
         std::map<int, std::string> defTab;
 
         void debug();
-
         int counter = 0;
-
 };
 
 #endif

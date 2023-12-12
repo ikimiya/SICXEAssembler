@@ -3,21 +3,15 @@
 #ifndef _Libtab_H_
 #define _Libtab_H_
 
-
 #include <string>
 #include <iostream>
 #include <map>
 
 class Libtab
 {
-
-
     private: 
 
-
     public:
-
-
         struct libValue
         {
             std::string operand;
@@ -26,7 +20,6 @@ class Libtab
         };
 
         Libtab();
-
         ~Libtab();
 
         void insertTable(std::string Label, libValue& literal);    
@@ -40,14 +33,11 @@ class Libtab
         bool checkTableExist(std::string Label);
 
         void resetTable();
-
         void debug();
 
         libValue literalTable;
 
-
         std::map<std::string, struct libValue> libTable;
-
 };
 
 #endif

@@ -17,12 +17,9 @@ void BlockTable::insertTable(std::string label, blocks& block)
     blockTable.insert (std::pair<std::string, blocks>(label,block));
 }
 
-// Check Map duplicates
 bool BlockTable::checkTableExist(std::string label)
 {
     auto it = blockTable.find(label);
-
-    // Check if the key exists
     return it != blockTable.end();
 }
 
@@ -32,7 +29,7 @@ std::string BlockTable::getBlockName(std::string label)
     if (it != blockTable.end()) {
         return it->first; 
     } else {
-        return "null"; 
+        return "Block Name Null"; 
     }
 }
 
@@ -54,7 +51,6 @@ int BlockTable::getAddressIndex(int index)
             return it.second.address;
         }
     }
-    
     return -1;
 }
 
@@ -67,7 +63,6 @@ int BlockTable::getLengthIndex(int index)
     }
     return -1;
 }
-
 
 int BlockTable::getLength(std::string label)
 {
@@ -117,7 +112,6 @@ void BlockTable::setLength(std::string label, int value)
         it->second.length = value;
     } else {
     }
-    
 }
 
 void BlockTable::resetTable()
@@ -125,15 +119,10 @@ void BlockTable::resetTable()
     bTable.blockNumber = -1;
     bTable.address = -1;
     bTable.length = -1;
-
 }
-
-
-
 
 void BlockTable::debug()
 {
-
     for(auto it = blockTable.rbegin(); it != blockTable.rend(); it++)
     {
         std::cout << "Block Name: [" << it->first 
@@ -141,7 +130,4 @@ void BlockTable::debug()
                   << "] Address: [" << it->second.address 
                   << "] Length: [" << it->second.length << "]\n";
     }
-
-    //std::cout <<  "test:" << BlockTablele.begin()->second << std::endl;
-
 }

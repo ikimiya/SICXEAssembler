@@ -10,10 +10,7 @@
 
 class Symtable
 {
-
-
     private: 
-
 
     public:
 
@@ -36,9 +33,7 @@ class Symtable
             // control sectrol
             bool extDef;
             bool extRef;
-
         };
-
 
         void quickInsert(std::string Label, int value);
         void quickInsert(std::string Label, int value, int bloc);
@@ -47,7 +42,7 @@ class Symtable
         void setAddress(std::string label,int address);
         int getAddress(std::string Label);
 
-        // blocks
+        // blocks get/set
         int getBlockNumber(std::string Label);
         int getBlockAddress(std::string Label);
         int getBlockLength(std::string Label);  
@@ -65,24 +60,13 @@ class Symtable
         bool getDef(std::string label);
         bool getRef(std::string label);
 
-
+        // struct insert
         void insertTable(std::string Label, tableInfo &infos);
         void resetTable();
         void debug();
 
-        //void insertTable(std::string Label, int address);    
-
-        // finds address
-
-        // check if exist
-
         tableInfo infos;
-
-
         std::map<std::string, struct tableInfo> SYMTABLE;
-
-
-
 };
 
 #endif

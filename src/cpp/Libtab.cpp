@@ -15,16 +15,11 @@ Libtab::~Libtab()
 void Libtab::insertTable(std::string label, libValue& literal)
 {
     libTable.insert (std::pair<std::string, libValue>(label,literal));
-
-    //std::cout << "INSERT: " << label << std::endl;
 }
 
-// Check Map duplicates
 bool Libtab::checkTableExist(std::string label)
 {
     auto it = libTable.find(label);
-
-    // Check if the key exists
     return it != libTable.end();
 }
 
@@ -63,13 +58,10 @@ void Libtab::resetTable()
     literalTable.address = "-1";
     literalTable.operand = "-1";
     literalTable.length = "-1";
-
 }
-
 
 void Libtab::debug()
 {
-
     for(auto it = libTable.begin(); it != libTable.end(); it++)
     {
         std::cout << "Literal Name: [" << it->first 
@@ -77,7 +69,4 @@ void Libtab::debug()
                   << "] Length: [" << it->second.length 
                   << "] Address: [" << it->second.address << "]\n";
     }
-
-    //std::cout <<  "test:" << libTable.begin()->second << std::endl;
-
 }

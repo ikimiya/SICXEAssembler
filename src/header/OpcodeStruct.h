@@ -2,7 +2,6 @@
 #define __OPCODESTRUCT_
 
 #include <string>
-
 struct OpcodeStruct
 {
     std::string currentAddr;
@@ -17,8 +16,6 @@ struct OpcodeStruct
     std::string opCode; 
     int format;
 
-
-
     // if opcode does not exist skip generate
     bool skip = false;
     bool indirect = false;
@@ -26,10 +23,7 @@ struct OpcodeStruct
     bool cSect = false;
 
     std::string byte;
-
 };
-
-
 
 #endif // !
 

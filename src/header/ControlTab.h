@@ -13,7 +13,6 @@ class ControlTab
     private: 
     public:
 
-
         struct cSectValue
         {
             int beginAddress;
@@ -21,7 +20,6 @@ class ControlTab
         };
 
         ControlTab();
-
         ~ControlTab();
 
         void insertTable(std::string Label, cSectValue& literal);    
@@ -32,10 +30,10 @@ class ControlTab
         void setBeginAddress(std::string Label, int value);
         void setEndAddress(std::string Label, int value);
 
-
         // check if exist
         bool checkTableExist(std::string Label);
 
+        // check if it is control section csect > 1
         bool ifControl();
 
         void resetTable();
@@ -43,9 +41,7 @@ class ControlTab
         void debug();
 
         cSectValue cSectTable;
-
         std::map<std::string, struct cSectValue> controlTable;
-
 };
 
 #endif

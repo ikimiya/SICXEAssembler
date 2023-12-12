@@ -10,13 +10,9 @@
 
 class NamTable
 {
-
-
     private: 
 
-
     public:
-
 
         struct namLoc
         {
@@ -48,7 +44,6 @@ class NamTable
         namLoc namTabLoc;
 
         std::map<std::string, struct namLoc> namTab;
-
 };
 
 #endif

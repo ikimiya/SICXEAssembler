@@ -110,5 +110,8 @@
     "iomanip": "cpp",
     "codecvt": "cpp",
     "ratio": "cpp"
-  }
+  },
+  "cSpell.words": [
+    "prepopulate"
+  ]
 }

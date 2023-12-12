@@ -11,7 +11,6 @@ Optable::Optable()
 Optable::~Optable()
 {
 
-
 }
 
 void Optable::createTable()
@@ -78,8 +77,6 @@ void Optable::createTable()
     OPTABLE["TIX"] = std::make_pair(3, "2C");
     OPTABLE["TIXR"] = std::make_pair(2, "B8");
     OPTABLE["WD"] = std::make_pair(3, "DC");
-
-    // end iterator 
 }
 
 int Optable::getFormat(std::string Mnemonic)
@@ -104,15 +101,12 @@ bool Optable::checkOpExist(std::string Mnemonic)
     {
         return true;
     }
-
     return false;
-
 }
 
 // debug the code
 void Optable::debug()
 {
-
     for(auto it = OPTABLE.begin(); it != OPTABLE.end(); it++)
     {
         /*
@@ -120,7 +114,6 @@ void Optable::debug()
         int format = it->second.first;
         std::string opcode = it->second.second;
         */
-
         std::string mnemonic = it->first;
         int format = getFormat(mnemonic);
         std::string opcode = getOpcode(mnemonic);
@@ -129,7 +122,4 @@ void Optable::debug()
                     ", Opcode: " << opcode << std::endl;
 
     }
-
-
-
 }

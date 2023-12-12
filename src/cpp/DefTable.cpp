@@ -26,7 +26,6 @@ bool DefTable::checkTableExist(int index)
     return it != defTab.end();
 }
 
-
 std::string DefTable::getMacro(int index)
 {
     auto it = defTab.find(index);
@@ -37,7 +36,6 @@ std::string DefTable::getMacro(int index)
     }
 }
 
-
 void DefTable::debug()
 {
 
@@ -46,7 +44,5 @@ void DefTable::debug()
         std::cout << "int: [" << it->first 
                   << "] stringstream.str(): [" << it->second << "]\n";
     }
-
-    //std::cout <<  "test:" << DefTablele.begin()->second << std::endl;
 
 }

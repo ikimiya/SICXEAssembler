@@ -5,6 +5,7 @@
 
 Symtable::Symtable()
 {
+    // prepopulate values
     this->quickInsert("A",0);
     this->quickInsert("X",1);
     this->quickInsert("L",2);
@@ -24,7 +25,6 @@ Symtable::~Symtable()
 void Symtable::quickInsert(std::string label,int value)
 {
     resetTable();
-
     if(checkTableExist(label))
     {
         // if exist dupe
@@ -39,7 +39,6 @@ void Symtable::quickInsert(std::string label,int value)
 void Symtable::quickInsert(std::string label,int value,int bloc)
 {
     resetTable();
-
     if(checkTableExist(label))
     {
         // if exist dupe
@@ -57,12 +56,10 @@ void Symtable::insertTable(std::string label, tableInfo& infos)
     SYMTABLE.insert(std::pair<std::string, tableInfo>(label,infos));
 }
 
-// Check Map duplicates
+// Check Map if exist
 bool Symtable::checkTableExist(std::string label)
 {
     auto it = SYMTABLE.find(label);
-
-    // Check if the key exists
     return it != SYMTABLE.end();
 }
 
@@ -85,17 +82,15 @@ void Symtable::setAddress(std::string label, int value)
     }
 }
 
-
 void Symtable::setBlockAddress(std::string label, int address)
 {
     auto it = SYMTABLE.find(label);
     if (it != SYMTABLE.end()) {
         it->second.value = address;
     } else {
-        std::cout << "address not found" << std::endl;
+        std::cout << "Address Not Found" << std::endl;
     } 
 }
-
 
 std::string Symtable::getBlockName(std::string label)
 {
@@ -103,10 +98,9 @@ std::string Symtable::getBlockName(std::string label)
     if (it != SYMTABLE.end()) {
         return it->second.blockName; 
     } else {
-        return "null"; 
+        return "Null Block Name"; 
     }
 }
-
 
 int Symtable::getBlockAddress(std::string label)
 {
@@ -156,6 +150,7 @@ void Symtable::setBlockNumber(std::string label, int value)
     } else {
     }
 }
+
 void Symtable::setLength(std::string label, int value)
 {
     auto it = SYMTABLE.find(label);
@@ -163,8 +158,8 @@ void Symtable::setLength(std::string label, int value)
         it->second.length = value;
     } else {
     }
-    
 }
+
 void Symtable::setDef(std::string label, int value)
 {
     auto it = SYMTABLE.find(label);
@@ -205,8 +200,6 @@ bool Symtable::getRef(std::string label)
 
 void Symtable::debug()
 {
-    //std::cout << "Testing: " << infos.blockName << std::endl;
-
     std::cout << "DEBUGGING: " << std::endl;
     for(auto it = SYMTABLE.begin(); it != SYMTABLE.end(); it++)
     {
