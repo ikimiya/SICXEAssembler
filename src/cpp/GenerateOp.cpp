@@ -180,6 +180,7 @@ void GenerateOp::checkFormat()
                 {
                     int tempValue = symTable.getAddress(value1);
                     ss << tempValue;
+
                 }
                 objectCode = converter.fillHex(ss.str());
             }
@@ -301,7 +302,6 @@ void GenerateOp::createObjectCode()
             }
             tempCode = converter.decimalToHexTwo(opCode);
             operandCode << tempCode << n << i << x << b << p << e << disp;
-            std::string code = converter.opcodeHex(operandCode.str());
             objectCode = converter.opcodeHex(operandCode.str());    
         }
     }

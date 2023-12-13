@@ -738,11 +738,6 @@ void Pass1::beginPass1()
                 else if(OpCode == "EQU")
                 {
                     fReader.writeToFile(converter.intToString(LocCtr),Label,OpCode,Operand);
-                    //fReader.writeToFile(converter.intToString(errorF));
-                    //fReader.writeToFile(converter.intToString(symbolF));
-
-                    //fReader.writeToFile("BNUM" + converter.intToString(blockCounter));
-                    
                     fReader.newLine();
                     int temp = counter - 1;
                     LocCtr = pcLoc[temp].second;
@@ -758,8 +753,6 @@ void Pass1::beginPass1()
                         {
 
                             fReader.writeToFile(converter.intToString(currentLoc[counter].second),Label,OpCode,Operand);
-                            //fReader.writeToFile(converter.intToString(errorF));
-                            //fReader.writeToFile(converter.intToString(symbolF));
                             fReader.writeToFile(converter.intToString(blockCounter));
 
                             fReader.newLine();
@@ -773,7 +766,6 @@ void Pass1::beginPass1()
             {
                 readNextInput();
             } // end if not comment
-
         } // end while not end
 
         // check literals 
@@ -789,7 +781,6 @@ void Pass1::beginPass1()
             }
             else
             {
-                //symTable.quickInsert
                 it.second.address = converter.intToString(LocCtr);
                 fReader.writeToFile(converter.intToString(LocCtr),"*",literal);
                 fReader.writeToFile("\t");
@@ -900,4 +891,3 @@ void Pass1::debug()
         std::cout << "Element at index " << element.first << ": " << converter.binaryToHex(element.second) << std::endl;
     }
 }
-

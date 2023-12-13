@@ -355,7 +355,8 @@ void Pass2::beginPass2()
 
                         if (literalTable.checkTableExist(Operand))
                         {
-                            value = converter.stringToInt(literalTable.getAddress(Operand));                        }
+                            value = converter.stringToInt(literalTable.getAddress(Operand));                        
+                        }
                         else
                         {
                         int result = value + symAddr;
@@ -496,6 +497,8 @@ void Pass2::beginPass2()
                 genOp.checkFormat();
                 genOp.createObjectCode();
 
+                // printing object code
+
                 // Modification for cSection
                 if(OpCode == "EXTREF" || OpCode == "EXTDEF")
                 {
@@ -571,6 +574,10 @@ void Pass2::beginPass2()
                     initializeMod(finalText);
                 }
             }   // end noncSect Modification
+
+            // enable to see object code
+            //genOp.debug();
+            //genOp.checkBits();
 
             // Resw section
             if(OpCode == "RESW")

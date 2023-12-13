@@ -64,10 +64,6 @@ class Pass2
         void writeMod();
         void writeEnd();
 
-  
-
-
-
         Symtable symTable;
         Optable OPTABLE;
         Libtab literalTable;
